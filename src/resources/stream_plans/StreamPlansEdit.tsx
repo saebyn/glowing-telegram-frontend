@@ -13,6 +13,7 @@ import {
   TimeInput,
   required,
 } from 'react-admin';
+import RecurrenceDayInput from '../../atoms/RecurrenceDayInput';
 
 const startDateValidation = [
   required(),
@@ -57,20 +58,7 @@ function StreamPlansEdit() {
           defaultValue={'weekly'}
         />
 
-        {/* TODO existing values not showing up */}
-        <SelectArrayInput
-          source="recurrence.days"
-          choices={[
-            { id: 'sunday', name: 'Sunday' },
-            { id: 'monday', name: 'Monday' },
-            { id: 'tuesday', name: 'Tuesday' },
-            { id: 'wednesday', name: 'Wednesday' },
-            { id: 'thursday', name: 'Thursday' },
-            { id: 'friday', name: 'Friday' },
-            { id: 'saturday', name: 'Saturday' },
-          ]}
-          validate={required()}
-        />
+        <RecurrenceDayInput source="recurrence.days" validate={required()} />
 
         <NumberInput
           source="recurrence.interval"
