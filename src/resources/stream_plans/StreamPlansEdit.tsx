@@ -14,6 +14,7 @@ import {
   required,
 } from 'react-admin';
 import RecurrenceDayInput from '../../atoms/RecurrenceDayInput';
+import TagInput from '../../atoms/TagInput';
 
 const startDateValidation = [
   required(),
@@ -25,8 +26,6 @@ const startDateValidation = [
 ];
 
 function StreamPlansEdit() {
-  const tags: string[] = [];
-
   return (
     <Edit>
       <SimpleForm>
@@ -83,23 +82,7 @@ function StreamPlansEdit() {
           parse={(value) => value}
         />
 
-        {/* TODO need a way to show existing tags */}
-        <AutocompleteArrayInput
-          source="tags"
-          choices={tags}
-          onCreate={(filter?: string) => {
-            if (!filter) {
-              return;
-            }
-
-            tags.push(filter);
-
-            return {
-              id: filter,
-              name: filter,
-            };
-          }}
-        />
+        <TagInput source="tags" />
 
         <SelectInput
           source="category"
