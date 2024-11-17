@@ -7,6 +7,7 @@ import StreamPlansEdit from './resources/stream_plans/StreamPlansEdit';
 import StreamPlansList from './resources/stream_plans/StreamPlansList';
 
 import defaultData from '../defaultData.json';
+import i18nProvider from './i18nProvider';
 
 function App() {
   const [dataProvider, setDataProvider] = useState<DataProvider | null>(null);
@@ -29,7 +30,7 @@ function App() {
   if (!dataProvider) return <p>Loading...</p>;
 
   return (
-    <Admin dataProvider={dataProvider}>
+    <Admin dataProvider={dataProvider} i18nProvider={i18nProvider}>
       <Resource
         name="stream_plans"
         list={StreamPlansList}
