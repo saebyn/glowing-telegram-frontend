@@ -20,7 +20,7 @@
       "recurrence": {
         "type": "weekly",
         "days": [
-          "Sunday"
+          "sunday"
         ],
         "interval": 1
       },
