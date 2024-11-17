@@ -1,0 +1,42 @@
+{
+  "stream_plans": [
+    {
+      "id": 1,
+      "name": "Coding on Sundays",
+      "description": "Coding on Sundays is a weekly stream where we work on a project together.",
+      "prep_notes": "Things to think about before I go live.",
+      "start_date": "2023-01-01",
+      "end_date": "2024-12-31",
+      "skips": [
+        {
+          "date": "2024-12-24",
+          "reason": "Christmas Eve"
+        },
+        {
+          "date": "2024-12-31",
+          "reason": "New Year's Eve"
+        }
+      ],
+      "recurrence": {
+        "type": "weekly",
+        "days": [
+          "Sunday"
+        ],
+        "interval": 1
+      },
+      "timezone": "America/Los_Angeles",
+      "start_time": "08:30",
+      "end_time": "11:30",
+      "tags": [
+        "typescript",
+        "react",
+        "vscode",
+        "GithubCopilot",
+        "vite",
+        "WebDevelopment",
+        "KeyboardCam"
+      ],
+      "category": "Software and Game Development"
+    }
+  ]
+}
