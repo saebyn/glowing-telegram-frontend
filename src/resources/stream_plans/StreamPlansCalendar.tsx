@@ -1,28 +1,22 @@
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import {
-  Button,
   CreateButton,
   Datagrid,
-  Link,
   List,
+  ListButton,
   TextField,
   TopToolbar,
 } from 'react-admin';
 import RecurrenceDayField from '../../atoms/RecurrenceDayField';
 
-const ListActions = () => {
-  return (
-    <TopToolbar>
-      <CreateButton />
+const ListActions = () => (
+  <TopToolbar>
+    <CreateButton />
 
-      <Button component={Link} to="calendar" label="Calendar">
-        <CalendarMonthIcon />
-      </Button>
-    </TopToolbar>
-  );
-};
+    <ListButton />
+  </TopToolbar>
+);
 
-function StreamPlansList() {
+function StreamPlansCalendar() {
   return (
     <List actions={<ListActions />}>
       <Datagrid>
@@ -34,4 +28,4 @@ function StreamPlansList() {
   );
 }
 
-export default StreamPlansList;
+export default StreamPlansCalendar;

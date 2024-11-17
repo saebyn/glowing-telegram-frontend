@@ -1,10 +1,9 @@
 import localForageDataProvider from 'ra-data-local-forage';
 import { useEffect, useState } from 'react';
 import { Admin, type DataProvider, Resource } from 'react-admin';
+import { Route } from 'react-router-dom';
 
-import StreamPlansCreate from './resources/stream_plans/StreamPlansCreate';
-import StreamPlansEdit from './resources/stream_plans/StreamPlansEdit';
-import StreamPlansList from './resources/stream_plans/StreamPlansList';
+import streamPlans, { StreamPlansCalendar } from './resources/stream_plans';
 
 import defaultData from '../defaultData.json';
 import i18nProvider from './i18nProvider';
@@ -31,12 +30,9 @@ function App() {
 
   return (
     <Admin dataProvider={dataProvider} i18nProvider={i18nProvider}>
-      <Resource
-        name="stream_plans"
-        list={StreamPlansList}
-        create={StreamPlansCreate}
-        edit={StreamPlansEdit}
-      />
+      <Resource name="stream_plans" {...streamPlans}>
+        <Route path="calendar" element={<StreamPlansCalendar />} />
+      </Resource>
     </Admin>
   );
 }
