@@ -1,0 +1,24 @@
+name: "Unit test vitest project"
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          node-version: "22"
+
+      - run: npm ci
+      - run: npm run biome:ci
+      - run: npm test
