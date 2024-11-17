@@ -19,12 +19,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
-  "dependencies": {
-  },
   "devDependencies": {
-    "ra-data-local-forage": "^5",
-    "react": "^18",
-    "react-dom": "^18",
     "@biomejs/biome": "^1.9.4",
     "@storybook/addon-essentials": "^8",
     "@storybook/addon-interactions": "^8",
@@ -37,7 +32,11 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.2.1",
+    "ra-data-local-forage": "^5",
+    "ra-input-rich-text": "^5.3.4",
+    "react": "^18",
     "react-admin": "^5",
+    "react-dom": "^18",
     "storybook": "^8",
     "typescript": "^5",
     "vite": "^5.2.0",
