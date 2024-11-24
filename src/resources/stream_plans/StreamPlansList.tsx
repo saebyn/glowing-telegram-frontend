@@ -1,30 +1,11 @@
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import {
-  Button,
-  CreateButton,
-  Datagrid,
-  Link,
-  List,
-  TextField,
-  TopToolbar,
-} from 'react-admin';
+import { Datagrid, List, TextField } from 'react-admin';
 import RecurrenceDayField from '../../atoms/RecurrenceDayField';
-
-const ListActions = () => {
-  return (
-    <TopToolbar>
-      <CreateButton />
-
-      <Button component={Link} to="calendar" label="Calendar">
-        <CalendarMonthIcon />
-      </Button>
-    </TopToolbar>
-  );
-};
+import ListActions from './ListActions';
+import streamActionFilters from './filters';
 
 function StreamPlansList() {
   return (
-    <List actions={<ListActions />}>
+    <List actions={<ListActions view="list" />} filters={streamActionFilters}>
       <Datagrid>
         <TextField source="name" />
         <TextField source="start_time" />

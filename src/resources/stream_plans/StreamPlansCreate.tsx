@@ -80,6 +80,7 @@ function StreamPlansCreate() {
         {/* TODO need a timezone picker */}
         <SelectInput
           source="timezone"
+          validate={required()}
           choices={[{ id: 'America/Los_Angeles', name: 'Pacific Time' }]}
         />
 

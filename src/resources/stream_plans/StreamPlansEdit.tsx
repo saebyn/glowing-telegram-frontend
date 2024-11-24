@@ -1,16 +1,16 @@
 import { RichTextInput } from 'ra-input-rich-text';
 import {
   ArrayInput,
-  AutocompleteArrayInput,
   DateInput,
   Edit,
+  ListButton,
   NumberInput,
-  SelectArrayInput,
   SelectInput,
   SimpleForm,
   SimpleFormIterator,
   TextInput,
   TimeInput,
+  TopToolbar,
   required,
 } from 'react-admin';
 import RecurrenceDayInput from '../../atoms/RecurrenceDayInput';
@@ -25,9 +25,17 @@ const startDateValidation = [
   },
 ];
 
+function StreamPlansEditActions() {
+  return (
+    <TopToolbar>
+      <ListButton />
+    </TopToolbar>
+  );
+}
+
 function StreamPlansEdit() {
   return (
-    <Edit>
+    <Edit actions={<StreamPlansEditActions />}>
       <SimpleForm>
         <TextInput source="name" validate={required()} />
         <TextInput source="description" />
@@ -68,6 +76,7 @@ function StreamPlansEdit() {
         {/* TODO need a timezone picker */}
         <SelectInput
           source="timezone"
+          validate={required()}
           choices={[{ id: 'America/Los_Angeles', name: 'Pacific Time' }]}
         />
 

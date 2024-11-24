@@ -32,6 +32,11 @@ function App() {
     <Admin dataProvider={dataProvider} i18nProvider={i18nProvider}>
       <Resource name="stream_plans" {...streamPlans}>
         <Route path="calendar" element={<StreamPlansCalendar />} />
+        <Route path="calendar/:targetDate" element={<StreamPlansCalendar />} />
+        <Route
+          path="calendar/:targetDate/:view"
+          element={<StreamPlansCalendar />}
+        />
       </Resource>
     </Admin>
   );
