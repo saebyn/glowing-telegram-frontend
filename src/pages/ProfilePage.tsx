@@ -10,6 +10,8 @@ import {
 import { useEffect, useState } from 'react';
 import { useGetIdentity, useNotify, useTranslate } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
+
+import { createPasskey } from '../auth';
 import gravatar from '../gravitar';
 
 const ProfilePage = () => {
@@ -51,6 +53,20 @@ const ProfilePage = () => {
     }
   };
 
+  const handleAddPasskey = async () => {
+    if (!navigator.credentials) {
+      notify('WebAuthn not supported', { type: 'warning' });
+      return;
+    }
+
+    if (!identity) {
+      notify('Identity not found', { type: 'error' });
+      return;
+    }
+
+    await createPasskey(identity.accessToken);
+  };
+
   return (
     <Box
       display="flex"
@@ -85,6 +101,19 @@ const ProfilePage = () => {
             </Button>
           </form>
         </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent>TODO: List of passkeys</CardContent>
+        <CardActions>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddPasskey}
+          >
+            {translate('gt.add_passkey', { _: 'Add passkey' })}
+          </Button>
+        </CardActions>
       </Card>
     </Box>
   );
