@@ -1,3 +1,8 @@
+import {
+  CognitoIdentityProviderClient,
+  CompleteWebAuthnRegistrationCommand,
+  StartWebAuthnRegistrationCommand,
+} from '@aws-sdk/client-cognito-identity-provider';
 import { UserManager } from 'oidc-client-ts';
 
 const {
@@ -8,6 +13,8 @@ const {
   VITE_REDIRECT_URI: redirectUri,
   VITE_LOGOUT_URI: logoutUri,
 } = import.meta.env;
+
+const client = new CognitoIdentityProviderClient({ region });
 
 export const userManager = new UserManager({
   authority: `https://cognito-idp.${region}.amazonaws.com/${userPoolId}`,
