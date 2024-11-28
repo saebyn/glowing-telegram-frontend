@@ -38,5 +38,15 @@
       ],
       "category": "Software and Game Development"
     }
+  ],
+  "profile": [
+    {
+      "id": "my-profile",
+      "timezone": "America/Los_Angeles",
+    "twitch": {
+    },
+    "vacationDays": ["2025-01-01", "2024-12-25"],
+    "standardTags": ["LurkersWelcome", "BackseatingAllowed"]
+    }
   ]
 }
