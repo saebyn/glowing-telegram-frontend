@@ -15,6 +15,8 @@ export const userManager = new UserManager({
   redirect_uri: redirectUri,
   response_type: 'code',
   scope: 'openid profile email aws.cognito.signin.user.admin',
+
+  redirectMethod: 'replace',
 });
 
 export async function signoutRedirect() {

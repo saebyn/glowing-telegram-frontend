@@ -1,7 +1,6 @@
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import { useEffect } from 'react';
-import { useCheckAuth, useLogin, useNotify, useTranslate } from 'react-admin';
-import { useNavigate } from 'react-router-dom';
+import { useLogin, useNotify, useTranslate } from 'react-admin';
 
 const cardStyle = {
   maxWidth: '50em',
@@ -14,19 +13,17 @@ const MyLoginPage = () => {
   const login = useLogin();
   const notify = useNotify();
   const translate = useTranslate();
-  const checkAuth = useCheckAuth();
-  const navigate = useNavigate();
+
+  const callback = () => {
+    login({}).catch(() => notify('ra.auth.sign_in_error'));
+  };
 
   // check if the user is already authenticated
   useEffect(() => {
-    checkAuth({}, false)
-      // if the user is authenticated, redirect to the home page
-      .then(() => navigate('/'))
-      // if the user is not authenticated, do nothing
-      .catch(() => {
-        login({}).catch(() => notify('ra.auth.sign_in_error'));
-      });
-  }, [checkAuth, navigate, login, notify]);
+    const timeout = setTimeout(callback, 1000);
+
+    return () => clearTimeout(timeout);
+  });
 
   return (
     <Box
