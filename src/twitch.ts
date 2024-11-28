@@ -18,6 +18,19 @@ export function generateAuthorizeUri(
   return `https://id.twitch.tv/oauth2/authorize?${params.toString()}`;
 }
 
+export async function checkTokenLiveness(
+  accessToken: string,
+  options: { signal?: AbortSignal } = {},
+): Promise<boolean> {
+  const response = await fetch('https://id.twitch.tv/oauth2/validate', {
+    headers: {
+      Authorization: `OAuth ${accessToken}`,
+    },
+    signal: options.signal,
+  });
+  return response.ok;
+}
+
 interface AuthorizeSuccess {
   status: 'success';
   accessToken: string;
