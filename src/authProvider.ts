@@ -10,12 +10,17 @@ const authProvider: AuthProvider = {
     });
   },
   async logout() {
-    return signoutRedirect();
+    await userManager.removeUser();
   },
   async checkError(responseError) {
-    console.log('checkError', responseError);
+    if (responseError?.message === 'Network Error') {
+      return Promise.resolve();
+    }
 
-    // TODO
+    if (responseError?.status === 401) {
+      await signoutRedirect();
+      return Promise.reject();
+    }
 
     return Promise.resolve();
   },
