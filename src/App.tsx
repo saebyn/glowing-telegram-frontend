@@ -26,7 +26,6 @@ function App() {
     async function startDataProvider() {
       const localForageProvider = await localForageDataProvider({
         defaultData,
-        loggingEnabled: true,
       });
       setDataProvider(localForageProvider);
     }
