@@ -5,86 +5,88 @@ import {
   Card,
   CardActions,
   CardContent,
-  TextField,
+  CardHeader,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useGetIdentity, useNotify, useTranslate } from 'react-admin';
-import { useNavigate } from 'react-router-dom';
+import {
+  LoadingIndicator,
+  useGetIdentity,
+  useGetOne,
+  useTranslate,
+} from 'react-admin';
+import TagInputRaw from '../atoms/TagInputRaw';
+import TimezoneSelect from '../atoms/TimezoneSelect';
+import TwitchOAuthButton from '../atoms/TwitchOAuthButton';
 import gravatar from '../gravitar';
 
 const ProfilePage = () => {
-  const [profile, setProfile] = useState<{ email: string; fullName: string }>({
-    email: '',
-    fullName: '',
-  });
-  const [avatarUrl, setAvatarUrl] = useState('');
-  const notify = useNotify();
   const translate = useTranslate();
   const { identity } = useGetIdentity();
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!identity) {
-      navigate('/login');
-      return;
-    }
+  if (!identity) {
+    return null;
+  }
 
-    setProfile({ email: identity.email, fullName: identity.fullName || '' });
-    setAvatarUrl(gravatar(identity.email, identity.fullName));
-  }, [identity, navigate]);
+  const {
+    data: profile,
+    isPending,
+    error,
+  } = useGetOne('profile', { id: 'my-profile' });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setProfile((prevProfile) => ({ ...prevProfile, [name]: value }));
-    if (name === 'email' || name === 'fullName') {
-      setAvatarUrl(gravatar(profile.email, profile.fullName));
-    }
-  };
+  if (isPending) {
+    return <LoadingIndicator />;
+  }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      // TODO update the user profile
-      notify('Profile updated successfully', { type: 'success' });
-    } catch (error) {
-      notify('Error updating profile', { type: 'warning' });
-    }
-  };
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
+
+  const avatarUrl = gravatar(identity.email, identity.fullName);
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height="100vh"
-    >
+    <Box>
       <Card>
+        <CardHeader
+          title={identity.fullName}
+          avatar={<Avatar src={avatarUrl} />}
+          subheader={identity.email}
+        />
+      </Card>
+
+      <Card>
+        <CardHeader
+          title={translate('gt.profile.credentials', { _: 'Credentials' })}
+        />
+        <CardActions>
+          <TwitchOAuthButton tokens={profile.twitch} />
+        </CardActions>
+      </Card>
+
+      <Card>
+        <CardHeader title={translate('gt.profile.title', { _: 'Profile' })} />
         <CardContent>
-          <Avatar src={avatarUrl} />
-          <form onSubmit={handleSubmit}>
-            <TextField
-              label={translate('gt.email', { _: 'Email' })}
-              name="email"
-              type="email"
-              value={profile.email}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label={translate('gt.name', { _: 'Name' })}
-              name="fullName"
-              type="text"
-              value={profile.fullName}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-            />
-            <Button type="submit" variant="contained" color="primary" fullWidth>
-              {translate('ra.action.save')}
-            </Button>
-          </form>
+          <TimezoneSelect
+            value={profile.timezone}
+            onChange={(timezone) => {
+              console.log('timezone changed', timezone);
+            }}
+            label={translate('gt.profile.timezone', { _: 'Timezone' })}
+          />
+
+          <TagInputRaw
+            label={translate('gt.profile.standardTags', {
+              _: 'Standard Tags',
+            })}
+            value={profile.standardTags}
+            onChange={(tags) => {
+              console.log('tags changed', tags);
+            }}
+          />
         </CardContent>
+        <CardActions>
+          <Button color="primary">
+            {translate('gt.profile.save', { _: 'Save' })}
+          </Button>
+        </CardActions>
       </Card>
     </Box>
   );
