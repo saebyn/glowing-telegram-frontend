@@ -5,11 +5,11 @@ import {
   Button,
   CreateButton,
   FilterButton,
-  Link,
   ListButton,
   TopToolbar,
   useListContext,
 } from 'react-admin';
+import { Link } from 'react-router-dom';
 
 interface ListActionsProps {
   view: 'list' | 'calendar';
@@ -47,20 +47,20 @@ const ListActions = (props: ListActionsProps) => {
           <ListButton />
 
           {props.weekViewUrl ? (
-            <Button component={Link} to={props.weekViewUrl} label="Week">
+            <Button to={props.weekViewUrl} label="Week">
               <CalendarMonthIcon />
             </Button>
           ) : null}
           {props.monthViewUrl ? (
-            <Button component={Link} to={props.monthViewUrl} label="Month">
+            <Button to={props.monthViewUrl} label="Month">
               <CalendarMonthIcon />
             </Button>
           ) : null}
 
-          <Button component={Link} to={props.prevDateUrl} label="Previous">
+          <Button to={props.prevDateUrl} label="Previous">
             <ArrowLeftIcon />
           </Button>
-          <Button component={Link} to={props.nextDateUrl} label="Next">
+          <Button to={props.nextDateUrl} label="Next">
             <ArrowRightIcon />
           </Button>
         </>
