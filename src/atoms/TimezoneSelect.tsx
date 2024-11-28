@@ -25,7 +25,7 @@ function TimezoneSelect({ value, onChange, label }: TimezoneSelectProps) {
       getOptionLabel={(option) =>
         `${option.currentTimeFormat} (${option.abbreviation})`
       }
-      defaultValue={defaultTimezone}
+      value={defaultTimezone}
       onChange={(_, newValue) => {
         if (newValue) {
           onChange(newValue.name);
