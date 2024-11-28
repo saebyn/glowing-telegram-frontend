@@ -20,6 +20,7 @@
     "build-storybook": "storybook build"
   },
   "devDependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.699.0",
     "@biomejs/biome": "^1.9.4",
     "@storybook/addon-essentials": "^8",
     "@storybook/addon-interactions": "^8",
@@ -30,10 +31,13 @@
     "@storybook/react-vite": "^8",
     "@storybook/test": "^8",
     "@types/luxon": "^3.4.2",
+    "@types/md5": "^2.3.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.2.1",
     "luxon": "^3.5.0",
+    "md5": "^2.3.0",
+    "oidc-client-ts": "^3.1.0",
     "ra-data-local-forage": "^5",
     "ra-input-rich-text": "^5.4.0",
     "react": "^18",
