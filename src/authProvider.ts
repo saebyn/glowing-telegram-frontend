@@ -5,12 +5,14 @@ import gravatar from './gravitar';
 
 const authProvider: AuthProvider = {
   async login({ returnTo }) {
+    await userManager.removeUser();
+
     await userManager.signinRedirect({
       redirect_uri: returnTo,
     });
   },
   async logout() {
-    await userManager.removeUser();
+    return signoutRedirect();
   },
   async checkError(responseError) {
     if (responseError?.message === 'Network Error') {
@@ -18,7 +20,6 @@ const authProvider: AuthProvider = {
     }
 
     if (responseError?.status === 401) {
-      await signoutRedirect();
       return Promise.reject();
     }
 
