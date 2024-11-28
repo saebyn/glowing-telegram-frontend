@@ -206,7 +206,6 @@ function MonthCalendarView({
             <Paper
               elevation={3}
               square={true}
-              variant="outlined"
               sx={
                 day.inMonth
                   ? calendarGridDayStyle
@@ -219,11 +218,11 @@ function MonthCalendarView({
 
               {/* Display events that fall on the current day */}
               {day.events.map((event) => (
-                <Typography key={event.id}>
+                <Box key={event.id}>
                   <Typography variant="caption">{event.time}</Typography> |{' '}
                   <Typography variant="caption">{event.title}</Typography>
                   <Typography variant="body2">{event.notes}</Typography>
-                </Typography>
+                </Box>
               ))}
             </Paper>
           </Grid>
