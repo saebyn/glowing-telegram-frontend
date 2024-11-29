@@ -14,7 +14,6 @@ import streamPlans, { StreamPlansCalendar } from './resources/stream_plans';
 import defaultData from '../defaultData.json';
 import authProvider from './authProvider';
 import i18nProvider from './i18nProvider';
-import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 import TwitchCallbackPage from './pages/TwitchCallbackPage';
 import Layout from './ra/Layout';
@@ -47,7 +46,6 @@ function App() {
           i18nProvider={i18nProvider}
           authProvider={authProvider}
           layout={Layout}
-          loginPage={LoginPage}
         >
           <Resource name="stream_plans" {...streamPlans}>
             <Route path="calendar" element={<StreamPlansCalendar />} />
@@ -71,7 +69,9 @@ function App() {
                 </Authenticated>
               }
             />
+          </CustomRoutes>
 
+          <CustomRoutes noLayout>
             <Route
               path="/twitch-callback"
               element={

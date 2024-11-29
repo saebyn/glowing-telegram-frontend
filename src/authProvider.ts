@@ -4,17 +4,18 @@ import { signoutRedirect, userManager } from './auth';
 import gravatar from './gravitar';
 
 const authProvider: AuthProvider = {
-  async login({ returnTo }) {
-    await userManager.removeUser();
-
-    await userManager.signinRedirect({
-      redirect_uri: returnTo,
-    });
-  },
+  async login() {},
   async logout() {
+    console.log('logout');
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 2000);
+    });
+
     return signoutRedirect();
   },
   async checkError(responseError) {
+    console.log('checkError', responseError);
     if (responseError?.message === 'Network Error') {
       return Promise.resolve();
     }
@@ -26,23 +27,19 @@ const authProvider: AuthProvider = {
     return Promise.resolve();
   },
   async checkAuth() {
-    return userManager.getUser().then((user) => {
-      if (!user) {
-        throw new Error();
-      }
-    });
-  },
-  async getIdentity() {
+    console.log('checkAuth');
     const user = await userManager.getUser();
 
     if (!user) {
-      return {
-        id: '',
-        fullName: '',
-        avatar: '',
-        email: '',
-        accessToken: null,
-      };
+      return userManager.signinRedirect();
+    }
+  },
+  async getIdentity() {
+    console.log('getIdentity');
+    const user = await userManager.getUser();
+
+    if (!user) {
+      throw new Error('User not found');
     }
 
     return {
@@ -54,6 +51,7 @@ const authProvider: AuthProvider = {
     };
   },
   async handleCallback() {
+    console.log('handleCallback');
     await userManager.signinRedirectCallback();
   },
 };
