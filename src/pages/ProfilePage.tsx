@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { LoadingIndicator, useTranslate, useUpdate } from 'react-admin';
-import TagInputRaw from '../atoms/TagInputRaw';
+import TagEditor from '../atoms/TagEditor';
 import TimezoneSelect from '../atoms/TimezoneSelect';
 import TwitchOAuthButton from '../atoms/TwitchOAuthButton';
 import useProfile, { type Profile } from '../useProfile';
@@ -86,7 +86,7 @@ const ProfilePage = () => {
               label={translate('gt.profile.timezone', { _: 'Timezone' })}
             />
 
-            <TagInputRaw
+            <TagEditor
               label={translate('gt.profile.standardTags', {
                 _: 'Standard Tags',
               })}

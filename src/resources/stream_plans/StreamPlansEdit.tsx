@@ -14,7 +14,7 @@ import {
   required,
 } from 'react-admin';
 import RecurrenceDayInput from '../../atoms/RecurrenceDayInput';
-import TagInput from '../../atoms/TagInput';
+import TagInput from '../../atoms/TagEditorInput';
 
 const startDateValidation = [
   required(),

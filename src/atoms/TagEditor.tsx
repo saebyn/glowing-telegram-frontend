@@ -8,13 +8,13 @@ import Typography from '@mui/material/Typography';
 import React from 'react';
 import { useTranslate } from 'react-admin';
 
-interface TagInputRawProps {
+interface TagEditorRawProps {
   value: string[];
   onChange: (tags: string[]) => void;
   label?: string;
 }
 
-function TagInputRaw({ value, onChange, label }: TagInputRawProps) {
+function TagEditor({ value, onChange, label }: TagEditorRawProps) {
   const translate = useTranslate();
   const [newTag, setNewTag] = React.useState('');
 
@@ -56,13 +56,6 @@ function TagInputRaw({ value, onChange, label }: TagInputRawProps) {
                 event.preventDefault();
                 handleAdd();
               }
-
-              if (event.key === 'Backspace' && newTag === '') {
-                event.preventDefault();
-                if (tags.length > 0) {
-                  handleDelete(tags[tags.length - 1]);
-                }
-              }
             },
           }}
         />
@@ -85,4 +78,4 @@ function TagInputRaw({ value, onChange, label }: TagInputRawProps) {
   );
 }
 
-export default TagInputRaw;
+export default TagEditor;
