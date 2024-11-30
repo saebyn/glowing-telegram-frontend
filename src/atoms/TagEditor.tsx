@@ -46,6 +46,7 @@ function TagEditor({ value, onChange, label }: TagEditorRawProps) {
           value={newTag}
           onChange={(event) => setNewTag(event.target.value)}
           inputProps={{
+            maxLength: 25,
             onKeyDown: (event) => {
               if (
                 event.key === 'Enter' ||

@@ -1,7 +1,8 @@
+import { getCsrfToken } from '@/csrf';
+import { generateAuthorizeUri } from '@/twitch';
+import CheckIcon from '@mui/icons-material/Check';
 import Button from '@mui/material/Button';
 import { useTranslate } from 'react-admin';
-import { getCsrfToken } from '../csrf';
-import { generateAuthorizeUri } from '../twitch';
 
 interface TwitchOAuthButtonProps {
   tokens: {
@@ -27,8 +28,17 @@ function TwitchOAuthButton({ tokens }: TwitchOAuthButtonProps) {
 
   // if the user is connected, show the reauthorize button
   return (
-    <Button variant="contained" color="secondary" component="a" href={url}>
-      {translate('gt.profile.reauthorizeTwitch', { _: 'Reauthorize Twitch' })}
+    <Button
+      variant="contained"
+      color="success"
+      component="a"
+      href={url}
+      title={translate('gt.profile.reauthorizeTwitch', {
+        _: 'Click to Re-authorize Twitch',
+      })}
+    >
+      <CheckIcon />{' '}
+      {translate('gt.profile.connectedToTwitch', { _: 'Connected to Twitch' })}
     </Button>
   );
 }

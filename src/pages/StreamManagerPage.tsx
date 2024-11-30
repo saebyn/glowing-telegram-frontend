@@ -1,7 +1,19 @@
+import StreamInfoEditor from '@/molecules/StreamInfoEditor';
+import UpcomingStream from '@/molecules/UpcomingStream';
+import findNextStream from '@/scheduling/findNextStream';
+import useProfile from '@/useProfile';
+import Alert from '@mui/material/Alert';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import { DateTime } from 'luxon';
-import { useGetList } from 'react-admin';
-import findNextStream from '../scheduling/findNextStream';
-import useProfile from '../useProfile';
+import { LoadingIndicator, useGetList } from 'react-admin';
+
+const streamManagerStyles = {
+  root: {
+    padding: 4,
+  },
+};
 
 function StreamManagerPage() {
   // get the stream plans records
@@ -20,38 +32,42 @@ function StreamManagerPage() {
   } = useProfile();
 
   if (streamPlanIsLoading || profileIsLoading) {
-    return <p>Loading...</p>;
+    return <LoadingIndicator />;
   }
 
   if (streamPlanIsError) {
-    return <p>Error: {streamPlanError.message}</p>;
+    return <Alert severity="error">{streamPlanError.message}</Alert>;
   }
 
   if (profileError) {
-    return <p>Error: {profileError.message}</p>;
+    return <Alert severity="error">{profileError.message}</Alert>;
   }
 
   if (!streamPlans || !profile) {
-    return <p>Missing data</p>;
+    return <Alert severity="warning">Missing data</Alert>;
   }
 
   const stream = findNextStream(DateTime.now(), 7, streamPlans);
 
   if (!stream) {
-    return <p>No upcoming stream in the next 7 days</p>;
+    return <Alert severity="info">No upcoming stream in the next 7 days</Alert>;
   }
 
   return (
-    <div>
-      <h1>Stream Manager</h1>
+    <Paper sx={streamManagerStyles.root}>
+      <Typography variant="h5" gutterBottom>
+        Stream Manager
+      </Typography>
+      <Grid container>
+        <Grid item xs={2} border={1} spacing={2} padding={2}>
+          <UpcomingStream stream={stream} profile={profile} />
+        </Grid>
 
-      <p>Upcoming stream</p>
-
-      <p>{stream.name}</p>
-      <p>{stream.date}</p>
-      <p>{stream.time}</p>
-      <p>{stream.category}</p>
-    </div>
+        <Grid item xs={3} border={1} spacing={2} padding={2}>
+          <StreamInfoEditor stream={stream} profile={profile} />
+        </Grid>
+      </Grid>
+    </Paper>
   );
 }
 

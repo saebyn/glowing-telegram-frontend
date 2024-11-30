@@ -46,7 +46,7 @@ export interface StreamPlan {
   category: string;
 }
 
-export interface Event extends StreamPlan {
+export interface StreamEvent extends StreamPlan {
   date: string;
   time: string;
 }

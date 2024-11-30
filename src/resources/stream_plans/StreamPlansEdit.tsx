@@ -1,3 +1,5 @@
+import RecurrenceDayInput from '@/atoms/RecurrenceDayInput';
+import TagInput from '@/atoms/TagEditorInput';
 import { RichTextInput } from 'ra-input-rich-text';
 import {
   ArrayInput,
@@ -13,8 +15,6 @@ import {
   TopToolbar,
   required,
 } from 'react-admin';
-import RecurrenceDayInput from '../../atoms/RecurrenceDayInput';
-import TagInput from '../../atoms/TagEditorInput';
 
 const startDateValidation = [
   required(),
