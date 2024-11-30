@@ -220,8 +220,8 @@ function MonthCalendarView({
               {day.events.map((event) => (
                 <Box key={event.id}>
                   <Typography variant="caption">{event.time}</Typography> |{' '}
-                  <Typography variant="caption">{event.title}</Typography>
-                  <Typography variant="body2">{event.notes}</Typography>
+                  <Typography variant="caption">{event.name}</Typography>
+                  <Typography variant="body2">{event.prep_notes}</Typography>
                 </Box>
               ))}
             </Paper>
