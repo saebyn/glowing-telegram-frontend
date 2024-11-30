@@ -9,7 +9,7 @@ import type { ReactNode } from 'react';
 import { List, Loading, useI18nProvider, useListContext } from 'react-admin';
 import { useParams } from 'react-router-dom';
 
-import generateEventsForDay from '../../generateEventsForDay';
+import generateEventsForDay from '../../scheduling/generateEventsForDay';
 import ListActions from './ListActions';
 import streamActionFilters from './filters';
 

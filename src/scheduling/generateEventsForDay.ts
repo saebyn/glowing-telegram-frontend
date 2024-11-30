@@ -1,60 +1,5 @@
 import { DateTime } from 'luxon';
-
-export interface Event {
-  id: string;
-  title: string;
-  date: string;
-  time: string;
-  notes: string;
-}
-
-export interface Skip {
-  date: string;
-  reason: string;
-}
-
-export type RecurrenceType = 'weekly';
-export type RecurrenceDay =
-  | 'sunday'
-  | 'monday'
-  | 'tuesday'
-  | 'wednesday'
-  | 'thursday'
-  | 'friday'
-  | 'saturday';
-
-const RECURRENCE_DAYS: Record<number, RecurrenceDay> = {
-  7: 'sunday',
-  1: 'monday',
-  2: 'tuesday',
-  3: 'wednesday',
-  4: 'thursday',
-  5: 'friday',
-  6: 'saturday',
-};
-
-export interface Recurrence {
-  type: RecurrenceType;
-  days: RecurrenceDay[];
-  // interval should be a positive integer
-  interval: number;
-}
-
-export interface StreamPlan {
-  id: number;
-  name: string;
-  description: string;
-  prep_notes: string;
-  start_date: string;
-  end_date: string;
-  skips?: Skip[];
-  recurrence: Recurrence;
-  timezone: string;
-  start_time: string;
-  end_time: string;
-  tags: string[];
-  category: string;
-}
+import { type Event, RECURRENCE_DAYS, type StreamPlan } from './types';
 
 /**
  * Generate events for a given day based on the stream plans data, including
@@ -171,11 +116,9 @@ export default function generateEventsForDay(
         }
 
         return {
-          id: plan.id.toString(),
-          title: plan.name,
+          ...plan,
           date: eventDate,
           time: eventTime,
-          notes: plan.prep_notes,
         };
       })
   );

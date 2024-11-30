@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 import { describe, expect, it } from 'vitest';
-import generateEventsForDay, { type StreamPlan } from './generateEventsForDay';
+import generateEventsForDay from './generateEventsForDay';
+import { type StreamPlan } from './types';
 
 describe('generateEventsForDay', () => {
   it('should return an event for yesterday when the plan is in an earlier timezone', () => {
