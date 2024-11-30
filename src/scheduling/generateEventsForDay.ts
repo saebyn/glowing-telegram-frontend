@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { type Event, RECURRENCE_DAYS, type StreamPlan } from './types';
+import { RECURRENCE_DAYS, type StreamEvent, type StreamPlan } from './types';
 
 /**
  * Generate events for a given day based on the stream plans data, including
@@ -12,7 +12,7 @@ import { type Event, RECURRENCE_DAYS, type StreamPlan } from './types';
 export default function generateEventsForDay(
   targetDate: DateTime,
   plans: StreamPlan[],
-): Event[] {
+): StreamEvent[] {
   return (
     plans
       // we are assuming that the recurrence cannot be more than once per day

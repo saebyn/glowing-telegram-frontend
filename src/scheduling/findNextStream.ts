@@ -1,5 +1,5 @@
 import type { DateTime } from 'luxon';
-import type { Event, StreamPlan } from './types';
+import type { StreamEvent, StreamPlan } from './types';
 
 import generateEventsForDay from './generateEventsForDay';
 
@@ -16,7 +16,7 @@ function findNextStream(
   startDateTime: DateTime,
   daysToSearch: number,
   plans: StreamPlan[],
-): Event | null {
+): StreamEvent | null {
   // first check for the current day from the start time
   const currentDayEvents = generateEventsForDay(startDateTime, plans);
 

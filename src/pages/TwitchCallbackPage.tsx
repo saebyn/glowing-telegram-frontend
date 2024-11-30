@@ -1,7 +1,7 @@
+import { getCsrfToken } from '@/csrf';
+import { parseReturnedData } from '@/twitch';
 import { useEffect } from 'react';
 import { LoadingIndicator, useUpdate } from 'react-admin';
-import { getCsrfToken } from '../csrf';
-import { parseReturnedData } from '../twitch';
 
 function TwitchCallbackPage() {
   const [update, { isPending, isIdle, isError }] = useUpdate();

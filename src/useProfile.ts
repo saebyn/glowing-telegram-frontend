@@ -8,7 +8,6 @@ export interface Profile {
   fullName: string;
   timezone: string;
   standardTags: string[];
-  tags: string[];
   twitch: {
     accessToken: string;
   };

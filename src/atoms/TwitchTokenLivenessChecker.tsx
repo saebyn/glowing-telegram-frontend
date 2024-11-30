@@ -1,7 +1,7 @@
+import { checkTokenLiveness } from '@/twitch';
+import useProfile from '@/useProfile';
 import { useEffect } from 'react';
 import { useUpdate } from 'react-admin';
-import { checkTokenLiveness } from '../twitch';
-import useProfile from '../useProfile';
 
 function TwitchTokenLivenessChecker() {
   const { profile } = useProfile();
