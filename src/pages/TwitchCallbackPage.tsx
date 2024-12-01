@@ -17,7 +17,6 @@ function TwitchCallbackPage() {
     if (accessToken) {
       validateAccessToken(accessToken, { signal: abortController.signal })
         .then((info) => {
-          console.log(info);
           update('profile', {
             id: 'my-profile',
             data: { twitch: { accessToken, broadcasterId: info.user_id } },
@@ -28,6 +27,9 @@ function TwitchCallbackPage() {
             id: 'my-profile',
             data: { twitch: { accessToken: null } },
           });
+        })
+        .then(() => {
+          window.location.href = '/profile';
         });
     }
 
