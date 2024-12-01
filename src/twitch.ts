@@ -88,3 +88,93 @@ export function parseReturnedData(
     accessToken: params.get('access_token') || '',
   };
 }
+
+interface GetChannelInformationResponse {
+  broadcaster_id: string;
+  broadcaster_login: string;
+  broadcaster_name: string;
+  broadcaster_language: string;
+  game_id: string;
+  game_name: string;
+  title: string;
+  tags: string[];
+  content_classification_labels: {
+    id: string;
+    is_enabled: boolean;
+  }[];
+  is_branded_content: boolean;
+}
+
+export interface ModifyChannelInformationPayload {
+  game_id?: string;
+  broadcaster_language?: string;
+  title?: string;
+  tags?: string[];
+  content_classification_labels?: {
+    id: string;
+    is_enabled: boolean;
+  }[];
+  is_branded_content?: boolean;
+}
+
+export async function getChannelInformation(
+  broadcasterId: string,
+  accessToken: string,
+  options: { signal?: AbortSignal } = {},
+): Promise<GetChannelInformationResponse> {
+  const response = await fetch(
+    `https://api.twitch.tv/helix/channels?broadcaster_id=${broadcasterId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Client-Id': clientId,
+      },
+      signal: options.signal,
+    },
+  );
+
+  if (response.ok) {
+    const json = await response.json();
+
+    if (json.data.length === 0) {
+      throw new Error('Channel not found');
+    }
+
+    return {
+      ...json.data[0],
+
+      content_classification_labels:
+        json.data[0].content_classification_labels.map((label: string) => ({
+          id: label,
+          is_enabled: true,
+        })),
+    };
+  }
+
+  throw new Error('Failed to get channel information');
+}
+
+export async function modifyChannelInformation(
+  broadcasterId: string,
+  accessToken: string,
+  payload: ModifyChannelInformationPayload,
+  options: { signal?: AbortSignal } = {},
+): Promise<void> {
+  const response = await fetch(
+    `https://api.twitch.tv/helix/channels?broadcaster_id=${broadcasterId}`,
+    {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Client-Id': clientId,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+      signal: options.signal,
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to modify channel information');
+  }
+}
