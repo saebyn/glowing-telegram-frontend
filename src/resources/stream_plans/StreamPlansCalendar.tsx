@@ -220,7 +220,7 @@ function MonthCalendarView({
               {day.events.map((event) => (
                 <Box key={event.id}>
                   <Typography variant="caption">
-                    {event.date.toLocaleString(DateTime.TIME_SIMPLE)}
+                    {event.startDatetime.toLocaleString(DateTime.TIME_SIMPLE)}
                   </Typography>{' '}
                   | <Typography variant="caption">{event.name}</Typography>
                   <Typography variant="body2">{event.prep_notes}</Typography>
