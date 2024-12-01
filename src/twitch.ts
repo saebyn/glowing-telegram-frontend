@@ -122,6 +122,14 @@ export async function getChannelInformation(
   accessToken: string,
   options: { signal?: AbortSignal } = {},
 ): Promise<GetChannelInformationResponse> {
+  if (!accessToken) {
+    throw new Error('Access token is missing');
+  }
+
+  if (!broadcasterId) {
+    throw new Error('Broadcaster ID is missing');
+  }
+
   const response = await fetch(
     `https://api.twitch.tv/helix/channels?broadcaster_id=${broadcasterId}`,
     {
