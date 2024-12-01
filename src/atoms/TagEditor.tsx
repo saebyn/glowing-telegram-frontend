@@ -2,7 +2,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
-import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import React from 'react';
@@ -64,7 +63,7 @@ function TagEditor({ value, onChange, label }: TagEditorRawProps) {
           {translate('gt.profile.tags.add', { _: 'Add' })}
         </Button>
       </Box>
-      <Stack direction="row" spacing={1}>
+      <Box>
         {tags.map((tag) => (
           <Chip
             key={tag}
@@ -74,7 +73,7 @@ function TagEditor({ value, onChange, label }: TagEditorRawProps) {
             variant="outlined"
           />
         ))}
-      </Stack>
+      </Box>
     </Box>
   );
 }
