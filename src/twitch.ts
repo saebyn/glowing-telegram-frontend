@@ -18,17 +18,28 @@ export function generateAuthorizeUri(
   return `https://id.twitch.tv/oauth2/authorize?${params.toString()}`;
 }
 
-export async function checkTokenLiveness(
+interface ValidateAccessTokenResponse {
+  client_id: string;
+  login: string;
+  scopes: string[];
+  user_id: string;
+}
+
+export async function validateAccessToken(
   accessToken: string,
   options: { signal?: AbortSignal } = {},
-): Promise<boolean> {
+): Promise<ValidateAccessTokenResponse> {
   const response = await fetch('https://id.twitch.tv/oauth2/validate', {
     headers: {
       Authorization: `OAuth ${accessToken}`,
     },
     signal: options.signal,
   });
-  return response.ok;
+  if (response.ok) {
+    return response.json();
+  }
+
+  throw new Error('Invalid access token');
 }
 
 interface AuthorizeSuccess {
