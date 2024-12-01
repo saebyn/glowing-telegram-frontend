@@ -10,6 +10,7 @@ export interface Profile {
   standardTags: string[];
   twitch: {
     accessToken: string;
+    broadcasterId: string;
   };
 }
 
