@@ -18,7 +18,9 @@ function findNextStream(
   plans: StreamPlan[],
 ): StreamEvent | null {
   // first check for the current day from the start time
-  const currentDayEvents = generateEventsForDay(startDateTime, plans);
+  const currentDayEvents = generateEventsForDay(startDateTime, plans).filter(
+    (event) => event.endDatetime > startDateTime,
+  );
 
   if (currentDayEvents.length > 0) {
     return currentDayEvents[0];
