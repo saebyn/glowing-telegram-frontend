@@ -108,17 +108,9 @@ export default function generateEventsForDay(
         // convert the time to the target timezone
         const finalDate = datetimeInPlanTimezone.setZone(targetTimezone);
 
-        const eventDate = finalDate.toISODate();
-        const eventTime = finalDate.toFormat('HH:mm');
-
-        if (eventDate === null || eventTime === null) {
-          throw new Error('Invalid date or time');
-        }
-
         return {
           ...plan,
-          date: eventDate,
-          time: eventTime,
+          date: finalDate,
         };
       })
   );
