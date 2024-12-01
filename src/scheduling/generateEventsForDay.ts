@@ -1,60 +1,5 @@
 import { DateTime } from 'luxon';
-
-export interface Event {
-  id: string;
-  title: string;
-  date: string;
-  time: string;
-  notes: string;
-}
-
-export interface Skip {
-  date: string;
-  reason: string;
-}
-
-export type RecurrenceType = 'weekly';
-export type RecurrenceDay =
-  | 'sunday'
-  | 'monday'
-  | 'tuesday'
-  | 'wednesday'
-  | 'thursday'
-  | 'friday'
-  | 'saturday';
-
-const RECURRENCE_DAYS: Record<number, RecurrenceDay> = {
-  7: 'sunday',
-  1: 'monday',
-  2: 'tuesday',
-  3: 'wednesday',
-  4: 'thursday',
-  5: 'friday',
-  6: 'saturday',
-};
-
-export interface Recurrence {
-  type: RecurrenceType;
-  days: RecurrenceDay[];
-  // interval should be a positive integer
-  interval: number;
-}
-
-export interface StreamPlan {
-  id: number;
-  name: string;
-  description: string;
-  prep_notes: string;
-  start_date: string;
-  end_date: string;
-  skips?: Skip[];
-  recurrence: Recurrence;
-  timezone: string;
-  start_time: string;
-  end_time: string;
-  tags: string[];
-  category: string;
-}
+import { RECURRENCE_DAYS, type StreamEvent, type StreamPlan } from './types';
 
 /**
  * Generate events for a given day based on the stream plans data, including
@@ -67,7 +12,7 @@ export interface StreamPlan {
 export default function generateEventsForDay(
   targetDate: DateTime,
   plans: StreamPlan[],
-): Event[] {
+): StreamEvent[] {
   return (
     plans
       // we are assuming that the recurrence cannot be more than once per day
@@ -161,21 +106,20 @@ export default function generateEventsForDay(
         });
 
         // convert the time to the target timezone
-        const finalDate = datetimeInPlanTimezone.setZone(targetTimezone);
+        const startDatetime = datetimeInPlanTimezone.setZone(targetTimezone);
 
-        const eventDate = finalDate.toISODate();
-        const eventTime = finalDate.toFormat('HH:mm');
-
-        if (eventDate === null || eventTime === null) {
-          throw new Error('Invalid date or time');
-        }
+        const [endHour, endMinute] = plan.end_time.split(':').map(Number);
+        const endDatetime = dateInPlanTimezone
+          .set({
+            hour: endHour,
+            minute: endMinute,
+          })
+          .setZone(targetTimezone);
 
         return {
-          id: plan.id.toString(),
-          title: plan.name,
-          date: eventDate,
-          time: eventTime,
-          notes: plan.prep_notes,
+          ...plan,
+          startDatetime,
+          endDatetime,
         };
       })
   );
