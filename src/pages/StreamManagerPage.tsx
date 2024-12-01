@@ -47,11 +47,7 @@ function StreamManagerPage() {
     return <Alert severity="warning">Missing data</Alert>;
   }
 
-  const stream = findNextStream(DateTime.now(), 7, streamPlans);
-
-  if (!stream) {
-    return <Alert severity="info">No upcoming stream in the next 7 days</Alert>;
-  }
+  const nextScheduledStream = findNextStream(DateTime.now(), 14, streamPlans);
 
   return (
     <Paper sx={streamManagerStyles.root}>
@@ -60,11 +56,17 @@ function StreamManagerPage() {
       </Typography>
       <Grid container>
         <Grid item xs={2} border={1} spacing={2} padding={2}>
-          <UpcomingStream stream={stream} profile={profile} />
+          <UpcomingStream
+            nextScheduledStream={nextScheduledStream}
+            profile={profile}
+          />
         </Grid>
 
         <Grid item xs={3} border={1} spacing={2} padding={2}>
-          <StreamInfoEditor stream={stream} profile={profile} />
+          <StreamInfoEditor
+            nextScheduledStream={nextScheduledStream}
+            profile={profile}
+          />
         </Grid>
       </Grid>
     </Paper>

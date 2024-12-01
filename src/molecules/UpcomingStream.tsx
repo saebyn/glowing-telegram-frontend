@@ -1,5 +1,6 @@
 import type { StreamEvent } from '@/scheduling/types';
 import type { Profile } from '@/useProfile';
+import Alert from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -15,11 +16,11 @@ const upcomingStreamTimeStyle = {
 };
 
 interface UpcomingStreamProps {
-  stream: StreamEvent;
+  nextScheduledStream: StreamEvent | null;
   profile: Profile;
 }
 
-function UpcomingStream({ stream, profile }: UpcomingStreamProps) {
+function UpcomingStream({ nextScheduledStream, profile }: UpcomingStreamProps) {
   const [now, setNow] = useState(DateTime.now());
 
   useEffect(() => {
@@ -30,7 +31,11 @@ function UpcomingStream({ stream, profile }: UpcomingStreamProps) {
     return () => clearInterval(interval);
   });
 
-  const diff = stream.date
+  if (!nextScheduledStream) {
+    return <Alert severity="info">No upcoming stream in the next 7 days</Alert>;
+  }
+
+  const diff = nextScheduledStream.startDatetime
     .diff(now, ['days', 'hours', 'minutes', 'seconds'])
     .toHuman({
       unitDisplay: 'narrow',
@@ -39,7 +44,7 @@ function UpcomingStream({ stream, profile }: UpcomingStreamProps) {
     .split(', ');
 
   const tags = Array.from(
-    new Set([...stream.tags, ...profile.standardTags]),
+    new Set([...nextScheduledStream.tags, ...profile.standardTags]),
   ).sort();
 
   return (
@@ -49,11 +54,14 @@ function UpcomingStream({ stream, profile }: UpcomingStreamProps) {
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h6">{stream.name}</Typography>
+          <Typography variant="h6">{nextScheduledStream.name}</Typography>
         </Grid>
         <Grid item xs={6}>
           <Typography variant="body2" color="textSecondary">
-            Date: {stream.date.toLocaleString(DateTime.DATE_FULL)}
+            Date:{' '}
+            {nextScheduledStream.startDatetime.toLocaleString(
+              DateTime.DATE_FULL,
+            )}
           </Typography>
           <Typography color="textSecondary" sx={upcomingStreamTimeStyle.time}>
             in
@@ -73,12 +81,15 @@ function UpcomingStream({ stream, profile }: UpcomingStreamProps) {
         </Grid>
         <Grid item xs={6}>
           <Typography variant="body2" color="textSecondary">
-            Time: {stream.date.toLocaleString(DateTime.TIME_SIMPLE)}
+            Time:{' '}
+            {nextScheduledStream.startDatetime.toLocaleString(
+              DateTime.TIME_SIMPLE,
+            )}
           </Typography>
         </Grid>
         <Grid item xs={12}>
           <Typography variant="body2" color="textSecondary">
-            Category: {stream.category}
+            Category: {nextScheduledStream.category}
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -88,9 +99,13 @@ function UpcomingStream({ stream, profile }: UpcomingStreamProps) {
         </Grid>
         <Grid item xs={12}>
           <Typography>
-            {stream.prep_notes ? (
-              // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-              <div dangerouslySetInnerHTML={{ __html: stream.prep_notes }} />
+            {nextScheduledStream.prep_notes ? (
+              <div
+                // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                dangerouslySetInnerHTML={{
+                  __html: nextScheduledStream.prep_notes,
+                }}
+              />
             ) : (
               'No notes available'
             )}
