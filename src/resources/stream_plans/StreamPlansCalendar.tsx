@@ -219,8 +219,10 @@ function MonthCalendarView({
               {/* Display events that fall on the current day */}
               {day.events.map((event) => (
                 <Box key={event.id}>
-                  <Typography variant="caption">{event.time}</Typography> |{' '}
-                  <Typography variant="caption">{event.name}</Typography>
+                  <Typography variant="caption">
+                    {event.date.toLocaleString(DateTime.TIME_SIMPLE)}
+                  </Typography>{' '}
+                  | <Typography variant="caption">{event.name}</Typography>
                   <Typography variant="body2">{event.prep_notes}</Typography>
                 </Box>
               ))}
