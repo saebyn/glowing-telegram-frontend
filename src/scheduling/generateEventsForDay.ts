@@ -106,11 +106,20 @@ export default function generateEventsForDay(
         });
 
         // convert the time to the target timezone
-        const finalDate = datetimeInPlanTimezone.setZone(targetTimezone);
+        const startDatetime = datetimeInPlanTimezone.setZone(targetTimezone);
+
+        const [endHour, endMinute] = plan.end_time.split(':').map(Number);
+        const endDatetime = dateInPlanTimezone
+          .set({
+            hour: endHour,
+            minute: endMinute,
+          })
+          .setZone(targetTimezone);
 
         return {
           ...plan,
-          date: finalDate,
+          startDatetime,
+          endDatetime,
         };
       })
   );

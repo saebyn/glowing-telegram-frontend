@@ -36,7 +36,10 @@ describe('generateEventsForDay', () => {
     expect(events[0]).toMatchObject({
       id: 1,
       name: 'Event 1',
-      date: DateTime.fromISO('2024-11-25T03:00:00.000-04:00', {
+      startDatetime: DateTime.fromISO('2024-11-25T03:00:00.000-04:00', {
+        setZone: true,
+      }),
+      endDatetime: DateTime.fromISO('2024-11-25T03:30:00.000-04:00', {
         setZone: true,
       }),
       prep_notes: 'Prep notes 1',
@@ -75,7 +78,7 @@ describe('generateEventsForDay', () => {
     expect(events[0]).toMatchObject({
       id: 1,
       name: 'Event 1',
-      date: DateTime.fromISO('2024-11-25T23:00:00.000-08:00'),
+      startDatetime: DateTime.fromISO('2024-11-25T23:00:00.000-08:00'),
       prep_notes: 'Prep notes 1',
     });
   });
@@ -241,7 +244,7 @@ describe('generateEventsForDay', () => {
     expect(events[0]).toMatchObject({
       id: 1,
       name: 'Event 1',
-      date: DateTime.fromISO('2024-11-04T18:00:00.000-08:00'),
+      startDatetime: DateTime.fromISO('2024-11-04T18:00:00.000-08:00'),
       prep_notes: 'Prep notes 1',
     });
   });

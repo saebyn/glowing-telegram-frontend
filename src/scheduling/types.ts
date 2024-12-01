@@ -49,5 +49,6 @@ export interface StreamPlan {
 }
 
 export interface StreamEvent extends StreamPlan {
-  date: DateTime;
+  startDatetime: DateTime;
+  endDatetime: DateTime;
 }
