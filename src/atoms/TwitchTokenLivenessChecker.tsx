@@ -24,12 +24,6 @@ function TwitchTokenLivenessChecker() {
       return;
     }
 
-    validateAccessToken(twitchToken, { signal: abortController.signal }).catch(
-      () => {
-        clearToken();
-      },
-    );
-
     const interval = setInterval(
       async () => {
         try {
