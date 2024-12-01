@@ -33,12 +33,13 @@ describe('generateEventsForDay', () => {
     const events = generateEventsForDay(date, plans);
 
     expect(events).toHaveLength(1);
-    expect(events[0]).toEqual({
-      id: '1',
-      title: 'Event 1',
-      date: '2024-11-25',
-      time: '03:00',
-      notes: 'Prep notes 1',
+    expect(events[0]).toMatchObject({
+      id: 1,
+      name: 'Event 1',
+      date: DateTime.fromISO('2024-11-25T03:00:00.000-04:00', {
+        setZone: true,
+      }),
+      prep_notes: 'Prep notes 1',
     });
   });
 
@@ -71,12 +72,11 @@ describe('generateEventsForDay', () => {
     const events = generateEventsForDay(date, plans);
 
     expect(events).toHaveLength(1);
-    expect(events[0]).toEqual({
-      id: '1',
-      title: 'Event 1',
-      date: '2024-11-25',
-      time: '23:00',
-      notes: 'Prep notes 1',
+    expect(events[0]).toMatchObject({
+      id: 1,
+      name: 'Event 1',
+      date: DateTime.fromISO('2024-11-25T23:00:00.000-08:00'),
+      prep_notes: 'Prep notes 1',
     });
   });
 
@@ -238,12 +238,11 @@ describe('generateEventsForDay', () => {
     const events = generateEventsForDay(date, plans);
 
     expect(events).toHaveLength(1);
-    expect(events[0]).toEqual({
-      id: '1',
-      title: 'Event 1',
-      date: '2024-11-04',
-      time: '18:00',
-      notes: 'Prep notes 1',
+    expect(events[0]).toMatchObject({
+      id: 1,
+      name: 'Event 1',
+      date: DateTime.fromISO('2024-11-04T18:00:00.000-08:00'),
+      prep_notes: 'Prep notes 1',
     });
   });
 });

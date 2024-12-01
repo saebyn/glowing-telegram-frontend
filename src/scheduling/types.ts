@@ -1,3 +1,5 @@
+import type { DateTime } from 'luxon';
+
 export interface Skip {
   date: string;
   reason: string;
@@ -47,6 +49,5 @@ export interface StreamPlan {
 }
 
 export interface StreamEvent extends StreamPlan {
-  date: string;
-  time: string;
+  date: DateTime;
 }

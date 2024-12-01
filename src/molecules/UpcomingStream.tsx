@@ -28,10 +28,9 @@ function UpcomingStream({ stream, profile }: UpcomingStreamProps) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  });
 
-  const date = DateTime.fromISO(stream.date);
-  const diff = date
+  const diff = stream.date
     .diff(now, ['days', 'hours', 'minutes', 'seconds'])
     .toHuman({
       unitDisplay: 'narrow',
@@ -54,7 +53,7 @@ function UpcomingStream({ stream, profile }: UpcomingStreamProps) {
         </Grid>
         <Grid item xs={6}>
           <Typography variant="body2" color="textSecondary">
-            Date: {stream.date}
+            Date: {stream.date.toLocaleString(DateTime.DATE_FULL)}
           </Typography>
           <Typography color="textSecondary" sx={upcomingStreamTimeStyle.time}>
             in
@@ -74,7 +73,7 @@ function UpcomingStream({ stream, profile }: UpcomingStreamProps) {
         </Grid>
         <Grid item xs={6}>
           <Typography variant="body2" color="textSecondary">
-            Time: {stream.time}
+            Time: {stream.date.toLocaleString(DateTime.TIME_SIMPLE)}
           </Typography>
         </Grid>
         <Grid item xs={12}>
