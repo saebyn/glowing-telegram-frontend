@@ -1,7 +1,8 @@
+import TagInput from '@/atoms/TagEditorInput';
+import TimezoneSelectInput from '@/atoms/TimezoneSelectInput';
 import { RichTextInput } from 'ra-input-rich-text';
 import {
   ArrayInput,
-  AutocompleteArrayInput,
   Create,
   DateInput,
   NumberInput,
@@ -24,8 +25,6 @@ const startDateValidation = [
 ];
 
 function StreamPlansCreate() {
-  const tags: string[] = [];
-
   return (
     <Create>
       <SimpleForm>
@@ -77,12 +76,7 @@ function StreamPlansCreate() {
           validate={required()}
         />
 
-        {/* TODO need a timezone picker */}
-        <SelectInput
-          source="timezone"
-          validate={required()}
-          choices={[{ id: 'America/Los_Angeles', name: 'Pacific Time' }]}
-        />
+        <TimezoneSelectInput source="timezone" validate={required()} />
 
         <TimeInput
           source="start_time"
@@ -95,22 +89,7 @@ function StreamPlansCreate() {
           parse={(value) => value}
         />
 
-        <AutocompleteArrayInput
-          source="tags"
-          choices={tags}
-          onCreate={(filter?: string) => {
-            if (!filter) {
-              return;
-            }
-
-            tags.push(filter);
-
-            return {
-              id: filter,
-              value: filter,
-            };
-          }}
-        />
+        <TagInput source="tags" />
 
         <SelectInput
           source="category"
