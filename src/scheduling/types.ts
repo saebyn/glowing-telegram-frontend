@@ -1,3 +1,4 @@
+import type { TwitchCategory } from '@/twitch';
 import type { DateTime } from 'luxon';
 
 export interface Skip {
@@ -45,7 +46,7 @@ export interface StreamPlan {
   start_time: string;
   end_time: string;
   tags: string[];
-  category: string;
+  category: TwitchCategory;
 }
 
 export interface StreamEvent extends StreamPlan {

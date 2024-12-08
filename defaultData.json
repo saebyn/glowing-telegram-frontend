@@ -36,7 +36,10 @@
         "WebDevelopment",
         "KeyboardCam"
       ],
-      "category": "Software and Game Development"
+      "category": {
+        "id": "1469308723",
+        "name": "Software and Game Development"
+      }
     }
   ],
   "profile": [

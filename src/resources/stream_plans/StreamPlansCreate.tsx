@@ -91,14 +91,21 @@ function StreamPlansCreate() {
 
         <TagInput source="tags" />
 
+        {/* TODO a real category selector */}
         <SelectInput
           source="category"
           choices={[
             {
-              id: 'Software and Game Development',
+              id: '1469308723',
               name: 'Software and Game Development',
             },
           ]}
+          parse={(value) => {
+            return {
+              id: value.id,
+              name: value.name,
+            };
+          }}
         />
       </SimpleForm>
     </Create>
