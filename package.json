@@ -37,6 +37,7 @@
     "@vvo/tzdb": "^6.150.0",
     "luxon": "^3.5.0",
     "md5": "^2.3.0",
+    "msw": "^2.6.8",
     "oidc-client-ts": "^3.1.0",
     "ra-data-local-forage": "^5",
     "ra-input-rich-text": "^5.4.0",
@@ -48,5 +49,10 @@
     "vite": "^5.2.0",
     "vitest": "^2.1.5",
     "vitest-browser-react": "^0.0.3"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
