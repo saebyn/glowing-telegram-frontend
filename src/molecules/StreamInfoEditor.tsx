@@ -5,6 +5,7 @@ import type { StreamEvent } from '@/scheduling/types';
 import {
   type GetChannelInformationResponse,
   getChannelInformation,
+  modifyChannelInformation,
 } from '@/twitch';
 import type { Profile } from '@/useProfile';
 import Alert from '@mui/material/Alert';
@@ -12,6 +13,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Checkbox from '@mui/material/Checkbox';
+import LoadingIndicator from '@mui/material/CircularProgress';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
@@ -39,6 +41,7 @@ function StreamInfoEditor({
   const [reloadCount, setReloadCount] = useState(0);
   const [isMerging, setIsMerging] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [isPending, setIsPending] = useState(false);
 
   const translate = useTranslate();
 
@@ -66,6 +69,22 @@ function StreamInfoEditor({
 
   const handleRefresh = () => {
     setReloadCount((count) => count + 1);
+  };
+
+  const handleSave = async () => {
+    setIsPending(true);
+    try {
+      await modifyChannelInformation(
+        profile.twitch.broadcasterId,
+        profile.twitch.accessToken,
+        streamInfo,
+      );
+      setError(null);
+    } catch (e) {
+      setError(e as Error);
+    } finally {
+      setIsPending(false);
+    }
   };
 
   const handlePopulate = () => {
@@ -102,6 +121,13 @@ function StreamInfoEditor({
           }
         >
           {error.message}
+        </Alert>
+      )}
+
+      {isPending && (
+        <Alert severity="info">
+          <LoadingIndicator />
+          {translate('gt.stream_info_editor.saving', { _: 'Saving...' })}
         </Alert>
       )}
 
@@ -175,7 +201,7 @@ function StreamInfoEditor({
         </FormGroup>
 
         <ButtonGroup variant="contained" aria-label="actions for the form">
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={handleSave}>
             Save
           </Button>
           <Button variant="contained" color="primary" onClick={handleRefresh}>
