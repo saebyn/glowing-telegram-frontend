@@ -26,7 +26,7 @@ describe('generateEventsForDay', () => {
         start_time: '23:00',
         end_time: '23:30',
         tags: ['tag1'],
-        category: 'category1',
+        category: { id: '1', name: 'category1', box_art_url: '' },
       },
     ];
 
@@ -68,7 +68,7 @@ describe('generateEventsForDay', () => {
         start_time: '23:00',
         end_time: '23:30',
         tags: ['tag1'],
-        category: 'category1',
+        category: { id: '1', name: 'category1', box_art_url: '' },
       },
     ];
 
@@ -105,7 +105,7 @@ describe('generateEventsForDay', () => {
         start_time: '03:00',
         end_time: '23:30',
         tags: ['tag1'],
-        category: 'category1',
+        category: { id: '1', name: 'category1', box_art_url: '' },
       },
     ];
 
@@ -141,7 +141,7 @@ describe('generateEventsForDay', () => {
         start_time: '18:00',
         end_time: '21:00',
         tags: ['tag1'],
-        category: 'category1',
+        category: { id: '1', name: 'category1', box_art_url: '' },
       },
     ];
 
@@ -172,7 +172,7 @@ describe('generateEventsForDay', () => {
         start_time: '18:00',
         end_time: '21:00',
         tags: ['tag1'],
-        category: 'category1',
+        category: { id: '1', name: 'category1', box_art_url: '' },
       },
     ];
 
@@ -203,7 +203,7 @@ describe('generateEventsForDay', () => {
         start_time: '18:00',
         end_time: '21:00',
         tags: ['tag1'],
-        category: 'category1',
+        category: { id: '1', name: 'category1', box_art_url: '' },
       },
     ];
 
@@ -234,7 +234,7 @@ describe('generateEventsForDay', () => {
         start_time: '18:00',
         end_time: '21:00',
         tags: ['tag1'],
-        category: 'category1',
+        category: { id: '1', name: 'category1', box_art_url: '' },
       },
     ];
 
