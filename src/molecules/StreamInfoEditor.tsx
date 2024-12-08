@@ -3,7 +3,7 @@ import TwitchCCTAutocomplete from '@/atoms/TwitchCCTAutocomplete';
 import TwitchCategoryAutocomplete from '@/atoms/TwitchCategoryAutocomplete';
 import type { StreamEvent } from '@/scheduling/types';
 import {
-  type ModifyChannelInformationPayload,
+  type GetChannelInformationResponse,
   getChannelInformation,
 } from '@/twitch';
 import type { Profile } from '@/useProfile';
@@ -33,9 +33,9 @@ function StreamInfoEditor({
   nextScheduledStream,
   profile,
 }: StreamInfoEditorProps) {
-  const [streamInfo, setStreamInfo] = useState<ModifyChannelInformationPayload>(
-    {},
-  );
+  const [streamInfo, setStreamInfo] = useState<
+    Partial<GetChannelInformationResponse>
+  >({});
   const [reloadCount, setReloadCount] = useState(0);
   const [isMerging, setIsMerging] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -112,7 +112,23 @@ function StreamInfoEditor({
           }
         />
 
-        <TwitchCategoryAutocomplete />
+        <TwitchCategoryAutocomplete
+          profile={profile}
+          category={
+            streamInfo.game_id
+              ? {
+                  id: streamInfo.game_id,
+                  name: streamInfo.game_name || 'Unknown',
+                }
+              : null
+          }
+          onChange={(category) => {
+            setStreamInfo({
+              ...streamInfo,
+              game_id: category ? category.id : null,
+            });
+          }}
+        />
 
         <TagEditor
           value={streamInfo.tags || []}

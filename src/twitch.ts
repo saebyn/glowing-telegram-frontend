@@ -89,12 +89,12 @@ export function parseReturnedData(
   };
 }
 
-interface GetChannelInformationResponse {
+export interface GetChannelInformationResponse {
   broadcaster_id: string;
   broadcaster_login: string;
   broadcaster_name: string;
   broadcaster_language: string;
-  game_id: string;
+  game_id: string | null;
   game_name: string;
   title: string;
   tags: string[];
@@ -106,7 +106,7 @@ interface GetChannelInformationResponse {
 }
 
 export interface ModifyChannelInformationPayload {
-  game_id?: string;
+  game_id?: string | null;
   broadcaster_language?: string;
   title?: string;
   tags?: string[];
@@ -131,7 +131,7 @@ export async function getChannelInformation(
   }
 
   const response = await fetch(
-    `https://api.twitch.tv/helix/channels?broadcaster_id=${broadcasterId}`,
+    `https://api.twitch.tv/helix/channels?broadcaster_id=${encodeURIComponent(broadcasterId)}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -151,6 +151,8 @@ export async function getChannelInformation(
     return {
       ...json.data[0],
 
+      game_id: json.data[0].game_id || null,
+
       content_classification_labels:
         json.data[0].content_classification_labels.map((label: string) => ({
           id: label,
@@ -169,7 +171,7 @@ export async function modifyChannelInformation(
   options: { signal?: AbortSignal } = {},
 ): Promise<void> {
   const response = await fetch(
-    `https://api.twitch.tv/helix/channels?broadcaster_id=${broadcasterId}`,
+    `https://api.twitch.tv/helix/channels?broadcaster_id=${encodeURIComponent(broadcasterId)}`,
     {
       method: 'PATCH',
       headers: {
@@ -177,7 +179,10 @@ export async function modifyChannelInformation(
         'Client-Id': clientId,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        ...payload,
+        game_id: payload.game_id === null ? '' : payload.game_id,
+      } as ModifyChannelInformationPayload),
       signal: options.signal,
     },
   );
@@ -185,4 +190,34 @@ export async function modifyChannelInformation(
   if (!response.ok) {
     throw new Error('Failed to modify channel information');
   }
+}
+
+export interface TwitchCategory {
+  id: string;
+  name: string;
+  box_art_url?: string;
+}
+
+export async function searchCategories(
+  query: string,
+  accessToken: string,
+  options: { signal?: AbortSignal } = {},
+): Promise<TwitchCategory[]> {
+  const response = await fetch(
+    `https://api.twitch.tv/helix/search/categories?query=${encodeURIComponent(query)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Client-Id': clientId,
+      },
+      signal: options.signal,
+    },
+  );
+
+  if (response.ok) {
+    const json = await response.json();
+    return json.data;
+  }
+
+  throw new Error('Failed to search categories');
 }
