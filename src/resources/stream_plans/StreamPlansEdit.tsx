@@ -1,3 +1,6 @@
+import RecurrenceDayInput from '@/atoms/RecurrenceDayInput';
+import TagInput from '@/atoms/TagEditorInput';
+import TimezoneSelectInput from '@/atoms/TimezoneSelectInput';
 import { RichTextInput } from 'ra-input-rich-text';
 import {
   ArrayInput,
@@ -13,8 +16,6 @@ import {
   TopToolbar,
   required,
 } from 'react-admin';
-import RecurrenceDayInput from '../../atoms/RecurrenceDayInput';
-import TagInput from '../../atoms/TagEditorInput';
 
 const startDateValidation = [
   required(),
@@ -73,12 +74,7 @@ function StreamPlansEdit() {
           validate={required()}
         />
 
-        {/* TODO need a timezone picker */}
-        <SelectInput
-          source="timezone"
-          validate={required()}
-          choices={[{ id: 'America/Los_Angeles', name: 'Pacific Time' }]}
-        />
+        <TimezoneSelectInput source="timezone" validate={required()} />
 
         <TimeInput
           source="start_time"
@@ -93,14 +89,21 @@ function StreamPlansEdit() {
 
         <TagInput source="tags" />
 
+        {/* TODO a real category selector */}
         <SelectInput
           source="category"
           choices={[
             {
-              id: 'Software and Game Development',
+              id: '1469308723',
               name: 'Software and Game Development',
             },
           ]}
+          parse={(value) => {
+            return {
+              id: value.id,
+              name: value.name,
+            };
+          }}
         />
       </SimpleForm>
     </Edit>

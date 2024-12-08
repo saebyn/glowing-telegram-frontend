@@ -1,3 +1,7 @@
+import TagEditor from '@/atoms/TagEditor';
+import TimezoneSelect from '@/atoms/TimezoneSelect';
+import TwitchOAuthButton from '@/atoms/TwitchOAuthButton';
+import useProfile, { type Profile } from '@/useProfile';
 import {
   Avatar,
   Box,
@@ -9,10 +13,6 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { LoadingIndicator, useTranslate, useUpdate } from 'react-admin';
-import TagEditor from '../atoms/TagEditor';
-import TimezoneSelect from '../atoms/TimezoneSelect';
-import TwitchOAuthButton from '../atoms/TwitchOAuthButton';
-import useProfile, { type Profile } from '../useProfile';
 
 const ProfilePage = () => {
   const translate = useTranslate();

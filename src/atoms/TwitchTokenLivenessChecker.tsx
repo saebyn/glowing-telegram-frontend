@@ -1,7 +1,7 @@
+import { validateAccessToken } from '@/twitch';
+import useProfile from '@/useProfile';
 import { useEffect } from 'react';
 import { useUpdate } from 'react-admin';
-import { checkTokenLiveness } from '../twitch';
-import useProfile from '../useProfile';
 
 function TwitchTokenLivenessChecker() {
   const { profile } = useProfile();
@@ -24,27 +24,16 @@ function TwitchTokenLivenessChecker() {
       return;
     }
 
-    checkTokenLiveness(twitchToken, { signal: abortController.signal })
-      .then((isLive) => {
-        console.log('twitch token is live:', isLive);
-        if (!isLive) {
-          clearToken();
-        }
-      })
-      .catch(() => {});
-
     const interval = setInterval(
       async () => {
         try {
           // check if the token is still valid
-          if (
-            await checkTokenLiveness(twitchToken, {
-              signal: abortController.signal,
-            })
-          ) {
-            clearToken();
-          }
-        } catch (error) {}
+          await validateAccessToken(twitchToken, {
+            signal: abortController.signal,
+          });
+        } catch (error) {
+          clearToken();
+        }
       },
       1000 * 60 * 60,
     ); // check every hour
