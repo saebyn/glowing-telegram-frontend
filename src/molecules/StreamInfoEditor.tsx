@@ -74,8 +74,12 @@ function StreamInfoEditor({
     }
 
     const newTags = isMerging
-      ? [...nextScheduledStream.tags, ...profile.standardTags]
-      : nextScheduledStream.tags;
+      ? [
+          ...nextScheduledStream.tags,
+          ...profile.standardTags,
+          ...(streamInfo.tags || []),
+        ]
+      : [...nextScheduledStream.tags, ...profile.standardTags];
 
     setStreamInfo((streamInfo) => ({
       ...streamInfo,
