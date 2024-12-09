@@ -54,15 +54,15 @@ function StreamManagerPage() {
       <Typography variant="h5" gutterBottom>
         Stream Manager
       </Typography>
-      <Grid container>
-        <Grid item xs={2} border={1} spacing={2} padding={2}>
+      <Grid container spacing={2}>
+        <Grid item xs={2} border={1} padding={2}>
           <UpcomingStream
             nextScheduledStream={nextScheduledStream}
             profile={profile}
           />
         </Grid>
 
-        <Grid item xs={3} border={1} spacing={2} padding={2}>
+        <Grid item xs={3} border={1} padding={2}>
           <StreamInfoEditor
             nextScheduledStream={nextScheduledStream}
             profile={profile}
