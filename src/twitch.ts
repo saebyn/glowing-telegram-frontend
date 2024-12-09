@@ -89,6 +89,17 @@ export function parseReturnedData(
   };
 }
 
+export interface ContentClassificationLabel {
+  id: string;
+  is_enabled: boolean;
+}
+
+export interface ContentClassificationLabelDefinition {
+  id: string;
+  name: string;
+  description: string;
+}
+
 export interface GetChannelInformationResponse {
   broadcaster_id: string;
   broadcaster_login: string;
@@ -98,10 +109,7 @@ export interface GetChannelInformationResponse {
   game_name: string;
   title: string;
   tags: string[];
-  content_classification_labels: {
-    id: string;
-    is_enabled: boolean;
-  }[];
+  content_classification_labels: ContentClassificationLabel[];
   is_branded_content: boolean;
 }
 
@@ -110,10 +118,7 @@ export interface ModifyChannelInformationPayload {
   broadcaster_language?: string;
   title?: string;
   tags?: string[];
-  content_classification_labels?: {
-    id: string;
-    is_enabled: boolean;
-  }[];
+  content_classification_labels?: ContentClassificationLabel[];
   is_branded_content?: boolean;
 }
 
@@ -220,4 +225,28 @@ export async function searchCategories(
   }
 
   throw new Error('Failed to search categories');
+}
+
+export async function getContentClassificationLabels(
+  locale: string,
+  accessToken: string,
+  options: { signal?: AbortSignal } = {},
+): Promise<ContentClassificationLabelDefinition[]> {
+  const response = await fetch(
+    `https://api.twitch.tv/helix/content_classification_labels?locale=${encodeURIComponent(locale)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Client-Id': clientId,
+      },
+      signal: options.signal,
+    },
+  );
+
+  if (response.ok) {
+    const json = await response.json();
+    return json.data;
+  }
+
+  throw new Error('Failed to get content classification labels');
 }
