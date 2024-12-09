@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 const FETCH_CATEGORIES_DEBOUNCE_TIME = 300;
 
 interface TwitchCategoryAutocompleteProps {
-  label?: string;
+  label: string;
   profile: Profile;
   category: TwitchCategory | null;
   onChange: (category: TwitchCategory | null) => void;
@@ -85,9 +85,7 @@ function TwitchCategoryAutocomplete({
         // disable the default filtering behavior since we will do filtering on the backend
         filterOptions={(x) => x}
         getOptionLabel={(option) => option.name}
-        renderInput={(params) => (
-          <TextField {...params} label={label || 'Category'} />
-        )}
+        renderInput={(params) => <TextField {...params} label={label} />}
         autoComplete
         value={category}
         loading={loading}
