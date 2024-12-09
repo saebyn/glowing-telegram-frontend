@@ -66,7 +66,9 @@ function TwitchCCLSelect({
 
   return (
     <FormControl error={Boolean(error)}>
-      <InputLabel id={fieldId}>{label}</InputLabel>
+      <InputLabel shrink={true} id={fieldId}>
+        {label}
+      </InputLabel>
 
       <Select
         labelId={fieldId}
@@ -85,6 +87,7 @@ function TwitchCCLSelect({
           );
         }}
         disabled={loading}
+        displayEmpty
         renderValue={(selected) => (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
             {selected.map((value) => (
@@ -97,6 +100,11 @@ function TwitchCCLSelect({
                 }
               />
             ))}
+
+            {
+              // Show an empty chip if no labels are selected
+              selected.length === 0 && <Chip label="None" />
+            }
           </Box>
         )}
       >
