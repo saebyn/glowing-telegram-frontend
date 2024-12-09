@@ -29,8 +29,6 @@ function TwitchCategoryAutocomplete({
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [selectedCategory, setSelectedCategory] =
-    useState<TwitchCategory | null>(null);
   const [categories, setCategories] = useState<TwitchCategory[]>([]);
 
   const fetchCategories = useMemo(
@@ -78,7 +76,12 @@ function TwitchCategoryAutocomplete({
         </Box>
       )}
       <Autocomplete
-        options={categories}
+        options={categories.concat(
+          category && !categories.find((c) => c.id === category.id)
+            ? [category]
+            : [],
+        )}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
         // disable the default filtering behavior since we will do filtering on the backend
         filterOptions={(x) => x}
         getOptionLabel={(option) => option.name}
@@ -86,13 +89,12 @@ function TwitchCategoryAutocomplete({
           <TextField {...params} label={label || 'Category'} />
         )}
         autoComplete
-        value={selectedCategory || category}
+        value={category}
         loading={loading}
         onInputChange={(_, newInputValue) => {
           setSearchText(newInputValue);
         }}
         onChange={(_, newValue) => {
-          setSelectedCategory(newValue);
           onChange(newValue);
         }}
         renderOption={(props, option) => {
