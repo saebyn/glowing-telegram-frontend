@@ -73,14 +73,15 @@ describe('generateEventsForDay', () => {
     ];
 
     const events = generateEventsForDay(date, plans);
-
     expect(events).toHaveLength(1);
     expect(events[0]).toMatchObject({
       id: 1,
       name: 'Event 1',
-      startDatetime: DateTime.fromISO('2024-11-25T23:00:00.000-08:00'),
       prep_notes: 'Prep notes 1',
     });
+    expect(events[0].startDatetime.toJSDate()).toEqual(
+      DateTime.fromISO('2024-11-25T23:00:00.000-08:00').toJSDate(),
+    );
   });
 
   it('should not return an event for today when the plan is in a later timezone', () => {
@@ -244,8 +245,10 @@ describe('generateEventsForDay', () => {
     expect(events[0]).toMatchObject({
       id: 1,
       name: 'Event 1',
-      startDatetime: DateTime.fromISO('2024-11-04T18:00:00.000-08:00'),
       prep_notes: 'Prep notes 1',
     });
+    expect(events[0].startDatetime.toJSDate()).toEqual(
+      DateTime.fromISO('2024-11-04T18:00:00.000-08:00').toJSDate(),
+    );
   });
 });
