@@ -1,3 +1,4 @@
+import LanguageSelect from '@/atoms/LanguageSelect';
 import TagEditor from '@/atoms/TagEditor';
 import TwitchCCTAutocomplete from '@/atoms/TwitchCCTAutocomplete';
 import TwitchCategoryAutocomplete from '@/atoms/TwitchCategoryAutocomplete';
@@ -14,12 +15,8 @@ import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Checkbox from '@mui/material/Checkbox';
 import LoadingIndicator from '@mui/material/CircularProgress';
-import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 
@@ -165,21 +162,12 @@ function StreamInfoEditor({
           onChange={(tags) => setStreamInfo({ ...streamInfo, tags })}
         />
 
-        <FormControl>
-          <InputLabel>Language</InputLabel>
-          <Select
-            value={streamInfo.broadcaster_language || 'en'}
-            onChange={(event) =>
-              setStreamInfo({
-                ...streamInfo,
-                broadcaster_language: event.target.value,
-              })
-            }
-          >
-            <MenuItem value={'en'}>English</MenuItem>
-            <MenuItem value={'other'}>Other</MenuItem>
-          </Select>
-        </FormControl>
+        <LanguageSelect
+          value={streamInfo.broadcaster_language || 'en'}
+          onChange={(language) =>
+            setStreamInfo({ ...streamInfo, broadcaster_language: language })
+          }
+        />
 
         <TwitchCCTAutocomplete />
 
