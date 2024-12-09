@@ -9,7 +9,7 @@ import type { ReactNode } from 'react';
 import { List, Loading, useI18nProvider, useListContext } from 'react-admin';
 import { useParams } from 'react-router-dom';
 
-import generateEventsForDay from '../../generateEventsForDay';
+import generateEventsForDay from '@/scheduling/generateEventsForDay';
 import ListActions from './ListActions';
 import streamActionFilters from './filters';
 
@@ -219,9 +219,11 @@ function MonthCalendarView({
               {/* Display events that fall on the current day */}
               {day.events.map((event) => (
                 <Box key={event.id}>
-                  <Typography variant="caption">{event.time}</Typography> |{' '}
-                  <Typography variant="caption">{event.title}</Typography>
-                  <Typography variant="body2">{event.notes}</Typography>
+                  <Typography variant="caption">
+                    {event.startDatetime.toLocaleString(DateTime.TIME_SIMPLE)}
+                  </Typography>{' '}
+                  | <Typography variant="caption">{event.name}</Typography>
+                  <Typography variant="body2">{event.prep_notes}</Typography>
                 </Box>
               ))}
             </Paper>

@@ -1,9 +1,14 @@
+import TagInput from '@/atoms/TagEditorInput';
+import TimezoneSelectInput from '@/atoms/TimezoneSelectInput';
+import TwitchCategoryAutocompleteInput from '@/atoms/TwitchCategoryAutocompleteInput';
+import useProfile from '@/useProfile';
+import Alert from '@mui/material/Alert';
 import { RichTextInput } from 'ra-input-rich-text';
 import {
   ArrayInput,
-  AutocompleteArrayInput,
   Create,
   DateInput,
+  LoadingIndicator,
   NumberInput,
   SelectArrayInput,
   SelectInput,
@@ -24,7 +29,15 @@ const startDateValidation = [
 ];
 
 function StreamPlansCreate() {
-  const tags: string[] = [];
+  const { profile, status } = useProfile();
+
+  if (status === 'pending') {
+    return <LoadingIndicator />;
+  }
+
+  if (status === 'error') {
+    return <Alert severity="error">Failed to load profile</Alert>;
+  }
 
   return (
     <Create>
@@ -77,12 +90,7 @@ function StreamPlansCreate() {
           validate={required()}
         />
 
-        {/* TODO need a timezone picker */}
-        <SelectInput
-          source="timezone"
-          validate={required()}
-          choices={[{ id: 'America/Los_Angeles', name: 'Pacific Time' }]}
-        />
+        <TimezoneSelectInput source="timezone" validate={required()} />
 
         <TimeInput
           source="start_time"
@@ -95,32 +103,9 @@ function StreamPlansCreate() {
           parse={(value) => value}
         />
 
-        <AutocompleteArrayInput
-          source="tags"
-          choices={tags}
-          onCreate={(filter?: string) => {
-            if (!filter) {
-              return;
-            }
+        <TagInput source="tags" />
 
-            tags.push(filter);
-
-            return {
-              id: filter,
-              value: filter,
-            };
-          }}
-        />
-
-        <SelectInput
-          source="category"
-          choices={[
-            {
-              id: 'Software and Game Development',
-              name: 'Software and Game Development',
-            },
-          ]}
-        />
+        <TwitchCategoryAutocompleteInput source="category" profile={profile} />
       </SimpleForm>
     </Create>
   );

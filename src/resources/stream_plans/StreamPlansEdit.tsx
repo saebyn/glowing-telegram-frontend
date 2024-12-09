@@ -1,9 +1,16 @@
+import RecurrenceDayInput from '@/atoms/RecurrenceDayInput';
+import TagInput from '@/atoms/TagEditorInput';
+import TimezoneSelectInput from '@/atoms/TimezoneSelectInput';
+import TwitchCategoryAutocompleteInput from '@/atoms/TwitchCategoryAutocompleteInput';
+import useProfile from '@/useProfile';
+import Alert from '@mui/material/Alert';
 import { RichTextInput } from 'ra-input-rich-text';
 import {
   ArrayInput,
   DateInput,
   Edit,
   ListButton,
+  LoadingIndicator,
   NumberInput,
   SelectInput,
   SimpleForm,
@@ -13,8 +20,6 @@ import {
   TopToolbar,
   required,
 } from 'react-admin';
-import RecurrenceDayInput from '../../atoms/RecurrenceDayInput';
-import TagInput from '../../atoms/TagEditorInput';
 
 const startDateValidation = [
   required(),
@@ -34,6 +39,16 @@ function StreamPlansEditActions() {
 }
 
 function StreamPlansEdit() {
+  const { profile, status } = useProfile();
+
+  if (status === 'pending') {
+    return <LoadingIndicator />;
+  }
+
+  if (status === 'error') {
+    return <Alert severity="error">Failed to load profile</Alert>;
+  }
+
   return (
     <Edit actions={<StreamPlansEditActions />}>
       <SimpleForm>
@@ -73,12 +88,7 @@ function StreamPlansEdit() {
           validate={required()}
         />
 
-        {/* TODO need a timezone picker */}
-        <SelectInput
-          source="timezone"
-          validate={required()}
-          choices={[{ id: 'America/Los_Angeles', name: 'Pacific Time' }]}
-        />
+        <TimezoneSelectInput source="timezone" validate={required()} />
 
         <TimeInput
           source="start_time"
@@ -93,15 +103,7 @@ function StreamPlansEdit() {
 
         <TagInput source="tags" />
 
-        <SelectInput
-          source="category"
-          choices={[
-            {
-              id: 'Software and Game Development',
-              name: 'Software and Game Development',
-            },
-          ]}
-        />
+        <TwitchCategoryAutocompleteInput source="category" profile={profile} />
       </SimpleForm>
     </Edit>
   );

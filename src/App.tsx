@@ -15,6 +15,7 @@ import defaultData from '../defaultData.json';
 import authProvider from './authProvider';
 import i18nProvider from './i18nProvider';
 import ProfilePage from './pages/ProfilePage';
+import StreamManagerPage from './pages/StreamManagerPage';
 import TwitchCallbackPage from './pages/TwitchCallbackPage';
 import Layout from './ra/Layout';
 
@@ -42,6 +43,7 @@ function App() {
       path: '*',
       element: (
         <Admin
+          loginPage={false}
           dataProvider={dataProvider}
           i18nProvider={i18nProvider}
           authProvider={authProvider}
@@ -77,6 +79,15 @@ function App() {
               element={
                 <Authenticated>
                   <TwitchCallbackPage />
+                </Authenticated>
+              }
+            />
+
+            <Route
+              path="/stream-manager"
+              element={
+                <Authenticated>
+                  <StreamManagerPage />
                 </Authenticated>
               }
             />
