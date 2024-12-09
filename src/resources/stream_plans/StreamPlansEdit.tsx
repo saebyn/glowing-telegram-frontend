@@ -1,12 +1,16 @@
 import RecurrenceDayInput from '@/atoms/RecurrenceDayInput';
 import TagInput from '@/atoms/TagEditorInput';
 import TimezoneSelectInput from '@/atoms/TimezoneSelectInput';
+import TwitchCategoryAutocompleteInput from '@/atoms/TwitchCategoryAutocompleteInput';
+import useProfile from '@/useProfile';
+import Alert from '@mui/material/Alert';
 import { RichTextInput } from 'ra-input-rich-text';
 import {
   ArrayInput,
   DateInput,
   Edit,
   ListButton,
+  LoadingIndicator,
   NumberInput,
   SelectInput,
   SimpleForm,
@@ -35,6 +39,16 @@ function StreamPlansEditActions() {
 }
 
 function StreamPlansEdit() {
+  const { profile, status } = useProfile();
+
+  if (status === 'pending') {
+    return <LoadingIndicator />;
+  }
+
+  if (status === 'error') {
+    return <Alert severity="error">Failed to load profile</Alert>;
+  }
+
   return (
     <Edit actions={<StreamPlansEditActions />}>
       <SimpleForm>
@@ -89,22 +103,7 @@ function StreamPlansEdit() {
 
         <TagInput source="tags" />
 
-        {/* TODO a real category selector */}
-        <SelectInput
-          source="category"
-          choices={[
-            {
-              id: '1469308723',
-              name: 'Software and Game Development',
-            },
-          ]}
-          parse={(value) => {
-            return {
-              id: value.id,
-              name: value.name,
-            };
-          }}
-        />
+        <TwitchCategoryAutocompleteInput source="category" profile={profile} />
       </SimpleForm>
     </Edit>
   );
