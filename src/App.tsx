@@ -43,6 +43,7 @@ function App() {
       path: '*',
       element: (
         <Admin
+          loginPage={false}
           dataProvider={dataProvider}
           i18nProvider={i18nProvider}
           authProvider={authProvider}
