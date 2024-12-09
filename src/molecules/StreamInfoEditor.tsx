@@ -1,6 +1,6 @@
 import LanguageSelect from '@/atoms/LanguageSelect';
 import TagEditor from '@/atoms/TagEditor';
-import TwitchCCTAutocomplete from '@/atoms/TwitchCCTAutocomplete';
+import TwitchCCTAutocomplete from '@/atoms/TwitchCCLSelect';
 import TwitchCategoryAutocomplete from '@/atoms/TwitchCategoryAutocomplete';
 import type { StreamEvent } from '@/scheduling/types';
 import {
@@ -135,13 +135,14 @@ function StreamInfoEditor({
           InputLabelProps={{ shrink: true }}
           label="Title"
           variant="outlined"
-          value={streamInfo.title}
+          value={streamInfo.title || ''}
           onChange={(event) =>
             setStreamInfo({ ...streamInfo, title: event.target.value })
           }
         />
 
         <TwitchCategoryAutocomplete
+          label={translate('gt.stream_info_editor.category', { _: 'Category' })}
           profile={profile}
           category={
             streamInfo.game_id
@@ -172,7 +173,20 @@ function StreamInfoEditor({
           }
         />
 
-        <TwitchCCTAutocomplete />
+        <TwitchCCTAutocomplete
+          label={translate(
+            'gt.stream_info_editor.content_classification_labels',
+            { _: 'Content Classification Labels' },
+          )}
+          profile={profile}
+          value={streamInfo.content_classification_labels || []}
+          onChange={(labels) =>
+            setStreamInfo({
+              ...streamInfo,
+              content_classification_labels: labels,
+            })
+          }
+        />
 
         <FormGroup>
           <FormControlLabel
