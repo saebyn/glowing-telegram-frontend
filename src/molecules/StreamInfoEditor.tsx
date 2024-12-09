@@ -99,6 +99,8 @@ function StreamInfoEditor({
 
     setStreamInfo((streamInfo) => ({
       ...streamInfo,
+      game_id: nextScheduledStream.category.id,
+      game_name: nextScheduledStream.category.name,
       title: nextScheduledStream.name,
       tags: newTags,
     }));
@@ -153,6 +155,7 @@ function StreamInfoEditor({
             setStreamInfo({
               ...streamInfo,
               game_id: category ? category.id : null,
+              game_name: category?.name,
             });
           }}
         />
