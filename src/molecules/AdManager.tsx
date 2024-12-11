@@ -106,7 +106,7 @@ function AdManager({ profile }: AdManagerProps) {
           label="Commercial Length (seconds)"
           type="number"
           value={commercialLength}
-          onChange={(e) => setCommercialLength(Number(e.target.value))}
+          onChange={(e) => setCommercialLength(Math.max(30, Math.min(180, Number(e.target.value))))}
           InputProps={{ inputProps: { min: 30, max: 180 } }}
         />
         <Button
