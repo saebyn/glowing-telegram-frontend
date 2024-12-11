@@ -11,7 +11,11 @@ interface TwitchOAuthButtonProps {
   };
 }
 
-const scopes = ['channel:manage:broadcast'];
+const scopes = [
+  'channel:manage:broadcast',
+  'channel:edit:commercial',
+  'channel:read:ads',
+];
 
 function TwitchOAuthButton({ tokens }: TwitchOAuthButtonProps) {
   const translate = useTranslate();
