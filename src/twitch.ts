@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon';
+
 const {
   VITE_TWITCH_CLIENT_ID: clientId,
   VITE_TWITCH_REDIRECT_URI: redirectUri,
@@ -249,4 +251,198 @@ export async function getContentClassificationLabels(
   }
 
   throw new Error('Failed to get content classification labels');
+}
+
+/**
+ * Start Commercial Response
+ *
+ * The response to a successful request to start a commercial, whether
+ * an ad break was started or not.
+ */
+export interface StartCommercialResponse {
+  /**
+   * The length of the commercial you requested. If you request a commercial
+   * that’s longer than 180 seconds, the API uses 180 seconds.
+   */
+  length: number;
+  /**
+   * A message that indicates whether Twitch was able to serve an ad.
+   */
+  message: string;
+  /**
+   * The number of seconds you must wait before running another commercial.
+   */
+  retry_after: number;
+}
+
+/**
+ * Start Commercial
+ *
+ * Starts a commercial on the specified channel.
+ *
+ * NOTE: Only partners and affiliates may run commercials and they must be streaming live at the time.
+ *
+ * NOTE: Only the broadcaster may start a commercial; the broadcaster’s editors and moderators may not start commercials on behalf of the broadcaster.
+ *
+ * Authorization
+ *
+ * Requires a user access token that includes the channel:edit:commercial scope.
+ *
+ * @see https://dev.twitch.tv/docs/api/reference#start-commercial
+ */
+export async function startCommercial(
+  broadcasterId: string,
+  accessToken: string,
+  length: number,
+  options: { signal?: AbortSignal } = {},
+): Promise<StartCommercialResponse> {
+  const response = await fetch(
+    'https://api.twitch.tv/helix/channels/commercial',
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Client-Id': clientId,
+      },
+      body: JSON.stringify({
+        broadcaster_id: broadcasterId,
+        length,
+      }),
+      signal: options.signal,
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to start commercial');
+  }
+
+  const json = await response.json();
+  return json.data[0];
+}
+
+/**
+ * Get Ad Schedule
+ *
+ * This endpoint returns ad schedule related information, including snooze,
+ * when the last ad was run, when the next ad is scheduled, and if the channel
+ * is currently in pre-roll free time. Note that a new ad cannot be run until 8
+ * minutes after running a previous ad.
+ *
+ * Authorization
+ *
+ * Requires a user access token that includes the channel:read:ads scope. The
+ * user_id in the user access token must match the broadcaster_id.
+ */
+export interface GetAdScheduleResponse {
+  /**
+   * The number of snoozes available for the broadcaster.
+   */
+  snooze_count: number;
+  /**
+   * The time when when the broadcaster will gain an additional snooze.
+   */
+  snooze_refresh_at: DateTime;
+  /**
+   * The time when the next ad break is scheduled to run. Empty if the channel
+   * has no ad scheduled or is not live.
+   */
+  next_ad_at: DateTime | null;
+  /**
+   * The length in seconds of the scheduled upcoming ad break.
+   */
+  duration: number;
+  /**
+   * Broadcaster’s last ad-break. Empty if the channel has not run an ad or is not live.
+   */
+  last_ad_at: DateTime | null;
+  /**
+   * The amount of pre-roll free time remaining for the channel in seconds.
+   * 0 if they are currently not pre-roll free.
+   */
+  preroll_free_time: number;
+}
+
+export async function getAdSchedule(
+  broadcasterId: string,
+  accessToken: string,
+  options: { signal?: AbortSignal } = {},
+): Promise<GetAdScheduleResponse> {
+  const response = await fetch(
+    `https://api.twitch.tv/helix/channels/ads?broadcaster_id=${encodeURIComponent(broadcasterId)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Client-Id': clientId,
+      },
+      signal: options.signal,
+    },
+  );
+
+  if (response.ok) {
+    const json = await response.json();
+    const data = json.data[0];
+    return {
+      snooze_count: Number(data.snooze_count),
+      duration: Number(data.duration),
+      preroll_free_time: Number(data.preroll_free_time),
+      snooze_refresh_at: DateTime.fromSeconds(data.snooze_refresh_at),
+      next_ad_at: data.next_ad_at
+        ? DateTime.fromSeconds(data.next_ad_at)
+        : null,
+      last_ad_at: data.last_ad_at
+        ? DateTime.fromSeconds(data.last_ad_at)
+        : null,
+    };
+  }
+
+  throw new Error('Failed to get ad schedule');
+}
+
+export type SnoozeNextAdResponse = Omit<
+  GetAdScheduleResponse,
+  'last_ad_at' | 'preroll_free_time' | 'duration' | 'next_ad_at'
+> & {
+  next_ad_at: DateTime;
+};
+
+/**
+ * Snooze Next Ad
+ *
+ * If available, pushes back the timestamp of the upcoming automatic mid-roll
+ * ad by 5 minutes. This endpoint duplicates the snooze functionality in the
+ * creator dashboard’s Ads Manager.
+ *
+ * Authorization
+ *
+ * Requires a user access token that includes the channel:manage:broadcast
+ * scope.
+ */
+export async function snoozeNextAd(
+  broadcasterId: string,
+  accessToken: string,
+  options: { signal?: AbortSignal } = {},
+): Promise<SnoozeNextAdResponse> {
+  const response = await fetch(
+    `https://api.twitch.tv/helix/channels/ads/schedule/snooze?broadcaster_id=${encodeURIComponent(broadcasterId)}`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Client-Id': clientId,
+      },
+      signal: options.signal,
+    },
+  );
+
+  if (response.ok) {
+    const json = await response.json();
+    const data = json.data[0];
+    return {
+      snooze_count: Number(data.snooze_count),
+      snooze_refresh_at: DateTime.fromISO(data.snooze_refresh_at),
+      next_ad_at: DateTime.fromISO(data.next_ad_at),
+    };
+  }
+
+  throw new Error('Failed to snooze next ad');
 }
