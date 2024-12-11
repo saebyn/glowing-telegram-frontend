@@ -1,8 +1,10 @@
+import AdManager from '@/molecules/AdManager';
 import StreamInfoEditor from '@/molecules/StreamInfoEditor';
 import UpcomingStream from '@/molecules/UpcomingStream';
 import findNextStream from '@/scheduling/findNextStream';
 import useProfile from '@/useProfile';
 import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -53,6 +55,7 @@ function StreamManagerPage() {
     <Paper sx={streamManagerStyles.root}>
       <Typography variant="h5" gutterBottom>
         Stream Manager
+        <Button href="/">Return to Dashboard</Button>
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={2} border={1} padding={2}>
@@ -67,6 +70,10 @@ function StreamManagerPage() {
             nextScheduledStream={nextScheduledStream}
             profile={profile}
           />
+        </Grid>
+
+        <Grid item xs={3} border={1} padding={2}>
+          <AdManager profile={profile} />
         </Grid>
       </Grid>
     </Paper>

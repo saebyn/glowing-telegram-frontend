@@ -108,8 +108,6 @@ function StreamInfoEditor({
 
   return (
     <>
-      <h1>Stream Info Editor</h1>
-
       {error && (
         <Alert
           severity="error"
