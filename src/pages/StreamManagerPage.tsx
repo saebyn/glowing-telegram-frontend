@@ -1,5 +1,6 @@
 import AdManager from '@/molecules/AdManager';
 import StreamInfoEditor from '@/molecules/StreamInfoEditor';
+import Timers from '@/molecules/Timers';
 import UpcomingStream from '@/molecules/UpcomingStream';
 import findNextStream from '@/scheduling/findNextStream';
 import useProfile from '@/useProfile';
@@ -74,6 +75,10 @@ function StreamManagerPage() {
 
         <Grid item xs={3} border={1} padding={2}>
           <AdManager profile={profile} />
+        </Grid>
+
+        <Grid item xs={3} border={1} padding={2}>
+          <Timers />
         </Grid>
       </Grid>
     </Paper>
