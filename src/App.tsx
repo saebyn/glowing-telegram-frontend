@@ -11,6 +11,8 @@ import { Route, RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import streamPlans, { StreamPlansCalendar } from './resources/stream_plans';
 
+import StreamWidget from '@/pages/StreamWidget';
+import { TimerManagerProvider } from '@/timers';
 import defaultData from '../defaultData.json';
 import authProvider from './authProvider';
 import i18nProvider from './i18nProvider';
@@ -42,6 +44,7 @@ function App() {
     {
       path: '*',
       element: (
+        <TimerManagerProvider>
         <Admin
           loginPage={false}
           dataProvider={dataProvider}
@@ -93,6 +96,7 @@ function App() {
             />
           </CustomRoutes>
         </Admin>
+        </TimerManagerProvider>
       ),
     },
   ]);
