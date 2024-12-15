@@ -1,20 +1,12 @@
-import localForageDataProvider from 'ra-data-local-forage';
-import { useEffect, useState } from 'react';
-import {
-  Admin,
-  Authenticated,
-  CustomRoutes,
-  type DataProvider,
-  Resource,
-} from 'react-admin';
+import { Admin, Authenticated, CustomRoutes, Resource } from 'react-admin';
 import { Route, RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import streamPlans, { StreamPlansCalendar } from './resources/stream_plans';
 
 import StreamWidget from '@/pages/StreamWidget';
 import { TimerManagerProvider } from '@/timers';
-import defaultData from '../defaultData.json';
 import authProvider from './authProvider';
+import dataProvider from './dataProvider';
 import i18nProvider from './i18nProvider';
 import ProfilePage from './pages/ProfilePage';
 import StreamManagerPage from './pages/StreamManagerPage';
@@ -22,24 +14,6 @@ import TwitchCallbackPage from './pages/TwitchCallbackPage';
 import Layout from './ra/Layout';
 
 function App() {
-  const [dataProvider, setDataProvider] = useState<DataProvider | null>(null);
-
-  useEffect(() => {
-    async function startDataProvider() {
-      const localForageProvider = await localForageDataProvider({
-        defaultData,
-      });
-      setDataProvider(localForageProvider);
-    }
-
-    if (dataProvider === null) {
-      startDataProvider();
-    }
-  }, [dataProvider]);
-
-  // hide the admin until the data provider is ready
-  if (!dataProvider) return <p>Loading...</p>;
-
   const router = createBrowserRouter([
     {
       path: '*',
