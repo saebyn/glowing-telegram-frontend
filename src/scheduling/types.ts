@@ -46,7 +46,8 @@ export interface StreamPlan {
   start_time: string;
   end_time: string;
   tags: string[];
-  category: TwitchCategory;
+  category: string;
+  twitch_category: TwitchCategory;
 }
 
 export interface StreamEvent extends StreamPlan {

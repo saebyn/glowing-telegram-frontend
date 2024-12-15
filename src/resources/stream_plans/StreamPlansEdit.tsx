@@ -52,7 +52,7 @@ function StreamPlansEdit() {
   return (
     <Edit actions={<StreamPlansEditActions />}>
       <SimpleForm>
-        <TextInput source="name" validate={required()} />
+        <TextInput source="title" validate={required()} />
         <TextInput source="description" />
         <RichTextInput source="prep_notes" />
 
@@ -103,7 +103,12 @@ function StreamPlansEdit() {
 
         <TagInput source="tags" />
 
-        <TwitchCategoryAutocompleteInput source="category" profile={profile} />
+        <TextInput source="category" />
+
+        <TwitchCategoryAutocompleteInput
+          source="twitch_category"
+          profile={profile}
+        />
       </SimpleForm>
     </Edit>
   );

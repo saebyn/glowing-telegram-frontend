@@ -89,7 +89,7 @@ function UpcomingStream({ nextScheduledStream, profile }: UpcomingStreamProps) {
         </Grid>
         <Grid item xs={12}>
           <Typography variant="body2" color="textSecondary">
-            Category: {nextScheduledStream.category.name}
+            Category: {nextScheduledStream.twitch_category.name}
           </Typography>
         </Grid>
         <Grid item xs={12}>
