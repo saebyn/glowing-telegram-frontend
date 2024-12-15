@@ -7,7 +7,7 @@ function StreamPlansList() {
   return (
     <List actions={<ListActions view="list" />} filters={streamActionFilters}>
       <Datagrid>
-        <TextField source="name" />
+        <TextField source="title" />
         <TextField source="start_time" />
         <RecurrenceDayField source="recurrence.days" />
       </Datagrid>

@@ -95,9 +95,9 @@ function TwitchCategoryAutocomplete({
         onChange={(_, newValue) => {
           onChange(newValue);
         }}
-        renderOption={(props, option) => {
+        renderOption={({ key, ...props }, option) => {
           return (
-            <li {...props}>
+            <li {...props} key={key}>
               <Grid container spacing={2} alignItems="center">
                 <Grid item>
                   {option.box_art_url && (
