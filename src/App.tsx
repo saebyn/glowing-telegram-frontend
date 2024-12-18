@@ -1,17 +1,30 @@
 import { Admin, Authenticated, CustomRoutes, Resource } from 'react-admin';
 import { Route, RouterProvider, createBrowserRouter } from 'react-router-dom';
 
-import streamPlans, { StreamPlansCalendar } from './resources/stream_plans';
+import streamPlans, { StreamPlansCalendar } from '@/resources/stream_plans';
 
-import StreamWidget from '@/pages/StreamWidget';
+import GlobalStyles from '@mui/material/GlobalStyles';
+import { createTheme } from '@mui/material/styles';
+
+import authProvider from '@/authProvider';
+import ProfilePage from '@/components/pages/ProfilePage';
+import StreamManagerPage from '@/components/pages/StreamManagerPage';
+import StreamWidget from '@/components/pages/StreamWidget';
+import TwitchCallbackPage from '@/components/pages/TwitchCallbackPage';
+import dataProvider from '@/dataProvider';
+import i18nProvider from '@/i18nProvider';
+import Layout from '@/ra/Layout';
 import { TimerManagerProvider } from '@/timers';
-import authProvider from './authProvider';
-import dataProvider from './dataProvider';
-import i18nProvider from './i18nProvider';
-import ProfilePage from './pages/ProfilePage';
-import StreamManagerPage from './pages/StreamManagerPage';
-import TwitchCallbackPage from './pages/TwitchCallbackPage';
-import Layout from './ra/Layout';
+
+const theme = createTheme({
+  components: {
+    MuiInputBase: {
+      defaultProps: {
+        disableInjectingGlobalStyles: true,
+      },
+    },
+  },
+});
 
 function App() {
   const router = createBrowserRouter([
@@ -25,7 +38,16 @@ function App() {
             i18nProvider={i18nProvider}
             authProvider={authProvider}
             layout={Layout}
+            theme={theme}
           >
+            <GlobalStyles
+              styles={{
+                '@keyframes mui-auto-fill': { from: { display: 'block' } },
+                '@keyframes mui-auto-fill-cancel': {
+                  from: { display: 'block' },
+                },
+              }}
+            />
             <Resource name="stream_plans" {...streamPlans}>
               <Route path="calendar" element={<StreamPlansCalendar />} />
               <Route
