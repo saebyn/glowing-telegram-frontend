@@ -2,11 +2,13 @@ import RecurrenceDayInput from '@/atoms/RecurrenceDayInput';
 import TagInput from '@/atoms/TagEditorInput';
 import TimezoneSelectInput from '@/atoms/TimezoneSelectInput';
 import TwitchCategoryAutocompleteInput from '@/atoms/TwitchCategoryAutocompleteInput';
+import YouTubeCategoryInput from '@/atoms/YouTubeCategoryInput';
 import useProfile from '@/useProfile';
 import Alert from '@mui/material/Alert';
 import { RichTextInput } from 'ra-input-rich-text';
 import {
   ArrayInput,
+  BooleanInput,
   DateInput,
   Edit,
   ListButton,
@@ -103,12 +105,17 @@ function StreamPlansEdit() {
 
         <TagInput source="tags" />
 
-        <TextInput source="category" />
+        <YouTubeCategoryInput source="category" />
 
         <TwitchCategoryAutocompleteInput
           source="twitch_category"
           profile={profile}
         />
+
+        <TextInput source="thumbnail_url" />
+        <TextInput source="playlist_id" />
+
+        <BooleanInput source="notify_subscribers" />
       </SimpleForm>
     </Edit>
   );
