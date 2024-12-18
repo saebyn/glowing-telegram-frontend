@@ -1,4 +1,4 @@
-import TwitchCategoryAutocomplete from '@/atoms/TwitchCategoryAutocomplete';
+import TwitchCategoryAutocomplete from '@/components/atoms/TwitchCategoryAutocomplete';
 import type { Profile } from '@/useProfile';
 import { type InputProps, useInput } from 'react-admin';
 

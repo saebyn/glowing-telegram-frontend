@@ -1,4 +1,4 @@
-import TasksDrawer from '@/organisms/TasksDrawer';
+import TasksDrawer from '@/components/organisms/TasksDrawer';
 import Button from '@mui/material/Button';
 import { AppBar, Logout, TitlePortal, UserMenu } from 'react-admin';
 import ProfileMenuItem from './ProfileMenuItem';

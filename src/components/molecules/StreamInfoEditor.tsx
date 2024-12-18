@@ -1,7 +1,7 @@
-import LanguageSelect from '@/atoms/LanguageSelect';
-import TagEditor from '@/atoms/TagEditor';
-import TwitchCCTAutocomplete from '@/atoms/TwitchCCLSelect';
-import TwitchCategoryAutocomplete from '@/atoms/TwitchCategoryAutocomplete';
+import LanguageSelect from '@/components/atoms/LanguageSelect';
+import TagEditor from '@/components/atoms/TagEditor';
+import TwitchCCTAutocomplete from '@/components/atoms/TwitchCCLSelect';
+import TwitchCategoryAutocomplete from '@/components/atoms/TwitchCategoryAutocomplete';
 import type { StreamEvent } from '@/scheduling/types';
 import {
   type GetChannelInformationResponse,

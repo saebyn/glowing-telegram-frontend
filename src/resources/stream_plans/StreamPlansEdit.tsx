@@ -1,8 +1,8 @@
-import RecurrenceDayInput from '@/atoms/RecurrenceDayInput';
-import TagInput from '@/atoms/TagEditorInput';
-import TimezoneSelectInput from '@/atoms/TimezoneSelectInput';
-import TwitchCategoryAutocompleteInput from '@/atoms/TwitchCategoryAutocompleteInput';
-import YouTubeCategoryInput from '@/atoms/YouTubeCategoryInput';
+import RecurrenceDayInput from '@/components/atoms/RecurrenceDayInput';
+import TagInput from '@/components/atoms/TagEditorInput';
+import TimezoneSelectInput from '@/components/atoms/TimezoneSelectInput';
+import TwitchCategoryAutocompleteInput from '@/components/atoms/TwitchCategoryAutocompleteInput';
+import YouTubeCategoryInput from '@/components/atoms/YouTubeCategoryInput';
 import useProfile from '@/useProfile';
 import Alert from '@mui/material/Alert';
 import { RichTextInput } from 'ra-input-rich-text';
