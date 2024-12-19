@@ -4,12 +4,14 @@ const ThumbnailField = ({
   width,
   height,
   source,
-}: { width?: number; height?: number; source: string }) => {
+  label,
+}: { width?: number; height?: number; source: string; label?: string }) => {
   const widthValue = width || 100;
   const heightValue = height || 100;
 
   return (
     <FunctionField
+      label={label}
       sortable={false}
       render={(record) => {
         if (!record[source]) {

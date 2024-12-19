@@ -31,7 +31,7 @@ const authProvider: AuthProvider = {
     const user = await userManager.getUser();
 
     if (!user) {
-      return userManager.signinRedirect();
+      await userManager.signinRedirect();
     }
   },
   async getIdentity() {
@@ -52,7 +52,7 @@ const authProvider: AuthProvider = {
   },
   async handleCallback() {
     console.log('handleCallback');
-    await userManager.signinRedirectCallback();
+    await userManager.signinCallback();
   },
 };
 

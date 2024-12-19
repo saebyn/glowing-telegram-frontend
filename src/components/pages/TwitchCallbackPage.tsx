@@ -2,9 +2,11 @@ import { getCsrfToken } from '@/csrf';
 import { parseReturnedData, validateAccessToken } from '@/twitch';
 import { useEffect } from 'react';
 import { LoadingIndicator, useUpdate } from 'react-admin';
+import { useNavigate } from 'react-router-dom';
 
 function TwitchCallbackPage() {
   const [update, { isPending, isIdle, isError }] = useUpdate();
+  const navigate = useNavigate();
 
   const csrfToken = getCsrfToken();
   const result = parseReturnedData(csrfToken, window.location);
@@ -29,14 +31,14 @@ function TwitchCallbackPage() {
           });
         })
         .then(() => {
-          window.location.href = '/profile';
+          navigate('/profile');
         });
     }
 
     return () => {
       abortController.abort();
     };
-  }, [accessToken, update]);
+  }, [accessToken, update, navigate]);
 
   if (isPending || isIdle) {
     return <LoadingIndicator />;

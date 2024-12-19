@@ -1,4 +1,9 @@
 import {
+  type Duration,
+  parseISO8601Duration,
+  toISO8601Duration,
+} from '@/isoDuration';
+import {
   Box,
   FormControl,
   FormHelperText,
@@ -7,11 +12,6 @@ import {
 } from '@mui/material';
 import type { TextFieldProps } from '@mui/material/TextField';
 import type React from 'react';
-import {
-  type Duration,
-  parseISO8601Duration,
-  toISO8601Duration,
-} from '.@/isoDuration';
 
 export type TimeDurationInputBaseProps = TextFieldProps;
 

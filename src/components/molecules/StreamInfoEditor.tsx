@@ -2,13 +2,13 @@ import LanguageSelect from '@/components/atoms/LanguageSelect';
 import TagEditor from '@/components/atoms/TagEditor';
 import TwitchCCTAutocomplete from '@/components/atoms/TwitchCCLSelect';
 import TwitchCategoryAutocomplete from '@/components/atoms/TwitchCategoryAutocomplete';
+import type { Profile } from '@/hooks/useProfile';
 import type { StreamEvent } from '@/scheduling/types';
 import {
   type GetChannelInformationResponse,
   getChannelInformation,
   modifyChannelInformation,
 } from '@/twitch';
-import type { Profile } from '@/useProfile';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';

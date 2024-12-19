@@ -3,7 +3,7 @@ import TagInput from '@/components/atoms/TagEditorInput';
 import TimezoneSelectInput from '@/components/atoms/TimezoneSelectInput';
 import TwitchCategoryAutocompleteInput from '@/components/atoms/TwitchCategoryAutocompleteInput';
 import YouTubeCategoryInput from '@/components/atoms/YouTubeCategoryInput';
-import useProfile from '@/useProfile';
+import useProfile from '@/hooks/useProfile';
 import Alert from '@mui/material/Alert';
 import { RichTextInput } from 'ra-input-rich-text';
 import {

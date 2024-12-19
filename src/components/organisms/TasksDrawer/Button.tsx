@@ -1,13 +1,8 @@
+import { useWebsocket } from '@/hooks/useWebsocket';
+import type { TaskStatusWebsocketMessage } from '@/hooks/useWebsocket';
 import ListIcon from '@mui/icons-material/List';
-/**
- * Button component for the TasksDrawer.
- *
- * Show the count of tasks whose status has changed since the last time the user viewed the TasksDrawer.
- */
 import { Badge, Button } from '@mui/material';
-import { type Reducer, useCallback, useReducer } from 'react';
-import type { TaskStatusWebsocketMessage } from '../websocket';
-import useTaskStatusSubscription from './useTasksStatusSubscription';
+import { type Reducer, useCallback, useEffect, useReducer } from 'react';
 
 interface Props {
   onClick: () => void;
@@ -42,7 +37,19 @@ const TasksDrawerButton = ({ onClick }: Props) => {
     },
   );
 
-  useTaskStatusSubscription(dispatch);
+  const websocket = useWebsocket();
+
+  useEffect(() => {
+    if (!websocket) return;
+
+    const handle = websocket.subscribe((task) => {
+      dispatch(task);
+    });
+
+    return () => {
+      websocket.unsubscribe(handle);
+    };
+  }, [websocket]);
 
   const handleClick = useCallback(() => {
     dispatch({ event: 'reset' });

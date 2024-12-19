@@ -1,7 +1,7 @@
 import TagEditor from '@/components/atoms/TagEditor';
 import TimezoneSelect from '@/components/atoms/TimezoneSelect';
 import TwitchOAuthButton from '@/components/atoms/TwitchOAuthButton';
-import useProfile, { type Profile } from '@/useProfile';
+import useProfile, { type Profile } from '@/hooks/useProfile';
 import {
   Avatar,
   Box,

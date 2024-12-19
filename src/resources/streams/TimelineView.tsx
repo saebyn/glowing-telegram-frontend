@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { useRecordContext } from "react-admin";
-import { parseIntoSeconds } from "../../isoDuration";
+import { useState } from 'react';
+import { useRecordContext } from 'react-admin';
+import { parseIntoSeconds } from '../../isoDuration';
 
-import Timeline from "../../Timeline/StreamTimeline";
+import Timeline from '@/components/organisms/Timeline/StreamTimeline';
 
-import { styled } from "@mui/material/styles";
-import type { Segment } from "../../Timeline/SegmentSelector";
-import type { DataStreamDataElement } from "../../types";
-import BulkCreateEpisodesButton from "../../BulkEpisodeCreateButton";
+import BulkCreateEpisodesButton from '@/components/molecules/BulkEpisodeCreateButton';
+import type { Segment } from '@/components/organisms/Timeline/SegmentSelector';
+import { styled } from '@mui/material/styles';
+import type { DataStreamDataElement } from '../../types';
 
 interface TimelineViewProps {
   className?: string;
@@ -67,7 +67,7 @@ const TimelineView = ({ className }: TimelineViewProps) => {
         end={end}
         dataStreams={[
           {
-            name: "Silence Detection",
+            name: 'Silence Detection',
             data: silenceDetectionSegments,
             color: [0, 0, 255],
           },
@@ -77,7 +77,7 @@ const TimelineView = ({ className }: TimelineViewProps) => {
   );
 };
 
-const PREFIX = "TimelineView";
+const PREFIX = 'TimelineView';
 
 export const LabeledClasses = {
   root: `${PREFIX}-root`,
@@ -87,7 +87,7 @@ export const LabeledClasses = {
 };
 
 export default styled(TimelineView)({
-  width: "100%",
+  width: '100%',
 });
 
 function periodsBetweenSegments(

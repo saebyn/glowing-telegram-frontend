@@ -1,3 +1,4 @@
+import ThumbnailField from '@/components/atoms/ThumbnailField';
 import {
   DateField,
   ReferenceArrayField,
@@ -5,8 +6,7 @@ import {
   type ShowProps,
   SimpleShowLayout,
   TextField,
-} from "react-admin";
-import ThumbnailField from "../../ThumbnailField";
+} from 'react-admin';
 
 const StreamShow = (props: ShowProps) => (
   <Show {...props}>

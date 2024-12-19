@@ -1,5 +1,5 @@
-import { parseIntoSeconds } from "../isoDuration";
-import type { Episode, Stream } from "../types";
+import { parseIntoSeconds } from '@/isoDuration';
+import type { Episode, Stream } from '@/types';
 
 function exportSRT(episode: Episode, stream: Stream) {
   const transcriptSegments = (stream.transcription_segments || []).map(
@@ -7,12 +7,12 @@ function exportSRT(episode: Episode, stream: Stream) {
       start: parseIntoSeconds(segment.start),
       end: parseIntoSeconds(segment.end),
       text: segment.text,
-    })
+    }),
   );
 
   transcriptSegments.sort((a, b) => a.start - b.start);
 
-  let srtString = "";
+  let srtString = '';
 
   let i = 1;
 
@@ -27,7 +27,7 @@ function exportSRT(episode: Episode, stream: Stream) {
       ) {
         srtString += `${i}\n`;
         srtString += `${formatTime(
-          transcriptSegment.start - cutStart
+          transcriptSegment.start - cutStart,
         )} --> ${formatTime(transcriptSegment.end - cutStart)}\n`;
         srtString += `${transcriptSegment.text}\n\n`;
 
@@ -45,13 +45,13 @@ function formatTime(seconds: number) {
   const remainingSeconds = seconds % 60;
 
   return `${pad(hours)}:${pad(minutes)}:${pad(remainingSeconds).replace(
-    ".",
-    ","
+    '.',
+    ',',
   )}0`;
 }
 
 function pad(num: number) {
-  return num.toString().padStart(2, "0");
+  return num.toString().padStart(2, '0');
 }
 
 export default exportSRT;

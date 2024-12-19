@@ -1,14 +1,14 @@
+import DescriptionInput from '@/components/atoms/DescriptionInput';
+import { TimeDurationInput } from '@/components/atoms/TimeDurationInput';
+import TitleInput from '@/components/atoms/TitleInput';
 import {
   Create,
-  SimpleForm,
   type CreateProps,
-  TextInput,
-  SelectInput,
   DateTimeInput,
-} from "react-admin";
-import DescriptionInput from "../../DescriptionInput";
-import TitleInput from "../../TitleInput";
-import { TimeDurationInput } from "../../DurationInput";
+  SelectInput,
+  SimpleForm,
+  TextInput,
+} from 'react-admin';
 
 const StreamCreate = (props: CreateProps) => (
   <Create {...props} title="Create a Stream" redirect="list">
@@ -21,8 +21,8 @@ const StreamCreate = (props: CreateProps) => (
       <SelectInput
         source="stream_platform"
         choices={[
-          { id: "twitch", name: "Twitch" },
-          { id: "youtube", name: "YouTube" },
+          { id: 'twitch', name: 'Twitch' },
+          { id: 'youtube', name: 'YouTube' },
         ]}
         required
         defaultValue="twitch"
@@ -37,7 +37,7 @@ const StreamCreate = (props: CreateProps) => (
         source="prefix"
         required
         helperText="The prefix is used to identify related video clips for this stream. It's typically in the format YYYY-MM-DD."
-        inputProps={{ pattern: "[0-9]{4}-[0-9]{2}-[0-9]{2}" }}
+        inputProps={{ pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}' }}
       />
     </SimpleForm>
   </Create>

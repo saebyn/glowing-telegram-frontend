@@ -1,17 +1,17 @@
+import { TimeDurationInput } from '@/components/atoms/TimeDurationInput';
+import YouTubeCategoryInput from '@/components/atoms/YouTubeCategoryInput';
 import {
-  Create,
-  SimpleForm,
-  type CreateProps,
-  TextInput,
   ArrayInput,
   BooleanInput,
-  SimpleFormIterator,
+  Create,
+  type CreateProps,
+  NumberInput,
   ReferenceInput,
   SelectInput,
-  NumberInput,
-} from "react-admin";
-import { TimeDurationInput } from "../../DurationInput";
-import YouTubeCategoryInput from "../../YouTubeCategoryInput";
+  SimpleForm,
+  SimpleFormIterator,
+  TextInput,
+} from 'react-admin';
 
 const EpisodeCreate = (props: CreateProps) => (
   <Create {...props} title="Create an Episode">
