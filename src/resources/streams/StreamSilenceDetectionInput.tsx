@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { TimeDurationInput } from '@/components/atoms/TimeDurationInput';
+import { styled } from '@mui/material/styles';
+import { useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
 import {
-  Button,
-  useRecordContext,
-  useDataProvider,
-  useRefresh,
   ArrayInput,
+  Button,
   SimpleFormIterator,
-} from "react-admin";
-import { useMutation } from "@tanstack/react-query";
-import { styled } from "@mui/material/styles";
-import AsyncResultLoader from "./AsyncResultLoader";
-import { TimeDurationInput } from "../../DurationInput";
+  useDataProvider,
+  useRecordContext,
+  useRefresh,
+} from 'react-admin';
+import AsyncResultLoader from './AsyncResultLoader';
 
-import { TextField } from "@mui/material";
+import { TextField } from '@mui/material';
 
 const ScanButton = ({ label }: { label: string }) => {
   const record = useRecordContext();
@@ -23,7 +23,7 @@ const ScanButton = ({ label }: { label: string }) => {
   const [duration, setDuration] = useState(30);
 
   const { mutate, isPending } = useMutation<string | null>({
-    mutationKey: ["queueStreamSilenceDetection", record?.id],
+    mutationKey: ['queueStreamSilenceDetection', record?.id],
     mutationFn: () =>
       dataProvider.queueStreamSilenceDetection({
         task_title: `Silence Detection for ${record?.title}`,
@@ -71,13 +71,13 @@ export const TaskStatus = ({
   taskStatus: string | null | undefined;
 }) => {
   switch (taskStatus) {
-    case "Queued":
+    case 'Queued':
       return <p>Task queued</p>;
-    case "Processing":
+    case 'Processing':
       return <p>Task running</p>;
-    case "Complete":
+    case 'Complete':
       return <p>Task completed</p>;
-    case "Failed":
+    case 'Failed':
       return <p>Task failed</p>;
     default:
       return null;
@@ -111,7 +111,7 @@ const StreamSilenceDetectionInput = ({
   );
 };
 
-const PREFIX = "StreamSilenceDetectionInput";
+const PREFIX = 'StreamSilenceDetectionInput';
 
 export const LabeledClasses = {
   root: `${PREFIX}-root`,
@@ -121,5 +121,5 @@ export const LabeledClasses = {
 };
 
 export default styled(StreamSilenceDetectionInput)({
-  width: "100%",
+  width: '100%',
 });

@@ -2,8 +2,8 @@ import AdManager from '@/components/molecules/AdManager';
 import StreamInfoEditor from '@/components/molecules/StreamInfoEditor';
 import Timers from '@/components/molecules/Timers';
 import UpcomingStream from '@/components/molecules/UpcomingStream';
+import useProfile from '@/hooks/useProfile';
 import findNextStream from '@/scheduling/findNextStream';
-import useProfile from '@/useProfile';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -11,6 +11,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { DateTime } from 'luxon';
 import { LoadingIndicator, useGetList } from 'react-admin';
+import { useNavigate } from 'react-router-dom';
 
 const streamManagerStyles = {
   root: {
@@ -19,6 +20,8 @@ const streamManagerStyles = {
 };
 
 function StreamManagerPage() {
+  const navigate = useNavigate();
+
   // get the stream plans records
   const {
     data: streamPlans,
@@ -56,7 +59,7 @@ function StreamManagerPage() {
     <Paper sx={streamManagerStyles.root}>
       <Typography variant="h5" gutterBottom>
         Stream Manager
-        <Button href="/">Return to Dashboard</Button>
+        <Button onClick={() => navigate('/')}>Return to Dashboard</Button>
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={2} border={1} padding={2}>

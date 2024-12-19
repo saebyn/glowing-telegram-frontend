@@ -1,19 +1,19 @@
 import {
-  TextInput,
-  TabbedForm,
-  SelectInput,
   DateTimeInput,
   ReferenceInput,
-} from "react-admin";
+  SelectInput,
+  TabbedForm,
+  TextInput,
+} from 'react-admin';
 
-import StreamVideoClipsInput from "./StreamVideoClipsInput";
-import StreamTranscriptInput from "./StreamTranscriptInput";
-import StreamSilenceDetectionInput from "./StreamSilenceDetectionInput";
-import DescriptionInput from "../../DescriptionInput";
-import TitleInput from "../../TitleInput";
-import { TimeDurationInput } from "../../DurationInput";
-import Edit, { type EditProps } from "../../Edit";
-import TimelineView from "./TimelineView";
+import DescriptionInput from '@/components/atoms/DescriptionInput';
+import { TimeDurationInput } from '@/components/atoms/TimeDurationInput';
+import TitleInput from '@/components/atoms/TitleInput';
+import Edit, { type EditProps } from '@/components/templates/Edit';
+import StreamSilenceDetectionInput from './StreamSilenceDetectionInput';
+import StreamTranscriptInput from './StreamTranscriptInput';
+import StreamVideoClipsInput from './StreamVideoClipsInput';
+import TimelineView from './TimelineView';
 
 const StreamEdit = (props: EditProps) => (
   <Edit {...props}>
@@ -32,8 +32,8 @@ const StreamEdit = (props: EditProps) => (
         <SelectInput
           source="stream_platform"
           choices={[
-            { id: "twitch", name: "Twitch" },
-            { id: "youtube", name: "YouTube" },
+            { id: 'twitch', name: 'Twitch' },
+            { id: 'youtube', name: 'YouTube' },
           ]}
           required
           defaultValue="twitch"
@@ -48,7 +48,7 @@ const StreamEdit = (props: EditProps) => (
           source="prefix"
           required
           helperText="The prefix is used to identify related video clips for this stream. It's typically in the format YYYY-MM-DD."
-          inputProps={{ pattern: "[0-9]{4}-[0-9]{2}-[0-9]{2}" }}
+          inputProps={{ pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}' }}
         />
       </TabbedForm.Tab>
 

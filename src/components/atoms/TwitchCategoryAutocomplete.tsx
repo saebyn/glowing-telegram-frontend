@@ -1,5 +1,5 @@
+import type { Profile } from '@/hooks/useProfile';
 import { type TwitchCategory, searchCategories } from '@/twitch';
-import type { Profile } from '@/useProfile';
 import Alert from '@mui/material/Alert';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';

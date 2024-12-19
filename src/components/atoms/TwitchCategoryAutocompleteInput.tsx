@@ -1,5 +1,5 @@
 import TwitchCategoryAutocomplete from '@/components/atoms/TwitchCategoryAutocomplete';
-import type { Profile } from '@/useProfile';
+import type { Profile } from '@/hooks/useProfile';
 import { type InputProps, useInput } from 'react-admin';
 
 interface TwitchCategoryAutocompleteInputProps extends InputProps {

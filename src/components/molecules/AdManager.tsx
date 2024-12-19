@@ -1,10 +1,10 @@
+import type { Profile } from '@/hooks/useProfile';
 import {
   type GetAdScheduleResponse,
   getAdSchedule,
   snoozeNextAd,
   startCommercial,
 } from '@/twitch';
-import type { Profile } from '@/useProfile';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';

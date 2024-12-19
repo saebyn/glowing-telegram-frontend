@@ -1,17 +1,17 @@
+import ThumbnailField from '@/components/atoms/ThumbnailField';
+import ImportIcon from '@mui/icons-material/ImportExport';
 import {
-  TextField,
+  Button,
   Datagrid,
   InfiniteList,
   SimpleShowLayout,
-  Button,
-  useRefresh,
-  useNotify,
+  TextField,
   useDataProvider,
   useListContext,
+  useNotify,
+  useRefresh,
   useUnselectAll,
-} from "react-admin";
-import ImportIcon from "@mui/icons-material/ImportExport";
-import ThumbnailField from "../../ThumbnailField";
+} from 'react-admin';
 
 const StreamPanel = () => (
   <SimpleShowLayout>
@@ -40,7 +40,7 @@ const BulkActionButtons = () => {
   const notify = useNotify();
   const dataProvider = useDataProvider();
   const { selectedIds, data } = useListContext<TwitchStreamData>();
-  const unselectAll = useUnselectAll("twitchStreams");
+  const unselectAll = useUnselectAll('twitchStreams');
 
   const handleImport = () => {
     if (!selectedIds.length) {
@@ -52,7 +52,7 @@ const BulkActionButtons = () => {
     }
 
     // Notify the user that the import started
-    notify("Importing streams");
+    notify('Importing streams');
 
     // get the selected records
     const selectedRecords = data
@@ -74,21 +74,21 @@ const BulkActionButtons = () => {
           thumbnail: thumbnail_url,
           stream_id,
           stream_date: created_at,
-          stream_platform: "twitch",
+          stream_platform: 'twitch',
 
           // the date portion of the created_at field
           prefix: `${createdAt.getFullYear()}-${(createdAt.getMonth() + 1)
             .toString()
-            .padStart(2, "0")}-${createdAt
+            .padStart(2, '0')}-${createdAt
             .getDate()
             .toString()
-            .padStart(2, "0")}`,
+            .padStart(2, '0')}`,
         };
       });
 
     // Perform the import
     dataProvider.importStreams(selectedRecords).then(() => {
-      notify("Streams imported");
+      notify('Streams imported');
 
       // Unselect all records
       unselectAll();

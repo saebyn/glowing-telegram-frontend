@@ -1,37 +1,37 @@
-import type React from "react";
-import { useState } from "react";
+import Badge from '@mui/material/Badge';
+import MuiButton from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import MuiTextField from '@mui/material/TextField';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { PickersDay } from '@mui/x-date-pickers/PickersDay';
+import { DateTime } from 'luxon';
+import type React from 'react';
+import { useState } from 'react';
 import {
-  Datagrid,
-  DateField,
-  List,
-  TextField,
-  NumberField,
-  type ListProps,
-  CloneButton,
-  useListContext,
   BooleanField,
   Button,
-  useDataProvider,
-  LoadingIndicator,
-  SearchInput,
-  NullableBooleanInput,
-  ReferenceInput,
-  SelectInput,
+  CloneButton,
+  Datagrid,
+  DateField,
   DateInput,
+  List,
+  type ListProps,
+  LoadingIndicator,
+  NullableBooleanInput,
+  NumberField,
   ReferenceField,
-} from "react-admin";
-import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import { PickersDay } from "@mui/x-date-pickers/PickersDay";
-import Badge from "@mui/material/Badge";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import MuiTextField from "@mui/material/TextField";
-import MuiButton from "@mui/material/Button";
-import type { FindFilesResponse } from "../../types";
+  ReferenceInput,
+  SearchInput,
+  SelectInput,
+  TextField,
+  useDataProvider,
+  useListContext,
+} from 'react-admin';
+import type { FindFilesResponse } from '../../types';
 
-/* eslint-disable react/jsx-key */
 const streamsFilter = [
   <SearchInput source="q" alwaysOn />,
 
@@ -50,10 +50,10 @@ const streamsFilter = [
   </ReferenceInput>,
 ];
 
-function getDateKey(date: Date): string {
-  return `${date.getFullYear()}-${(date.getMonth() + 1)
+function getDateKey(date: DateTime): string {
+  return `${date.year}-${(date.month + 1)
     .toString()
-    .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+    .padStart(2, '0')}-${date.day.toString().padStart(2, '0')}`;
 }
 
 const StreamDay = ({
@@ -79,16 +79,16 @@ const StreamDay = ({
 };
 
 const calendarStyle = {
-  display: "flex",
+  display: 'flex',
   minWidth: 300,
-  flexDirection: "column",
-  alignItems: "center",
-  "& .MuiPickersCalendar-week": {
-    display: "flex",
-    justifyContent: "center",
+  flexDirection: 'column',
+  alignItems: 'center',
+  '& .MuiPickersCalendar-week': {
+    display: 'flex',
+    justifyContent: 'center',
   },
-  "& .MuiPickersCalendar-transitionContainer": {
-    width: "100%",
+  '& .MuiPickersCalendar-transitionContainer': {
+    width: '100%',
   },
 };
 
@@ -102,7 +102,7 @@ const CalendarView = () => {
       if (!stream || !stream.stream_date) {
         return;
       }
-      const date = new Date(stream.stream_date);
+      const date = DateTime.fromISO(stream.stream_date);
       const key = getDateKey(date);
       days[key] = (days[key] || 0) + 1;
     });
@@ -136,7 +136,7 @@ const BulkSilenceDetectionButton = () => {
     setProcessing(true);
     await Promise.all(
       selectedIds.map(async (streamId) => {
-        const { data: stream } = await dataProvider.getOne("streams", {
+        const { data: stream } = await dataProvider.getOne('streams', {
           id: streamId,
         });
         await dataProvider.queueStreamSilenceDetection({
@@ -209,14 +209,14 @@ const BulkScanForClipsButton = () => {
   const onScanForClips = async () => {
     await Promise.all(
       selectedIds.map(async (streamId) => {
-        const { data: stream } = await dataProvider.getOne("streams", {
+        const { data: stream } = await dataProvider.getOne('streams', {
           id: streamId,
         });
         const clips: FindFilesResponse = await dataProvider.getStreamClips(
           stream.prefix,
         );
 
-        await dataProvider.update("streams", {
+        await dataProvider.update('streams', {
           id: streamId,
           previousData: stream,
           data: {

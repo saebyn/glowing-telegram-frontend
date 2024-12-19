@@ -1,5 +1,5 @@
+import type { Profile } from '@/hooks/useProfile';
 import type { StreamEvent } from '@/scheduling/types';
-import type { Profile } from '@/useProfile';
 import Alert from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -98,18 +98,16 @@ function UpcomingStream({ nextScheduledStream, profile }: UpcomingStreamProps) {
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <Typography>
-            {nextScheduledStream.prep_notes ? (
-              <div
-                // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-                dangerouslySetInnerHTML={{
-                  __html: nextScheduledStream.prep_notes,
-                }}
-              />
-            ) : (
-              'No notes available'
-            )}
-          </Typography>
+          {nextScheduledStream.prep_notes ? (
+            <Typography
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+              dangerouslySetInnerHTML={{
+                __html: nextScheduledStream.prep_notes,
+              }}
+            />
+          ) : (
+            <Typography>No notes available</Typography>
+          )}
         </Grid>
       </Grid>
     </Paper>

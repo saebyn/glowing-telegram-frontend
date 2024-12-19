@@ -1,9 +1,9 @@
+import type { Profile } from '@/hooks/useProfile';
 import {
   type ContentClassificationLabel,
   type ContentClassificationLabelDefinition,
   getContentClassificationLabels,
 } from '@/twitch';
-import type { Profile } from '@/useProfile';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import FormControl from '@mui/material/FormControl';
