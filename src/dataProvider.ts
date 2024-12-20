@@ -5,7 +5,7 @@ import { HttpError, combineDataProviders } from 'react-admin';
 const { VITE_API_URL: baseApiUrl } = import.meta.env;
 
 const resourceMap = {
-  stream_plans: 'records/series',
+  series: 'records/series',
   profile: 'records/profiles',
   streams: 'records/streams',
   episodes: 'records/episodes',

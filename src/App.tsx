@@ -64,7 +64,7 @@ function App() {
                     },
                   }}
                 />
-                <Resource name="stream_plans" {...streamPlans}>
+                <Resource name="series" {...streamPlans}>
                   <Route path="calendar" element={<StreamPlansCalendar />} />
                   <Route
                     path="calendar/:targetDate"
