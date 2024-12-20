@@ -1,11 +1,11 @@
-import { Datagrid, DateField, List, TextField, type ListProps } from "react-admin";
+import { Datagrid, List, type ListProps, TextField } from 'react-admin';
 
 const VideoClipList = (props: ListProps) => (
   <List {...props}>
     <Datagrid rowClick="edit">
-      <TextField source="title" />
-      <DateField source="created_at" />
-      <DateField source="updated_at" />
+      <TextField source="id" />
+      <TextField source="start_time" />
+      <TextField source="stream_id" />
     </Datagrid>
   </List>
 );

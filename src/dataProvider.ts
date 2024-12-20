@@ -46,7 +46,7 @@ const restDataProvider: DataProvider = {
     });
 
     return {
-      data: data.items,
+      data: data.items.map(cleanRecord(resource)) as any[],
       pageInfo: {
         hasNextPage: data.cursor !== null,
       },
@@ -61,7 +61,7 @@ const restDataProvider: DataProvider = {
 
     return {
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      data: record as any,
+      data: cleanRecord(resource)(record as any) as any,
     };
   },
   getMany: (resource, params) => {
@@ -77,25 +77,25 @@ const restDataProvider: DataProvider = {
   create: async (resource, params) => {
     console.log('CREATE', resource, params);
 
-    const result = await fetchResourceData(resource, undefined, 'POST', {
+    const record = await fetchResourceData(resource, undefined, 'POST', {
       data: params.data,
     });
 
     return {
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      data: result as any,
+      data: cleanRecord(resource)(record as any) as any,
     };
   },
   update: async (resource, params) => {
     console.log('UPDATE', resource, params);
 
-    const result = await fetchResourceData(resource, params.id, 'PUT', {
+    const record = await fetchResourceData(resource, params.id, 'PUT', {
       data: params.data,
     });
 
     return {
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      data: result as any,
+      data: cleanRecord(resource)(record as any) as any,
     };
   },
   updateMany: (resource, params) => {
@@ -241,6 +241,16 @@ async function fetchResourceData<T>(
   }
 
   return response.json();
+}
+
+function cleanRecord(resource: string) {
+  return (record: Record<string, unknown>) => {
+    if (resource === 'video_clips') {
+      record.id = record.key;
+    }
+
+    return record;
+  };
 }
 
 function validateResource(
