@@ -1,4 +1,4 @@
-import { UserManager } from 'oidc-client-ts';
+import { Log, UserManager } from 'oidc-client-ts';
 
 const {
   VITE_AWS_REGION: region,
@@ -19,6 +19,8 @@ export const userManager = new UserManager({
   redirectMethod: 'replace',
 });
 
+userManager.startSilentRenew();
+
 export async function signoutRedirect() {
-  return `https://${domain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
+  return `https://${domain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}&redirect_uri=${encodeURIComponent(logoutUri)}&response_type=code`;
 }

@@ -51,7 +51,6 @@ const authProvider: AuthProvider = {
     };
   },
   async handleCallback() {
-    console.log('handleCallback');
     await userManager.signinCallback();
   },
 };
