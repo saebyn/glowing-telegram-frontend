@@ -1,25 +1,15 @@
 import Badge from '@mui/material/Badge';
-import MuiButton from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import MuiTextField from '@mui/material/TextField';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 import { DateTime } from 'luxon';
-import type React from 'react';
-import { useState } from 'react';
 import {
   BooleanField,
-  Button,
   CloneButton,
   Datagrid,
   DateField,
   DateInput,
   List,
   type ListProps,
-  LoadingIndicator,
   NullableBooleanInput,
   NumberField,
   ReferenceField,
@@ -27,25 +17,40 @@ import {
   SearchInput,
   SelectInput,
   TextField,
-  useDataProvider,
   useListContext,
 } from 'react-admin';
-import type { FindFilesResponse } from '../../types';
 
 const streamsFilter = [
-  <SearchInput source="q" alwaysOn />,
+  <SearchInput source="title" alwaysOn key="title" />,
 
-  <NullableBooleanInput source="has_transcription" label="Transcription" />,
+  <NullableBooleanInput
+    source="has_transcription"
+    label="Transcription"
+    key="has_transcription"
+  />,
   <NullableBooleanInput
     source="has_silence_detection"
     label="Silence Detection"
+    key="has_silence_detection"
   />,
-  <NullableBooleanInput source="has_video_clips" label="Video Clips" />,
-  <NullableBooleanInput source="has_episodes" label="Episodes" />,
+  <NullableBooleanInput
+    source="has_video_clips"
+    label="Video Clips"
+    key="has_video_clips"
+  />,
+  <NullableBooleanInput
+    source="has_episodes"
+    label="Episodes"
+    key="has_episodes"
+  />,
 
-  <DateInput source="stream_date__gte" label="Stream Date After" />,
+  <DateInput
+    source="stream_date__gte"
+    label="Stream Date After"
+    key="stream_date__gte"
+  />,
 
-  <ReferenceInput source="series_id" reference="series">
+  <ReferenceInput source="series_id" reference="series" key="series_id">
     <SelectInput optionText="title" />
   </ReferenceInput>,
 ];
@@ -124,141 +129,9 @@ const CalendarView = () => {
   );
 };
 
-const BulkSilenceDetectionButton = () => {
-  const [track, setTrack] = useState(2);
-  const [duration, setDuration] = useState(30);
-  const [open, setOpen] = useState(false);
-  const [processing, setProcessing] = useState(false);
-  const { selectedIds } = useListContext();
-  const dataProvider = useDataProvider();
-
-  const onSilenceDetection = async () => {
-    setProcessing(true);
-    await Promise.all(
-      selectedIds.map(async (streamId) => {
-        const { data: stream } = await dataProvider.getOne('streams', {
-          id: streamId,
-        });
-        await dataProvider.queueStreamSilenceDetection({
-          task_title: `Silence Detection for ${stream.title}`,
-          uris: stream.video_clips.map((clip: any) => clip.uri),
-          track,
-          duration,
-          stream_id: stream.id,
-        });
-      }),
-    );
-
-    setProcessing(false);
-    setOpen(false);
-  };
-
-  return (
-    <>
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Silence Detection</DialogTitle>
-
-        {processing ? (
-          <DialogContent>
-            <LoadingIndicator />
-          </DialogContent>
-        ) : (
-          <DialogContent>
-            <MuiTextField
-              label="Track"
-              type="number"
-              value={track}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setTrack(Number.parseInt(e.target.value, 10))
-              }
-            />
-            <MuiTextField
-              label="Duration"
-              type="number"
-              value={duration}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setDuration(Number.parseInt(e.target.value, 10))
-              }
-            />
-          </DialogContent>
-        )}
-
-        <DialogActions>
-          <MuiButton disabled={processing} onClick={() => setOpen(false)}>
-            Cancel
-          </MuiButton>
-          <MuiButton
-            disabled={processing}
-            onClick={onSilenceDetection}
-            color="primary"
-          >
-            Start Silence Detection
-          </MuiButton>
-        </DialogActions>
-      </Dialog>
-
-      <Button label="Silence Detection" onClick={() => setOpen(true)} />
-    </>
-  );
-};
-
-const BulkScanForClipsButton = () => {
-  const { selectedIds, refetch, onSelect } = useListContext();
-  const dataProvider = useDataProvider();
-
-  const onScanForClips = async () => {
-    await Promise.all(
-      selectedIds.map(async (streamId) => {
-        const { data: stream } = await dataProvider.getOne('streams', {
-          id: streamId,
-        });
-        const clips: FindFilesResponse = await dataProvider.getStreamClips(
-          stream.prefix,
-        );
-
-        await dataProvider.update('streams', {
-          id: streamId,
-          previousData: stream,
-          data: {
-            video_clips: clips.entries.map((entry) => ({
-              title: entry.metadata.filename,
-              uri: entry.uri,
-              duration: entry.metadata.duration,
-              start_time: entry.metadata.start_time,
-              audio_bitrate: entry.metadata.audio_bitrate,
-              audio_track_count: entry.metadata.audio_track_count,
-              content_type: entry.metadata.content_type,
-              filename: entry.metadata.filename,
-              frame_rate: entry.metadata.frame_rate,
-              height: entry.metadata.height,
-              width: entry.metadata.width,
-              video_bitrate: entry.metadata.video_bitrate,
-              size: entry.metadata.size,
-              last_modified: entry.metadata.last_modified,
-            })),
-          },
-        });
-
-        onSelect([]);
-
-        await refetch();
-      }),
-    );
-  };
-
-  return <Button label="Scan for Clips" onClick={onScanForClips} />;
-};
-
-const StreamBulkActions = () => (
-  <>
-    <BulkSilenceDetectionButton />
-    <BulkScanForClipsButton />
-  </>
-);
-
 const StreamList = (props: ListProps) => (
   <List {...props} filters={streamsFilter} aside={<CalendarView />}>
-    <Datagrid rowClick="edit" bulkActionButtons={<StreamBulkActions />}>
+    <Datagrid rowClick="edit">
       <DateField source="stream_date" />
       <TextField source="title" />
       <ReferenceField source="series_id" reference="series">
