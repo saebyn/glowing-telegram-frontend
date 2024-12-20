@@ -1,8 +1,27 @@
-import { Datagrid, List, type ListProps, TextField } from 'react-admin';
+import {
+  Datagrid,
+  List,
+  type ListProps,
+  ReferenceInput,
+  SelectInput,
+  TextField,
+  useRecordContext,
+} from 'react-admin';
+
+const videoClipsFilter = [
+  <ReferenceInput source="stream_id" reference="streams" key="stream_id">
+    <SelectInput optionText="title" />
+  </ReferenceInput>,
+];
+
+const VideoClipDetails = () => {
+  const record = useRecordContext();
+  return <pre>{JSON.stringify(record, null, 2)}</pre>;
+};
 
 const VideoClipList = (props: ListProps) => (
-  <List {...props}>
-    <Datagrid rowClick="edit">
+  <List {...props} filters={videoClipsFilter}>
+    <Datagrid rowClick="edit" expand={<VideoClipDetails />}>
       <TextField source="id" />
       <TextField source="start_time" />
       <TextField source="stream_id" />
