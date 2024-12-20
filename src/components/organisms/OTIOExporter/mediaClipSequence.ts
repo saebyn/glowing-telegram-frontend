@@ -1,6 +1,6 @@
-import { FPS } from "./constants";
-import type { InternalTrack, ConvertedCut } from "./types";
-import type { VideoClip } from "../types";
+import type { VideoClip } from '../types';
+import { FPS } from './constants';
+import type { ConvertedCut, InternalTrack } from './types';
 
 interface MediaClipCursor {
   clipIndex: number;

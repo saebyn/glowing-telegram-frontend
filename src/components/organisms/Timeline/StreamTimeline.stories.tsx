@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import StreamTimeline from "./StreamTimeline";
+import type { Meta, StoryObj } from '@storybook/react';
+import StreamTimeline from './StreamTimeline';
 
 const meta = {
-  title: "StreamTimeline",
+  title: 'StreamTimeline',
   component: StreamTimeline,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {},
   args: {},
 } satisfies Meta<typeof StreamTimeline>;

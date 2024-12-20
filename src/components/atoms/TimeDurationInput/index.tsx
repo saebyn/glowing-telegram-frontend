@@ -1,9 +1,9 @@
-import { type CommonInputProps, useInput } from "react-admin";
-import type { TextFieldProps } from "@mui/material/TextField";
-import TimeDurationInputBase from "./TimeDurationInputBase";
+import type { TextFieldProps } from '@mui/material/TextField';
+import { type CommonInputProps, useInput } from 'react-admin';
+import TimeDurationInputBase from './TimeDurationInputBase';
 
 export type TimeDurationInputProps = CommonInputProps &
-  Omit<TextFieldProps, "helperText" | "label">;
+  Omit<TextFieldProps, 'helperText' | 'label'>;
 
 export const TimeDurationInput = (props: TimeDurationInputProps) => {
   const { onChange, onBlur, label, ...rest } = props;
@@ -27,7 +27,7 @@ export const TimeDurationInput = (props: TimeDurationInputProps) => {
       disabled={field.disabled}
       label={label}
       error={(isTouched || isSubmitted) && invalid}
-      helperText={(isTouched || isSubmitted) && invalid ? error?.message : ""}
+      helperText={(isTouched || isSubmitted) && invalid ? error?.message : ''}
       required={isRequired}
       {...rest}
     />

@@ -1,30 +1,30 @@
-import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
-import Typography from "@mui/material/Typography";
-import Switch from "@mui/material/Switch";
-import ProcessingIcon from "@mui/icons-material/Loop";
-import DoneIcon from "@mui/icons-material/Done";
-import ErrorIcon from "@mui/icons-material/Error";
-import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
-import Button from "@mui/material/Button";
-import { LoadingIndicator } from "react-admin";
-import useTasks from "./useTasks";
-import { type FC, useRef } from "react";
-import Notifications from "./Notifications";
-import type { TaskStatus, TaskSummary } from "../types";
-import IconButton from "@mui/material/IconButton";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import useTheme from "@mui/material/styles/useTheme";
-import Badge from "@mui/material/Badge";
-import { green, orange, red, blue } from "@mui/material/colors";
+import DoneIcon from '@mui/icons-material/Done';
+import ErrorIcon from '@mui/icons-material/Error';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
+import ProcessingIcon from '@mui/icons-material/Loop';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import Avatar from '@mui/material/Avatar';
+import Badge from '@mui/material/Badge';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ListItemText from '@mui/material/ListItemText';
+import Switch from '@mui/material/Switch';
+import Typography from '@mui/material/Typography';
+import { blue, green, orange, red } from '@mui/material/colors';
+import useTheme from '@mui/material/styles/useTheme';
+import { type FC, useRef } from 'react';
+import { LoadingIndicator } from 'react-admin';
+import type { TaskStatus, TaskSummary } from '../types';
+import Notifications from './Notifications';
+import useTasks from './useTasks';
 
 const containerStyles = {
   minWidth: 250,
-  padding: "2em",
+  padding: '2em',
 };
 
 const statusIcons: Record<TaskStatus, JSX.Element> = {
@@ -59,7 +59,7 @@ const Task: FC<TaskProps> = ({
 
   const timestamp = task.last_updated
     ? new Date(task.last_updated).toLocaleString()
-    : "unknown";
+    : 'unknown';
 
   const newSinceLastView =
     new Date(task.last_updated) > lastViewedTaskTimestamp;
@@ -68,7 +68,7 @@ const Task: FC<TaskProps> = ({
     <ListItem
       key={task.id}
       sx={{
-        backgroundColor: newSinceLastView ? theme.palette.action.selected : "",
+        backgroundColor: newSinceLastView ? theme.palette.action.selected : '',
       }}
       secondaryAction={
         <IconButton
@@ -86,7 +86,7 @@ const Task: FC<TaskProps> = ({
           variant="dot"
           invisible={!task.has_next_task}
           overlap="circular"
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         >
           <Avatar
             alt={task.status}
@@ -135,7 +135,7 @@ const TasksDrawerList = () => {
   const backToTop = () => {
     // Scroll to the top of the list
     if (containerRef.current) {
-      containerRef.current.scrollIntoView({ behavior: "smooth" });
+      containerRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -152,7 +152,7 @@ const TasksDrawerList = () => {
       {isLoading && <LoadingIndicator />}
 
       <Typography variant="subtitle1">
-        {tasks ? `${tasks.length} tasks` : "Loading tasks..."}
+        {tasks ? `${tasks.length} tasks` : 'Loading tasks...'}
       </Typography>
       <Button onClick={markAllViewed} disabled={allViewed}>
         Mark all as viewed
@@ -178,7 +178,7 @@ const TasksDrawerList = () => {
       </List>
 
       <Typography variant="subtitle1">
-        {tasks ? `${tasks.length} tasks` : "Loading tasks..."}
+        {tasks ? `${tasks.length} tasks` : 'Loading tasks...'}
       </Typography>
 
       <Notifications />

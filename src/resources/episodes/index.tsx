@@ -1,7 +1,7 @@
-import { ShowGuesser } from "react-admin";
-import List from "./List";
-import Create from "./Create";
-import Edit from "./Edit";
+import { ShowGuesser } from 'react-admin';
+import Create from './Create';
+import Edit from './Edit';
+import List from './List';
 
 export default {
   list: List,

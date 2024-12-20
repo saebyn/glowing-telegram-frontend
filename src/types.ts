@@ -71,7 +71,7 @@ export interface TaskSummary {
 
 export interface ChatMessage {
   content: string;
-  role: "system" | "user" | "assistant" | "function";
+  role: 'system' | 'user' | 'assistant' | 'function';
 }
 
 export interface DataStreamDataElement {
@@ -81,11 +81,11 @@ export interface DataStreamDataElement {
 }
 
 export type TaskStatus =
-  | "queued"
-  | "processing"
-  | "complete"
-  | "failed"
-  | "invalid";
+  | 'queued'
+  | 'processing'
+  | 'complete'
+  | 'failed'
+  | 'invalid';
 
 interface Metadata {
   filename: string;

@@ -27,9 +27,9 @@ export class Float {
 
     // DaVinci Resolve requires that floating point numbers have a decimal
     // point and at least one digit after the decimal point.
-    return str.endsWith(".0000")
+    return str.endsWith('.0000')
       ? str.slice(0, -3)
-      : str.replace(/0+$/, "").replace(/\.$/, "");
+      : str.replace(/0+$/, '').replace(/\.$/, '');
   }
 }
 
@@ -37,13 +37,13 @@ export default function floatJsonSerializer(
   value: any,
   ignored: unknown = null,
   space = 0,
-  depth = 1
+  depth = 1,
 ): string {
-  const indent = " ".repeat(space * depth) || " ";
-  const newline = space ? "\n" : "";
-  const newlineAndIndent = space ? newline + indent : "";
+  const indent = ' '.repeat(space * depth) || ' ';
+  const newline = space ? '\n' : '';
+  const newlineAndIndent = space ? newline + indent : '';
   const previousIndent =
-    space && depth > 0 ? " ".repeat(space * (depth - 1)) : "";
+    space && depth > 0 ? ' '.repeat(space * (depth - 1)) : '';
 
   const recur = (v: any) => floatJsonSerializer(v, ignored, space, depth + 1);
 
@@ -55,7 +55,7 @@ export default function floatJsonSerializer(
   // if value is an array, serialize its elements
   if (Array.isArray(value)) {
     if (value.length === 0) {
-      return "[]";
+      return '[]';
     }
 
     return `[${newlineAndIndent}${value
@@ -64,10 +64,10 @@ export default function floatJsonSerializer(
   }
 
   // if value is an object, serialize its properties
-  if (typeof value === "object" && value !== null) {
+  if (typeof value === 'object' && value !== null) {
     // if the object has no properties, return an empty object
     if (Object.keys(value).length === 0) {
-      return "{}";
+      return '{}';
     }
 
     const serialized: string[] = [];
@@ -77,7 +77,7 @@ export default function floatJsonSerializer(
       }
     }
     return `{${newlineAndIndent}${serialized.join(
-      `,${newline}${indent}`
+      `,${newline}${indent}`,
     )}${newline}${previousIndent}}`;
   }
 

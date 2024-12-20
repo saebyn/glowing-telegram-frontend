@@ -1,11 +1,3 @@
-import { type FC, type ReactElement, useState } from "react";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Radio from "@mui/material/Radio";
-import InputLabel from "@mui/material/InputLabel";
 import {
   Button,
   Dialog,
@@ -13,7 +5,15 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
-} from "@mui/material";
+} from '@mui/material';
+import InputLabel from '@mui/material/InputLabel';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Radio from '@mui/material/Radio';
+import { type FC, type ReactElement, useState } from 'react';
 
 interface Metadata {
   filename: string;
@@ -59,10 +59,10 @@ const MediaPicker: FC<MediaPickerProps> = ({
 
   return (
     <>
-      <InputLabel>{label || "Media file"}</InputLabel>
+      <InputLabel>{label || 'Media file'}</InputLabel>
       <TextField
-        label={value ? "" : "No file selected"}
-        value={entry?.metadata.filename || ""}
+        label={value ? '' : 'No file selected'}
+        value={entry?.metadata.filename || ''}
         disabled
       />
       <Button

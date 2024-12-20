@@ -1,25 +1,25 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import DensityLine from "./DensityLine";
+import type { Meta, StoryObj } from '@storybook/react';
+import DensityLine from './DensityLine';
 
 const meta = {
-  title: "DensityLine",
+  title: 'DensityLine',
   component: DensityLine,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {
-    start: { control: "number" },
-    end: { control: "number" },
-    data: { control: "array" },
-    color: { control: "array" },
+    start: { control: 'number' },
+    end: { control: 'number' },
+    data: { control: 'array' },
+    color: { control: 'array' },
     transitionMargin: {
       control: {
-        type: "range",
+        type: 'range',
         min: 0,
         max: 10,
         step: 0.1,
       },
       defaultValue: 2,
       description:
-        "The margin around each period where the density transitions to the next period.",
+        'The margin around each period where the density transitions to the next period.',
     },
   },
   args: {},
