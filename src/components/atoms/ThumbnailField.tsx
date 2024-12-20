@@ -1,11 +1,20 @@
 import { FunctionField } from 'react-admin';
 
+interface ThumbnailFieldProps {
+  width?: number;
+  height?: number;
+  source: string;
+  label?: string;
+  altField?: string;
+}
+
 const ThumbnailField = ({
   width,
   height,
   source,
   label,
-}: { width?: number; height?: number; source: string; label?: string }) => {
+  altField = 'title',
+}: ThumbnailFieldProps) => {
   const widthValue = width || 100;
   const heightValue = height || 100;
 
@@ -24,7 +33,7 @@ const ThumbnailField = ({
         return (
           <img
             src={thumbnailUrl}
-            alt={record.title}
+            alt={record[altField] || ''}
             width={widthValue}
             height={heightValue}
           />
