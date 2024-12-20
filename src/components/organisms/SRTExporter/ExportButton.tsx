@@ -1,9 +1,9 @@
-import DownloadIcon from "@mui/icons-material/Download";
+import DownloadIcon from '@mui/icons-material/Download';
 
-import { useRecordContext, useGetOne, Button } from "react-admin";
+import { Button, useGetOne, useRecordContext } from 'react-admin';
 
-import exportSRT from "./exporter";
-import type { Episode } from "../types";
+import type { Episode } from '../types';
+import exportSRT from './exporter';
 
 const ExportButton = () => {
   const episode = useRecordContext<Episode>();
@@ -13,11 +13,11 @@ const ExportButton = () => {
     error,
     refetch,
   } = useGetOne(
-    "streams",
+    'streams',
     { id: episode?.stream_id },
     {
       enabled: !!episode,
-    }
+    },
   );
 
   if (!episode) {
@@ -39,22 +39,22 @@ const ExportButton = () => {
     if (isLoading) return;
     if (error) return;
     if (!episode.tracks || episode.tracks.length === 0) {
-      alert("Episode has no cuts to export.");
+      alert('Episode has no cuts to export.');
       return;
     }
     if (
       !stream.transcription_segments ||
       stream.transcription_segments.length === 0
     ) {
-      alert("Stream has no transcript to export.");
+      alert('Stream has no transcript to export.');
       return;
     }
 
     const srtString = exportSRT(episode, stream);
 
-    const blob = new Blob([srtString], { type: "text/plain" });
+    const blob = new Blob([srtString], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
 
     // set the filename to the episode name

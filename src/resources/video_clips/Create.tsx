@@ -1,4 +1,4 @@
-import { Create, SimpleForm, type CreateProps, TextInput } from "react-admin";
+import { Create, type CreateProps, SimpleForm, TextInput } from 'react-admin';
 
 const VideoClipCreate = (props: CreateProps) => (
   <Create {...props} title="Create a Video Clip">

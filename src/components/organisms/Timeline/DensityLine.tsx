@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import type { FC } from 'react';
 
 interface DensityPeriod {
   start: number;
@@ -77,7 +77,7 @@ const DensityLine: FC<DensityLineProps> = ({
         }%`,
         `${`rgba(${color[0]}, ${color[1]}, ${color[2]}, 0)`} ${
           endPosition - transitionMargin / 2
-        }%`
+        }%`,
       );
     }
 
@@ -95,7 +95,7 @@ const DensityLine: FC<DensityLineProps> = ({
       }%`,
       `${`rgba(${color[0]}, ${color[1]}, ${color[2]}, ${opacity})`} ${
         endPosition - transitionMargin / 2
-      }%`
+      }%`,
     );
   }
 
@@ -110,19 +110,19 @@ const DensityLine: FC<DensityLineProps> = ({
       }%`,
       `${`rgba(${color[0]}, ${color[1]}, ${color[2]}, 0)`} ${
         endPosition - transitionMargin / 2
-      }%`
+      }%`,
     );
   }
 
   return (
     <div
       style={{
-        pointerEvents: "none",
+        pointerEvents: 'none',
 
-        width: "100%",
-        height: "100%",
+        width: '100%',
+        height: '100%',
 
-        background: `linear-gradient(to right, ${colorStops.join(", ")})`,
+        background: `linear-gradient(to right, ${colorStops.join(', ')})`,
       }}
     />
   );

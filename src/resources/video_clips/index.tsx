@@ -1,6 +1,6 @@
-import Create from "./Create";
+import Create from './Create';
 // import Edit from "./Edit";
-import List from "./List";
+import List from './List';
 // import Show from "./Show";
 
 export default {

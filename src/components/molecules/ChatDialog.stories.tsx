@@ -1,24 +1,24 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import ChatDialog from "./ChatDialog";
-import { fn } from "@storybook/test";
+import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
+import ChatDialog from './ChatDialog';
 
 const meta = {
-  title: "ChatDialog",
+  title: 'ChatDialog',
   component: ChatDialog,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {
-    open: { control: "boolean" },
-    onChat: { control: "function" },
-    onChange: { control: "function" },
-    job: { control: "string" },
-    transcript: { control: "string" },
-    context: { control: "string" },
+    open: { control: 'boolean' },
+    onChat: { control: 'function' },
+    onChange: { control: 'function' },
+    job: { control: 'string' },
+    transcript: { control: 'string' },
+    context: { control: 'string' },
   },
   args: {
     open: true,
-    job: "",
-    transcript: "",
-    context: "",
+    job: '',
+    transcript: '',
+    context: '',
     onChat: fn((msgs) => Promise.resolve(msgs)),
     onChange: fn(),
   },
@@ -32,15 +32,15 @@ export const Empty: Story = {};
 
 export const WithMessages: Story = {
   args: {
-    job: "Job title",
-    transcript: "Transcript",
-    context: "Context",
+    job: 'Job title',
+    transcript: 'Transcript',
+    context: 'Context',
     onChat: fn(async (msgs) => {
       return [
         ...msgs,
         {
-          content: "Assistant message",
-          role: "assistant" as const,
+          content: 'Assistant message',
+          role: 'assistant' as const,
         },
       ];
     }),
