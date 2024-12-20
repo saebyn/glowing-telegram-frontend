@@ -47,7 +47,8 @@
     "storybook": "^8",
     "typescript": "^5",
     "vite": "^6.0.3",
-    "vitest": "^2.1.8"
+    "vitest": "^2.1.8",
+    "@mui/x-date-pickers": "^6"
   },
   "msw": {
     "workerDirectory": [

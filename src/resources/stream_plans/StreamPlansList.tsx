@@ -1,4 +1,4 @@
-import RecurrenceDayField from '@/atoms/RecurrenceDayField';
+import RecurrenceDayField from '@/components/atoms/RecurrenceDayField';
 import { Datagrid, List, TextField } from 'react-admin';
 import ListActions from './ListActions';
 import streamActionFilters from './filters';

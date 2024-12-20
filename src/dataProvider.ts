@@ -1,23 +1,32 @@
 import { userManager } from '@/auth';
-import type { DataProvider, Identifier } from 'react-admin';
-import { HttpError } from 'react-admin';
+import type { DataProvider, GetListParams, Identifier } from 'react-admin';
+import { HttpError, combineDataProviders } from 'react-admin';
 
 const { VITE_API_URL: baseApiUrl } = import.meta.env;
 
 const resourceMap = {
-  stream_plans: 'records/series',
+  series: 'records/series',
   profile: 'records/profiles',
+  streams: 'records/streams',
+  episodes: 'records/episodes',
+  video_clips: 'records/video_clips',
 } as const;
 
-function validateResource(
-  resource: string,
-): asserts resource is keyof typeof resourceMap {
-  if (resource in resourceMap === false) {
-    throw new Error(`Unknown resource: ${resource}`);
+const dataProvider = combineDataProviders((resource) => {
+  if (resource in resourceMap) {
+    return restDataProvider;
   }
-}
 
-const dataProvider: DataProvider = {
+  if (resource === 'twitch_streams') {
+    return twitchVideosDataProvider;
+  }
+
+  throw new Error(`Unknown resource: ${resource}`);
+});
+
+export default dataProvider;
+
+const restDataProvider: DataProvider = {
   getList: async (resource, params) => {
     console.log('GET LIST', resource, params);
 
@@ -37,7 +46,7 @@ const dataProvider: DataProvider = {
     });
 
     return {
-      data: data.items,
+      data: data.items.map(cleanRecord(resource)) as any[],
       pageInfo: {
         hasNextPage: data.cursor !== null,
       },
@@ -52,7 +61,7 @@ const dataProvider: DataProvider = {
 
     return {
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      data: record as any,
+      data: cleanRecord(resource)(record as any) as any,
     };
   },
   getMany: (resource, params) => {
@@ -68,25 +77,25 @@ const dataProvider: DataProvider = {
   create: async (resource, params) => {
     console.log('CREATE', resource, params);
 
-    const result = await fetchResourceData(resource, undefined, 'POST', {
+    const record = await fetchResourceData(resource, undefined, 'POST', {
       data: params.data,
     });
 
     return {
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      data: result as any,
+      data: cleanRecord(resource)(record as any) as any,
     };
   },
   update: async (resource, params) => {
     console.log('UPDATE', resource, params);
 
-    const result = await fetchResourceData(resource, params.id, 'PUT', {
+    const record = await fetchResourceData(resource, params.id, 'PUT', {
       data: params.data,
     });
 
     return {
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      data: result as any,
+      data: cleanRecord(resource)(record as any) as any,
     };
   },
   updateMany: (resource, params) => {
@@ -115,7 +124,42 @@ const dataProvider: DataProvider = {
   supportAbortSignal: true,
 };
 
-export default dataProvider;
+const twitchVideosDataProvider = {
+  cursorPage: 1,
+  cursor: '',
+
+  async getList(
+    this: { cursorPage: number; cursor: string },
+    _resource: string,
+    params: GetListParams,
+  ) {
+    const page = params.pagination?.page || 1;
+    let cursor = '';
+
+    if (page === this.cursorPage) {
+      cursor = this.cursor;
+    }
+
+    const url = new URL('twitch/videos', baseApiUrl);
+    url.searchParams.append('after', cursor);
+
+    const res = await fetch(url);
+    const result = await res.json();
+
+    if (page === this.cursorPage && result.pagination?.cursor) {
+      this.cursor = result.pagination?.cursor;
+      this.cursorPage = page + 1;
+    }
+
+    return {
+      data: result.data,
+      pageInfo: {
+        hasNextPage: result.pagination?.cursor,
+        hasPreviousPage: false,
+      },
+    };
+  },
+} as unknown as DataProvider;
 
 function getResourceUrl(
   resource: string,
@@ -197,4 +241,22 @@ async function fetchResourceData<T>(
   }
 
   return response.json();
+}
+
+function cleanRecord(resource: string) {
+  return (record: Record<string, unknown>) => {
+    if (resource === 'video_clips') {
+      record.id = record.key;
+    }
+
+    return record;
+  };
+}
+
+function validateResource(
+  resource: string,
+): asserts resource is keyof typeof resourceMap {
+  if (resource in resourceMap === false) {
+    throw new Error(`Unknown resource: ${resource}`);
+  }
 }

@@ -1,4 +1,4 @@
-import TwitchTokenLivenessChecker from '@/atoms/TwitchTokenLivenessChecker';
+import TwitchTokenLivenessChecker from '@/components/atoms/TwitchTokenLivenessChecker';
 import type { FC } from 'react';
 import { Layout } from 'react-admin';
 import AppBar from './AppBar';

@@ -17,7 +17,40 @@
     "bracketSpacing": true
   },
   "organizeImports": { "enabled": true },
-  "linter": { "enabled": true, "rules": { "recommended": true } },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "a11y": {
+        "useKeyWithClickEvents": {
+          "level": "warn"
+        }
+      },
+      "correctness": {
+        "useJsxKeyInIterable": {
+          "level": "warn"
+        }
+      },
+      "complexity": {
+        "noForEach": {
+          "level": "info"
+        }
+      },
+      "suspicious": {
+        "noExplicitAny": {
+          "level": "warn"
+        },
+        "noArrayIndexKey": {
+          "level": "warn"
+        }
+      },
+      "style": {
+        "noNonNullAssertion": {
+          "level": "warn"
+        }
+      }
+    }
+  },
   "javascript": {
     "formatter": {
       "jsxQuoteStyle": "double",

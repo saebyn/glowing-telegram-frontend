@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 
-import App from './App.tsx';
+import App from '@/App.tsx';
 
 const container = document.getElementById('root');
 
@@ -17,7 +17,7 @@ async function enableMocking() {
 
   // `worker.start()` returns a Promise that resolves
   // once the Service Worker is up and ready to intercept requests.
-  return worker.start();
+  await worker.start();
 }
 
 const root = createRoot(container);
