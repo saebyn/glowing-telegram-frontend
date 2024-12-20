@@ -64,10 +64,21 @@ const restDataProvider: DataProvider = {
       data: cleanRecord(resource)(record as any) as any,
     };
   },
-  getMany: (resource, params) => {
+  getMany: async (resource, params) => {
     console.log('GET MANY', resource, params);
-    alert('GET MANY not implemented');
-    return Promise.resolve({ data: [] });
+
+    const results = await fetchResourceData<{
+      items: Record<string, unknown>[];
+    }>(resource, undefined, 'GET', {
+      signal: params.signal,
+      params: {
+        id: params.ids,
+      },
+    });
+
+    return {
+      data: results.items.map(cleanRecord(resource)) as any[],
+    };
   },
   getManyReference: (resource, params) => {
     console.log('GET MANY REFERENCE', resource, params);
