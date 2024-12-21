@@ -1,5 +1,5 @@
 import RecurrenceDayField from '@/components/atoms/RecurrenceDayField';
-import { Datagrid, List, TextField } from 'react-admin';
+import { BooleanField, Datagrid, List, TextField } from 'react-admin';
 import ListActions from './ListActions';
 import streamActionFilters from './filters';
 
@@ -9,6 +9,7 @@ function StreamPlansList() {
       <Datagrid>
         <TextField source="title" />
         <TextField source="start_time" />
+        <BooleanField source="is_active" />
         <RecurrenceDayField source="recurrence.days" />
       </Datagrid>
     </List>

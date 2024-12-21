@@ -56,6 +56,7 @@ function StreamPlansEdit() {
       <SimpleForm>
         <TextInput source="title" validate={required()} />
         <TextInput source="description" />
+        <BooleanInput source="is_active" />
         <RichTextInput source="prep_notes" />
 
         <DateInput
