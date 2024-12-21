@@ -21,7 +21,6 @@ const restDataProvider: DataProvider = {
     const cursor = cursorPaginationCache.getNext(requestSignature, page);
 
     const data: {
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       items: any[];
       cursor: string | null;
     } = await fetchResourceData(resource, undefined, 'GET', {
@@ -41,8 +40,32 @@ const restDataProvider: DataProvider = {
       );
     }
 
+    const items = data.items.map(cleanRecord(resource));
+
+    // Sort items by params.sort.field and params.sort.order
+    items.sort((a, b) => {
+      const field = params.sort?.field;
+
+      if (!field) {
+        return 0;
+      }
+
+      const aValue = a[field] as string;
+      const bValue = b[field] as string;
+
+      if (aValue < bValue) {
+        return params.sort?.order === 'ASC' ? -1 : 1;
+      }
+
+      if (aValue > bValue) {
+        return params.sort?.order === 'ASC' ? 1 : -1;
+      }
+
+      return 0;
+    });
+
     return {
-      data: data.items.map(cleanRecord(resource)) as any[],
+      data: items as any[],
       pageInfo: {
         hasNextPage: data.cursor !== null,
         hasPreviousPage: page > 1,
@@ -57,7 +80,6 @@ const restDataProvider: DataProvider = {
     });
 
     return {
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       data: cleanRecord(resource)(record as any) as any,
     };
   },
@@ -90,7 +112,6 @@ const restDataProvider: DataProvider = {
     });
 
     return {
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       data: cleanRecord(resource)(record as any) as any,
     };
   },
@@ -102,14 +123,12 @@ const restDataProvider: DataProvider = {
     });
 
     return {
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       data: cleanRecord(resource)(record as any) as any,
     };
   },
   updateMany: (resource, params) => {
     console.log('UPDATE MANY', resource, params);
     alert('UPDATE MANY not implemented');
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     return Promise.resolve({ data: {} as any });
   },
   delete: async (resource, params) => {
@@ -118,14 +137,12 @@ const restDataProvider: DataProvider = {
     await fetchResourceData(resource, params.id, 'DELETE', undefined);
 
     return {
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       data: params.previousData as any,
     };
   },
   deleteMany: (resource, params) => {
     console.log('DELETE MANY', resource, params);
     alert('DELETE MANY not implemented');
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     return Promise.resolve({ data: {} as any });
   },
 
