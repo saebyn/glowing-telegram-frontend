@@ -1,4 +1,4 @@
-import { Log, UserManager } from 'oidc-client-ts';
+import { UserManager } from 'oidc-client-ts';
 
 const {
   VITE_AWS_REGION: region,

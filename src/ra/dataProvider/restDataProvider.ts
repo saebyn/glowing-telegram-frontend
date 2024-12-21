@@ -1,34 +1,24 @@
 import { userManager } from '@/auth';
-import type { DataProvider, GetListParams, Identifier } from 'react-admin';
-import { HttpError, combineDataProviders } from 'react-admin';
+import type { DataProvider, Identifier } from 'react-admin';
+import { HttpError } from 'react-admin';
+import * as cursorPaginationCache from './cursorPaginationCache';
+import resourceMap, { validateResource } from './resourceMap';
 
 const { VITE_API_URL: baseApiUrl } = import.meta.env;
-
-const resourceMap = {
-  series: 'records/series',
-  profile: 'records/profiles',
-  streams: 'records/streams',
-  episodes: 'records/episodes',
-  video_clips: 'records/video_clips',
-} as const;
-
-const dataProvider = combineDataProviders((resource) => {
-  if (resource in resourceMap) {
-    return restDataProvider;
-  }
-
-  if (resource === 'twitch_streams') {
-    return twitchVideosDataProvider;
-  }
-
-  throw new Error(`Unknown resource: ${resource}`);
-});
-
-export default dataProvider;
 
 const restDataProvider: DataProvider = {
   getList: async (resource, params) => {
     console.log('GET LIST', resource, params);
+
+    const requestSignature = JSON.stringify({
+      resource,
+      perPage: params.pagination?.perPage,
+      filter: params.filter,
+    });
+
+    const page = params.pagination?.page || 1;
+
+    const cursor = cursorPaginationCache.getNext(requestSignature, page);
 
     const data: {
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -37,18 +27,25 @@ const restDataProvider: DataProvider = {
     } = await fetchResourceData(resource, undefined, 'GET', {
       signal: params.signal,
       params: {
-        page: params.pagination?.page,
+        cursor,
         perPage: params.pagination?.perPage,
-        sort: params.sort?.field,
-        order: params.sort?.order,
         filter: params.filter,
       },
     });
+
+    if (data.cursor) {
+      cursorPaginationCache.set(
+        requestSignature,
+        params.pagination?.page || 1,
+        data.cursor,
+      );
+    }
 
     return {
       data: data.items.map(cleanRecord(resource)) as any[],
       pageInfo: {
         hasNextPage: data.cursor !== null,
+        hasPreviousPage: page > 1,
       },
     };
   },
@@ -135,42 +132,7 @@ const restDataProvider: DataProvider = {
   supportAbortSignal: true,
 };
 
-const twitchVideosDataProvider = {
-  cursorPage: 1,
-  cursor: '',
-
-  async getList(
-    this: { cursorPage: number; cursor: string },
-    _resource: string,
-    params: GetListParams,
-  ) {
-    const page = params.pagination?.page || 1;
-    let cursor = '';
-
-    if (page === this.cursorPage) {
-      cursor = this.cursor;
-    }
-
-    const url = new URL('twitch/videos', baseApiUrl);
-    url.searchParams.append('after', cursor);
-
-    const res = await fetch(url);
-    const result = await res.json();
-
-    if (page === this.cursorPage && result.pagination?.cursor) {
-      this.cursor = result.pagination?.cursor;
-      this.cursorPage = page + 1;
-    }
-
-    return {
-      data: result.data,
-      pageInfo: {
-        hasNextPage: result.pagination?.cursor,
-        hasPreviousPage: false,
-      },
-    };
-  },
-} as unknown as DataProvider;
+export default restDataProvider;
 
 function getResourceUrl(
   resource: string,
@@ -262,12 +224,4 @@ function cleanRecord(resource: string) {
 
     return record;
   };
-}
-
-function validateResource(
-  resource: string,
-): asserts resource is keyof typeof resourceMap {
-  if (resource in resourceMap === false) {
-    throw new Error(`Unknown resource: ${resource}`);
-  }
 }
