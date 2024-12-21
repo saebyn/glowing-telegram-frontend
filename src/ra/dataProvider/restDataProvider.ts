@@ -207,6 +207,7 @@ async function fetchResourceData<T>(
     headers: {
       Authorization: `${token}`,
       Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
   });
 
