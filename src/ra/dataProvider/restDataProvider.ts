@@ -50,8 +50,8 @@ const restDataProvider: DataProvider = {
         return 0;
       }
 
-      const aValue = a[field] as string;
-      const bValue = b[field] as string;
+      const aValue = a[field]?.toString() || '';
+      const bValue = b[field]?.toString() || '';
 
       if (aValue < bValue) {
         return params.sort?.order === 'ASC' ? -1 : 1;
