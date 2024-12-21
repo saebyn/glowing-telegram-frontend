@@ -15,10 +15,10 @@ import ProfilePage from '@/components/pages/ProfilePage';
 import StreamManagerPage from '@/components/pages/StreamManagerPage';
 import StreamWidget from '@/components/pages/StreamWidget';
 import TwitchCallbackPage from '@/components/pages/TwitchCallbackPage';
-import restDataProvider from '@/dataProvider';
 import { WebsocketProvider } from '@/hooks/useWebsocket';
 import i18nProvider from '@/i18nProvider';
 import Layout from '@/ra/Layout';
+import dataProvider from '@/ra/dataProvider';
 import { TimerManagerProvider } from '@/timers';
 import { deepmerge } from '@mui/utils';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -49,7 +49,7 @@ function App() {
             <TimerManagerProvider>
               <Admin
                 loginPage={false}
-                dataProvider={restDataProvider}
+                dataProvider={dataProvider}
                 i18nProvider={i18nProvider}
                 authProvider={authProvider}
                 layout={Layout}
