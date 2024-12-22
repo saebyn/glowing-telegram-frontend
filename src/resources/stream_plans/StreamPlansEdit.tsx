@@ -104,7 +104,7 @@ function StreamPlansEdit() {
           parse={(value) => value}
         />
 
-        <TagInput source="tags" />
+        <TagInput source="tags" maxTags={10} />
 
         <YouTubeCategoryInput source="category" />
 

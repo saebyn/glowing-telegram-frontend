@@ -90,6 +90,7 @@ const ProfilePage = () => {
               label={translate('gt.profile.standardTags', {
                 _: 'Standard Tags',
               })}
+              maxTags={5}
               value={profileUpdate.standardTags || profile.standardTags}
               onChange={(tags) => {
                 setProfileUpdate((profile) => ({

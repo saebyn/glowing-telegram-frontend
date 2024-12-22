@@ -4,6 +4,7 @@ import TagEditor from './TagEditor';
 interface TagInputProps {
   source: string;
   label?: string;
+  maxTags?: number;
 }
 
 function TagInput(props: TagInputProps) {
@@ -16,6 +17,7 @@ function TagInput(props: TagInputProps) {
       value={field.value}
       onChange={field.onChange}
       label={props.label}
+      maxTags={props.maxTags}
     />
   );
 }

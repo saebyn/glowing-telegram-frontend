@@ -99,8 +99,8 @@ function StreamInfoEditor({
 
     setStreamInfo((streamInfo) => ({
       ...streamInfo,
-      game_id: nextScheduledStream.category.id,
-      game_name: nextScheduledStream.category.name,
+      game_id: nextScheduledStream.twitch_category.id,
+      game_name: nextScheduledStream.twitch_category.name,
       title: nextScheduledStream.name,
       tags: newTags,
     }));
@@ -161,6 +161,7 @@ function StreamInfoEditor({
 
         <TagEditor
           value={streamInfo.tags || []}
+          maxTags={10}
           onChange={(tags) => setStreamInfo({ ...streamInfo, tags })}
         />
 
