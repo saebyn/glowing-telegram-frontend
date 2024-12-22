@@ -99,10 +99,24 @@ const restDataProvider: DataProvider = {
       data: results.items.map(cleanRecord(resource)) as any[],
     };
   },
-  getManyReference: (resource, params) => {
+  getManyReference: async (resource, params) => {
     console.log('GET MANY REFERENCE', resource, params);
-    alert('GET MANY REFERENCE not implemented');
-    return Promise.resolve({ data: [] });
+
+    const results = await fetchResourceData<{
+      items: Record<string, unknown>[];
+    }>(resource, params.id, 'GET', {
+      signal: params.signal,
+      relatedFieldName: params.target,
+    });
+
+    return {
+      data: results.items.map(cleanRecord(resource)) as any[],
+      pageInfo: {
+        // TODO: Implement pagination
+        hasNextPage: false,
+        hasPreviousPage: false,
+      },
+    };
   },
   create: async (resource, params) => {
     console.log('CREATE', resource, params);
@@ -154,10 +168,15 @@ export default restDataProvider;
 function getResourceUrl(
   resource: string,
   recordId: Identifier | undefined,
+  relatedFieldName?: string,
 ): URL {
   validateResource(resource);
 
   const url = new URL(resourceMap[resource], baseApiUrl);
+
+  if (relatedFieldName) {
+    url.pathname += `/${relatedFieldName}`;
+  }
 
   if (recordId) {
     url.pathname += `/${recordId}`;
@@ -174,6 +193,7 @@ async function fetchResourceData<T>(
     signal?: AbortSignal;
     params?: Record<string, unknown>;
     data?: Record<string, unknown>;
+    relatedFieldName?: string;
   },
 ): Promise<T> {
   validateResource(resource);
@@ -186,7 +206,7 @@ async function fetchResourceData<T>(
 
   const token = user.id_token;
 
-  const url = getResourceUrl(resource, recordId);
+  const url = getResourceUrl(resource, recordId, options?.relatedFieldName);
 
   const { signal, params, data } = options || {};
 
