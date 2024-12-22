@@ -36,18 +36,14 @@ const BulkActionButtons = () => (
 );
 
 const episodeFilters = [
-  // eslint-disable-next-line react/jsx-key
-  <SearchInput source="title" alwaysOn />,
-  // eslint-disable-next-line react/jsx-key
-  <ReferenceInput source="series_id" reference="series" />,
-  // eslint-disable-next-line react/jsx-key
-  <ReferenceInput source="stream_id" reference="streams" />,
-  // eslint-disable-next-line react/jsx-key
-  <TextInput source="stream_name" />,
-  // eslint-disable-next-line react/jsx-key
-  <NullableBooleanInput source="has_youtube_video_id" />,
-  // eslint-disable-next-line react/jsx-key
-  <NullableBooleanInput source="is_published" />,
+  <SearchInput source="title" alwaysOn key="title" />,
+  <ReferenceInput source="series_id" reference="series" key="series_id" />,
+  <ReferenceInput source="stream_id" reference="streams" key="stream_id" />,
+  <NullableBooleanInput
+    source="has_youtube_video_id"
+    key="has_youtube_video_id"
+  />,
+  <NullableBooleanInput source="is_published" key="is_published" />,
 ];
 
 const EpisodeList = (props: ListProps) => (

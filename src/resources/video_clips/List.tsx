@@ -1,16 +1,16 @@
 import {
+  AutocompleteInput,
   Datagrid,
   List,
   type ListProps,
   ReferenceInput,
-  SelectInput,
   TextField,
   useRecordContext,
 } from 'react-admin';
 
 const videoClipsFilter = [
   <ReferenceInput source="stream_id" reference="streams" key="stream_id">
-    <SelectInput optionText="title" />
+    <AutocompleteInput optionText="title" />
   </ReferenceInput>,
 ];
 
