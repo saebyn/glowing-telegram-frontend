@@ -45,7 +45,10 @@ function TagEditor({ value, onChange, label, maxTags }: TagEditorRawProps) {
       </Typography>
       {maxTagsReached ? (
         <Typography color="error">
-          {translate('gt.tags.max', { _: 'Maximum number of tags reached' })}
+          {translate('gt.tags.max', {
+            _: 'You can only add up to %{smart_count} tags',
+            smart_count: maxTags,
+          })}
         </Typography>
       ) : null}
 
