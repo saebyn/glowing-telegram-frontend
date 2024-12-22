@@ -1,13 +1,16 @@
+import TimelineIcon from '@mui/icons-material/Timeline';
 import Badge from '@mui/material/Badge';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 import { DateTime } from 'luxon';
 import {
   BooleanField,
-  CloneButton,
+  Button,
+  type ButtonProps,
   Datagrid,
   DateField,
   DateInput,
+  EditButton,
   List,
   type ListProps,
   NullableBooleanInput,
@@ -18,7 +21,9 @@ import {
   SelectInput,
   TextField,
   useListContext,
+  useRecordContext,
 } from 'react-admin';
+import { Link } from 'react-router-dom';
 
 const streamsFilter = [
   <SearchInput source="title" alwaysOn key="title" />,
@@ -129,9 +134,29 @@ const CalendarView = () => {
   );
 };
 
+function TimelineButton(props: Omit<ButtonProps<typeof Link>, 'to'>) {
+  const record = useRecordContext(props);
+
+  if (!record || !record.id) {
+    return null;
+  }
+
+  return (
+    <Button
+      component={Link}
+      to={{
+        pathname: `/streams/${record.id}/timeline`,
+      }}
+      label="Timeline"
+    >
+      <TimelineIcon />
+    </Button>
+  );
+}
+
 const StreamList = (props: ListProps) => (
   <List {...props} filters={streamsFilter} aside={<CalendarView />}>
-    <Datagrid rowClick="edit">
+    <Datagrid rowClick={false}>
       <DateField source="stream_date" />
       <TextField source="title" />
       <ReferenceField source="series_id" reference="series">
@@ -141,7 +166,9 @@ const StreamList = (props: ListProps) => (
       <BooleanField source="has_transcription" />
       <BooleanField source="has_silence_detection" />
       <BooleanField source="has_episodes" />
-      <CloneButton />
+
+      <TimelineButton />
+      <EditButton />
     </Datagrid>
   </List>
 );

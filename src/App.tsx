@@ -19,6 +19,7 @@ import { WebsocketProvider } from '@/hooks/useWebsocket';
 import i18nProvider from '@/i18nProvider';
 import Layout from '@/ra/Layout';
 import dataProvider from '@/ra/dataProvider';
+import StreamTimeline from '@/resources/streams/Timeline';
 import { TimerManagerProvider } from '@/timers';
 import { deepmerge } from '@mui/utils';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -75,7 +76,9 @@ function App() {
                     element={<StreamPlansCalendar />}
                   />
                 </Resource>
-                <Resource name="streams" {...streams} />
+                <Resource name="streams" {...streams}>
+                  <Route path=":id/timeline" element={<StreamTimeline />} />
+                </Resource>
                 <Resource name="episodes" {...episodes} />
                 <Resource name="video_clips" {...video_clips} />
                 <Resource name="twitch_streams" {...twitch_streams} />
