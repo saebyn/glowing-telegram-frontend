@@ -1,5 +1,5 @@
-import { getCsrfToken } from '@/csrf';
-import { parseReturnedData, validateAccessToken } from '@/twitch';
+import { getCsrfToken } from '@/utilities/csrf';
+import { parseReturnedData, validateAccessToken } from '@/utilities/twitch';
 import { useEffect } from 'react';
 import { LoadingIndicator, useUpdate } from 'react-admin';
 import { useNavigate } from 'react-router-dom';

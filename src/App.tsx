@@ -10,17 +10,18 @@ import video_clips from '@/resources/video_clips';
 
 import GlobalStyles from '@mui/material/GlobalStyles';
 
-import authProvider from '@/authProvider';
 import ProfilePage from '@/components/pages/ProfilePage';
 import StreamManagerPage from '@/components/pages/StreamManagerPage';
 import StreamWidget from '@/components/pages/StreamWidget';
 import TwitchCallbackPage from '@/components/pages/TwitchCallbackPage';
+import { TimerManagerProvider } from '@/hooks/useTimers';
 import { WebsocketProvider } from '@/hooks/useWebsocket';
-import i18nProvider from '@/i18nProvider';
 import Layout from '@/ra/Layout';
+import authProvider from '@/ra/authProvider';
 import dataProvider from '@/ra/dataProvider';
+import i18nProvider from '@/ra/i18nProvider';
+import { darkTheme, lightTheme } from '@/ra/theme';
 import StreamTimeline from '@/resources/streams/Timeline';
-import { TimerManagerProvider } from '@/timers';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { QueryClient } from '@tanstack/react-query';

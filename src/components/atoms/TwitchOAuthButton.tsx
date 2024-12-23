@@ -1,5 +1,5 @@
-import { getCsrfToken } from '@/csrf';
-import { generateAuthorizeUri } from '@/twitch';
+import { getCsrfToken } from '@/utilities/csrf';
+import { generateAuthorizeUri } from '@/utilities/twitch';
 import CheckIcon from '@mui/icons-material/Check';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';

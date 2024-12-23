@@ -1,7 +1,7 @@
 import type { AuthProvider } from 'react-admin';
 
-import { signoutRedirect, userManager } from './auth';
-import gravatar from './gravitar';
+import { signoutRedirect, userManager } from '@/utilities/auth';
+import gravatar from '@/utilities/gravitar';
 
 const authProvider: AuthProvider = {
   async login() {},

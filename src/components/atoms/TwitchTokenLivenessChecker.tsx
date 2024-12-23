@@ -1,5 +1,5 @@
 import useProfile from '@/hooks/useProfile';
-import { validateAccessToken } from '@/twitch';
+import { validateAccessToken } from '@/utilities/twitch';
 import { useEffect } from 'react';
 import { useUpdate } from 'react-admin';
 
