@@ -34,36 +34,50 @@ const BulkCreateEpisodesButton = ({
   });
 
   const { mutate, isPending, error } = useMutation<
-    string | null,
+    void,
     Error,
     DataStreamDataElement[]
   >({
     mutationKey: ['bulkCreateEpisodes', stream?.id],
-    mutationFn: (segments) => {
+    mutationFn: async (segments) => {
       if (isLoadingSeries) {
         return;
       }
 
       const baseEpIndex = (series?.max_episode_order_index || 0) + 1;
 
-      return dataProvider.bulkCreate(
-        'episodes',
-        segments.map((segment, index) => ({
-          stream_id: stream?.id,
-          series_id: stream?.series_id,
-          order_index: baseEpIndex + index,
-          title: `${stream?.title} - Episode ${baseEpIndex + index}`,
-          tracks: [
-            {
-              start: convertSecondsToISODuration(segment.start),
-              end: convertSecondsToISODuration(segment.end),
-            },
-          ],
-          notify_subscribers: series?.notify_subscribers,
-          category: series?.category,
-          tags: series?.tags,
-        })),
-      );
+      await Promise.all([
+        dataProvider.bulkCreate('episodes', {
+          data: segments.map((segment, index) => ({
+            stream_id: stream?.id,
+            series_id: stream?.series_id,
+            order_index: baseEpIndex + index,
+            title: `${stream?.title} - Episode ${baseEpIndex + index}`,
+            tracks: [
+              {
+                start: convertSecondsToISODuration(segment.start),
+                end: convertSecondsToISODuration(segment.end),
+              },
+            ],
+            notify_subscribers: series?.notify_subscribers,
+            category: series?.category,
+            tags: series?.tags,
+          })),
+        }),
+        // update the stream with the has_episodes field
+        dataProvider.update('streams', {
+          id: stream?.id,
+          data: { has_episodes: true },
+          previousData: stream,
+        }),
+      ]);
+
+      // update the series with the new max_episode_order_index
+      await dataProvider.update('series', {
+        id: series?.id,
+        data: { max_episode_order_index: baseEpIndex + segments.length - 1 },
+        previousData: series,
+      });
     },
   });
 

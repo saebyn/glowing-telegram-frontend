@@ -7,14 +7,20 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import { useEffect, useMemo, useState } from 'react';
-import { EditButton, ListButton, LoadingIndicator } from 'react-admin';
+import {
+  Button,
+  EditButton,
+  type Identifier,
+  ListButton,
+  LoadingIndicator,
+} from 'react-admin';
 import {
   Title,
   useGetManyReference,
   useGetOne,
   useTranslate,
 } from 'react-admin';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 function Timeline() {
   const { id } = useParams();
@@ -113,6 +119,8 @@ function Timeline() {
         />
         <EditButton record={stream} />
         <ListButton />
+
+        <EpisodesButton streamId={stream.id} />
       </Box>
       <Card>
         <CardContent>
@@ -129,5 +137,27 @@ function Timeline() {
     </Box>
   );
 }
+
+const EpisodesButton = ({
+  streamId,
+}: {
+  streamId: Identifier;
+}) => {
+  const translate = useTranslate();
+  const filter = { stream_id: streamId };
+
+  return (
+    <Button
+      component={Link}
+      to={{
+        pathname: '/episodes',
+        search: `filter=${JSON.stringify(filter)}`,
+      }}
+      label={translate('gt.streams.episodes_button', {
+        _: 'View Episodes',
+      })}
+    />
+  );
+};
 
 export default Timeline;

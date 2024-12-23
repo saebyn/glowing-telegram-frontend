@@ -1,4 +1,5 @@
 import {
+  BooleanInput,
   DateTimeInput,
   ListButton,
   PrevNextButtons,
@@ -57,6 +58,8 @@ const StreamEdit = (props: EditProps) => (
         helperText="The prefix is used to identify related video clips for this stream. It's typically in the format YYYY-MM-DD."
         inputProps={{ pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}' }}
       />
+
+      <BooleanInput source="has_episodes" />
     </SimpleForm>
   </Edit>
 );
