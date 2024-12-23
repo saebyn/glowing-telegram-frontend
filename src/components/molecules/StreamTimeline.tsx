@@ -22,6 +22,8 @@ interface StreamTimelineProps {
   }>;
 }
 
+export type { Segment };
+
 /**
  * StreamTimeline is a component that displays a timeline of a stream with
  * segments and density lines.
