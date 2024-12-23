@@ -67,3 +67,10 @@ export interface StreamRecord extends RaRecord {
   thumbnail_url: string;
   video_clip_count: number;
 }
+
+export interface EpisodeRecord extends RaRecord {
+  title: string;
+  description: string;
+  tracks: Array<{ start: string; end: string }>;
+  stream_id: Identifier;
+}
