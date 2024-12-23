@@ -6,7 +6,20 @@ import resourceMap, { validateResource } from './resourceMap';
 
 const { VITE_API_URL: baseApiUrl } = import.meta.env;
 
+export interface BulkCreateParams<T = any> {
+  data: Partial<T>[];
+  meta?: any;
+}
+
 const restDataProvider: DataProvider = {
+  bulkCreate: async (resource: string, params: BulkCreateParams) => {
+    console.log('BULK CREATE', resource, params);
+
+    await fetchResourceData(resource, undefined, 'POST', {
+      data: params.data,
+    });
+  },
+
   getList: async (resource, params) => {
     console.log('GET LIST', resource, params);
 
@@ -192,7 +205,7 @@ async function fetchResourceData<T>(
   options?: {
     signal?: AbortSignal;
     params?: Record<string, unknown>;
-    data?: Record<string, unknown>;
+    data?: Record<string, unknown> | Record<string, unknown>[];
     relatedFieldName?: string;
   },
 ): Promise<T> {
