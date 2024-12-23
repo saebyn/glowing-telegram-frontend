@@ -161,7 +161,9 @@ const restDataProvider: DataProvider = {
   delete: async (resource, params) => {
     console.log('DELETE', resource, params);
 
-    await fetchResourceData(resource, params.id, 'DELETE', undefined);
+    await fetchResourceData(resource, params.id, 'DELETE', {
+      ignoreResponseBody: true,
+    });
 
     return {
       data: params.previousData as any,
@@ -203,6 +205,7 @@ async function fetchResourceData<T>(
   recordId: Identifier | undefined,
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   options?: {
+    ignoreResponseBody?: boolean;
     signal?: AbortSignal;
     params?: Record<string, unknown>;
     data?: Record<string, unknown> | Record<string, unknown>[];
@@ -262,6 +265,10 @@ async function fetchResourceData<T>(
     }
 
     throw new HttpError(message, response.status, body);
+  }
+
+  if (options?.ignoreResponseBody) {
+    return {} as T;
   }
 
   return response.json();
