@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseIntoSeconds, toISO8601Duration } from './isoDuration';
+import {
+  formatDuration,
+  parseIntoSeconds,
+  toISO8601Duration,
+} from './isoDuration';
 
 describe('isoDuration', () => {
   describe('parseISODuration', () => {
@@ -93,6 +97,20 @@ describe('isoDuration', () => {
           milliseconds: 99,
         }),
       ).toBe('PT0.099S');
+    });
+  });
+
+  describe('formatDuration', () => {
+    it('should format a duration string with days, hours, minutes, and seconds', () => {
+      expect(formatDuration(36561906)).toBe('423d 4h 5m 6s');
+    });
+
+    it('should format a duration string with hours only', () => {
+      expect(formatDuration(14400)).toBe('4h');
+    });
+
+    it('should format a duration string with days only', () => {
+      expect(formatDuration(259200)).toBe('3d');
     });
   });
 });
