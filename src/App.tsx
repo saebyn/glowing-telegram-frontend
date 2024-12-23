@@ -23,12 +23,22 @@ import StreamTimeline from '@/resources/streams/Timeline';
 import { TimerManagerProvider } from '@/timers';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { QueryClient } from '@tanstack/react-query';
 
-import { darkTheme, lightTheme } from '@/ra/theme';
-
-const { VITE_WEBSOCKET_URL: WEBSOCKET_URL } = import.meta.env;
+const {
+  VITE_WEBSOCKET_URL: WEBSOCKET_URL,
+  VITE_QUERY_STALE_TIME: QUERY_STALE_TIME = 30 * 1000, // 30 seconds
+} = import.meta.env;
 
 function App() {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: QUERY_STALE_TIME,
+      },
+    },
+  });
+
   const router = createBrowserRouter([
     {
       path: '*',
@@ -37,6 +47,7 @@ function App() {
           <Admin
             loginPage={false}
             dataProvider={dataProvider}
+            queryClient={queryClient}
             i18nProvider={i18nProvider}
             authProvider={authProvider}
             layout={Layout}
