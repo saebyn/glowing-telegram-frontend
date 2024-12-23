@@ -1,17 +1,17 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import SegmentSelector from "./SegmentSelector";
-import { fn } from "@storybook/test";
-import { useState } from "react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
+import { useState } from 'react';
+import SegmentSelector from './SegmentSelector';
 
 const meta = {
-  title: "SegmentSelector",
+  title: 'SegmentSelector',
   component: SegmentSelector,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {
-    boundsStart: { control: "number" },
-    boundsEnd: { control: "number" },
-    segments: { control: "array" },
-    onUpdateSegment: { control: "function" },
+    boundsStart: { control: 'number' },
+    boundsEnd: { control: 'number' },
+    segments: { control: 'object' },
+    onUpdateSegment: { control: 'object' },
   },
   args: {
     onUpdateSegment: fn(),
@@ -47,12 +47,13 @@ export const Interacting: Story = {
   render: (args) => {
     const [segments, setSegments] = useState(args.segments);
 
-    const onUpdateSegment = (id: number, segment: any) => {
-      console.log(`Segment ${id} updated:`, segment);
+    const onUpdateSegment = (segment: any) => {
+      console.log('Segment updated:', segment);
+
       setSegments((prevSegments) =>
         prevSegments.map((prevSegment) =>
-          prevSegment.id === id ? segment : prevSegment
-        )
+          prevSegment.id === segment.id ? segment : prevSegment,
+        ),
       );
     };
 
