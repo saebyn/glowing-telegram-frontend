@@ -1,12 +1,10 @@
-import TimelineIcon from '@mui/icons-material/Timeline';
+import TimelineButton from '@/resources/streams/TimelineButton';
 import Badge from '@mui/material/Badge';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 import { DateTime } from 'luxon';
 import {
   BooleanField,
-  Button,
-  type ButtonProps,
   Datagrid,
   DateField,
   DateInput,
@@ -21,9 +19,7 @@ import {
   SelectInput,
   TextField,
   useListContext,
-  useRecordContext,
 } from 'react-admin';
-import { Link } from 'react-router-dom';
 
 const streamsFilter = [
   <SearchInput source="title" alwaysOn key="title" />,
@@ -133,26 +129,6 @@ const CalendarView = () => {
     />
   );
 };
-
-function TimelineButton(props: Omit<ButtonProps<typeof Link>, 'to'>) {
-  const record = useRecordContext(props);
-
-  if (!record || !record.id) {
-    return null;
-  }
-
-  return (
-    <Button
-      component={Link}
-      to={{
-        pathname: `/streams/${record.id}/timeline`,
-      }}
-      label="Timeline"
-    >
-      <TimelineIcon />
-    </Button>
-  );
-}
 
 const StreamList = (props: ListProps) => (
   <List {...props} filters={streamsFilter} aside={<CalendarView />}>
