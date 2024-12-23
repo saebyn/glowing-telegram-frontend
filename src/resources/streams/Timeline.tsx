@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import { useEffect, useMemo, useState } from 'react';
-import { EditButton, ListButton } from 'react-admin';
+import { EditButton, ListButton, LoadingIndicator } from 'react-admin';
 import {
   Title,
   useGetManyReference,
@@ -30,7 +30,7 @@ function Timeline() {
 
   const {
     data: stream,
-    isLoading: isStreamLoading,
+    isPending: isStreamPending,
     error: streamError,
   } = useGetOne<StreamRecord>('streams', { id });
 
@@ -83,7 +83,9 @@ function Timeline() {
 
   const duration = stream?.duration || 0;
 
-  if (isPending || isStreamLoading) return <div>Loading...</div>;
+  if (isPending || isStreamPending) {
+    return <LoadingIndicator />;
+  }
 
   if (error || streamError)
     return <div>Error: {error?.message || streamError?.message}</div>;
