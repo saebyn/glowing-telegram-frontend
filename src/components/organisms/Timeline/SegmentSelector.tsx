@@ -140,7 +140,7 @@ function translateMouseEventToSvgX(
   svgPoint.x = event.clientX;
   svgPoint.y = event.clientY;
   const svgPointTransformed = svgPoint.matrixTransform(
-    svgElement.getScreenCTM()!.inverse(),
+    svgElement.getScreenCTM()?.inverse(),
   );
   return svgPointTransformed.x;
 }
