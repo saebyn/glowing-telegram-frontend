@@ -15,10 +15,10 @@ function promptDownload(episode: EpisodeRecord, videoClips: VideoClipRecord[]) {
   const videoClipsSet = videoClips.map((clip: VideoClipRecord) => ({
     uri: clip.key,
     duration: clip.metadata?.format.duration,
-    start: clip.start_time,
+    start_time: clip.start_time,
   }));
 
-  videoClipsSet.sort((a, b) => a.start - b.start);
+  videoClipsSet.sort((a, b) => a.start_time - b.start_time);
 
   // take the episode data and use the OTIOExporter to genrate the OTIO string
   // then create a blob object and create a download link
