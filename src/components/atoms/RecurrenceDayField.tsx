@@ -3,6 +3,7 @@ import { useFieldValue, useTranslate } from 'react-admin';
 
 interface RecurrenceDayFieldProps {
   source: string;
+  sortable?: boolean;
 }
 
 const daysToAbbreviation = {
