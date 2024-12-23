@@ -112,5 +112,13 @@ describe('isoDuration', () => {
     it('should format a duration string with days only', () => {
       expect(formatDuration(259200)).toBe('3d');
     });
+
+    it('should format a 0 duration string', () => {
+      expect(formatDuration(0)).toBe('0s');
+    });
+
+    it('should format a duration string with fractional seconds', () => {
+      expect(formatDuration(0.5)).toBe('0.5s');
+    });
   });
 });
