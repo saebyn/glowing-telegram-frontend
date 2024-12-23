@@ -2,8 +2,8 @@ import DensityLine from '@/components/atoms/DensityLine';
 import SegmentSelector, {
   type Segment,
 } from '@/components/atoms/SegmentSelector';
-import { formatDuration } from '@/isoDuration';
 import type { DataStreamDataElement } from '@/types';
+import { formatDuration } from '@/utilities/isoDuration';
 import Button from '@mui/material/Button';
 import type { FC } from 'react';
 

@@ -1,5 +1,5 @@
-import { parseIntoSeconds } from '@/isoDuration';
 import type { Episode, Stream } from '@/types';
+import { parseIntoSeconds } from '@/utilities/isoDuration';
 
 function exportSRT(episode: Episode, stream: Stream) {
   const transcriptSegments = (stream.transcription_segments || []).map(

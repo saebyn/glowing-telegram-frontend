@@ -1,5 +1,5 @@
-import { formatDuration } from '@/isoDuration';
 import type { DataStreamDataElement } from '@/types';
+import { formatDuration } from '@/utilities/isoDuration';
 import Button from '@mui/material/Button';
 import type { FC } from 'react';
 import DensityLine from './DensityLine';

@@ -7,8 +7,8 @@ import {
   useRecordContext,
 } from 'react-admin';
 
-import { parseIntoSeconds } from '@/isoDuration';
 import type { Stream } from '@/types';
+import { parseIntoSeconds } from '@/utilities/isoDuration';
 import exporter from './export';
 
 function promptDownload(episode: any, stream: any) {
