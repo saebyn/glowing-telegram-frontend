@@ -2,23 +2,23 @@ import DownloadIcon from '@mui/icons-material/Download';
 import {
   Button,
   useDataProvider,
-  useGetOne,
+  useGetManyReference,
   useListContext,
   useRecordContext,
 } from 'react-admin';
 
 import type { Stream } from '@/types';
-import { parseIntoSeconds } from '@/utilities/isoDuration';
+import type { EpisodeRecord, VideoClipRecord } from '@/types/dataProvider';
 import exporter from './export';
 
-function promptDownload(episode: any, stream: any) {
-  const videoClips = stream.video_clips.map((clip: any) => ({
-    uri: clip.uri.replace('file:local:', ''),
-    duration: parseIntoSeconds(clip.duration),
-    start: clip.start,
+function promptDownload(episode: EpisodeRecord, videoClips: VideoClipRecord[]) {
+  const videoClipsSet = videoClips.map((clip: VideoClipRecord) => ({
+    uri: clip.key,
+    duration: clip.metadata?.format.duration,
+    start: clip.start_time,
   }));
 
-  videoClips.sort((a: any, b: any) => a.start - b.start);
+  videoClipsSet.sort((a, b) => a.start - b.start);
 
   // take the episode data and use the OTIOExporter to genrate the OTIO string
   // then create a blob object and create a download link
@@ -35,13 +35,13 @@ function promptDownload(episode: any, stream: any) {
         })),
       },
       {
-        video_clips: videoClips,
-      } as Stream,
+        video_clips: videoClipsSet,
+      } as unknown as Stream,
     );
   } catch (e) {
     console.error('Error exporting OTIO file', e, {
       episode,
-      stream,
+      videoClips,
     });
 
     alert('Error exporting OTIO file. See console for details.');
@@ -59,15 +59,18 @@ function promptDownload(episode: any, stream: any) {
 }
 
 export const ExportButton = () => {
-  const episode = useRecordContext();
+  const episode = useRecordContext<EpisodeRecord>();
   const {
-    data: stream,
+    data: videoClips,
     isLoading,
     error,
     refetch,
-  } = useGetOne(
-    'streams',
-    { id: episode?.stream_id },
+  } = useGetManyReference(
+    'video_clips',
+    {
+      target: 'stream_id',
+      id: episode?.stream_id || '',
+    },
     {
       enabled: !!episode,
     },
@@ -88,19 +91,19 @@ export const ExportButton = () => {
   }
 
   const handleExport = () => {
-    if (!episode || !stream) return;
+    if (!episode || !videoClips) return;
     if (isLoading) return;
     if (error) return;
     if (!episode.tracks || episode.tracks.length === 0) {
       alert('Episode has no cuts to export.');
       return;
     }
-    if (!stream.video_clips || stream.video_clips.length === 0) {
+    if (!videoClips || videoClips.length === 0) {
       alert('Stream has no video clips to export.');
       return;
     }
 
-    promptDownload(episode, stream);
+    promptDownload(episode, videoClips);
   };
 
   return (
@@ -128,16 +131,23 @@ export const BulkExportButton = () => {
         return;
       }
 
-      const { data: stream } = await dataProvider.getOne('streams', {
-        id: episode.stream_id,
-      });
+      const { data: videoClips } = await dataProvider.getManyReference(
+        'video_clips',
+        {
+          target: 'stream_id',
+          id: episode.stream_id || '',
+          filter: {},
+          pagination: { page: 1, perPage: 1000 },
+          sort: { field: 'start_time', order: 'ASC' },
+        },
+      );
 
-      if (!stream.video_clips || stream.video_clips.length === 0) {
+      if (!videoClips || videoClips.length === 0) {
         alert('Stream has no video clips to export.');
         return;
       }
 
-      promptDownload(episode, stream);
+      promptDownload(episode, videoClips);
     }
   };
 
