@@ -1,22 +1,25 @@
 import { convertSecondsToISODuration } from '@/isoDuration';
 import type { DataStreamDataElement } from '@/types';
+import type { StreamRecord } from '@/types/dataProvider';
 import { useMutation } from '@tanstack/react-query';
 import {
   Button,
+  type ButtonProps,
   useDataProvider,
   useNotify,
-  useRecordContext,
   useReference,
 } from 'react-admin';
 
-const BulkCreateEpisodesButton = ({
-  label,
-  segments,
-}: {
-  label: string;
+type BulkCreateEpisodesButtonProps = {
   segments: DataStreamDataElement[];
-}) => {
-  const streamRecord = useRecordContext();
+  stream?: StreamRecord;
+} & Omit<ButtonProps, 'onClick' | 'disabled'>;
+
+const BulkCreateEpisodesButton = ({
+  segments,
+  stream,
+  ...props
+}: BulkCreateEpisodesButtonProps) => {
   const notify = useNotify();
   const dataProvider = useDataProvider();
 
@@ -24,14 +27,18 @@ const BulkCreateEpisodesButton = ({
     referenceRecord: series,
     isLoading: isLoadingSeries,
     error: errorSeries,
-  } = useReference({ reference: 'series', id: streamRecord?.series_id });
+  } = useReference({
+    reference: 'series',
+    id: stream?.series_id || '', // empty string if no series_id, enabled will be false anyway
+    options: { enabled: !!stream?.series_id },
+  });
 
   const { mutate, isPending, error } = useMutation<
     string | null,
     Error,
     DataStreamDataElement[]
   >({
-    mutationKey: ['bulkCreateEpisodes', streamRecord?.id],
+    mutationKey: ['bulkCreateEpisodes', stream?.id],
     mutationFn: (segments) => {
       if (isLoadingSeries) {
         return;
@@ -42,10 +49,10 @@ const BulkCreateEpisodesButton = ({
       return dataProvider.bulkCreate(
         'episodes',
         segments.map((segment, index) => ({
-          stream_id: streamRecord?.id,
-          series_id: streamRecord?.series_id,
+          stream_id: stream?.id,
+          series_id: stream?.series_id,
           order_index: baseEpIndex + index,
-          title: `${streamRecord?.title} - Episode ${baseEpIndex + index}`,
+          title: `${stream?.title} - Episode ${baseEpIndex + index}`,
           tracks: [
             {
               start: convertSecondsToISODuration(segment.start),
@@ -64,7 +71,13 @@ const BulkCreateEpisodesButton = ({
     mutate(segments, {
       onSuccess: () => {
         // tell the user that the episodes were created
-        notify('Episodes created');
+        notify('gtk.bulk_create_episodes.success', {
+          type: 'success',
+          messageArgs: {
+            smart_count: segments.length,
+            _: 'Episodes created',
+          },
+        });
       },
     });
   };
@@ -80,7 +93,7 @@ const BulkCreateEpisodesButton = ({
   return (
     <Button
       disabled={isPending || isLoadingSeries}
-      label={`Start ${label}`}
+      {...props}
       onClick={bulkCreateEpisodes}
     />
   );
