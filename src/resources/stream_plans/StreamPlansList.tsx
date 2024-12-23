@@ -10,7 +10,7 @@ function StreamPlansList() {
         <TextField source="title" />
         <TextField source="start_time" />
         <BooleanField source="is_active" />
-        <RecurrenceDayField source="recurrence.days" />
+        <RecurrenceDayField source="recurrence.days" sortable={false} />
       </Datagrid>
     </List>
   );
