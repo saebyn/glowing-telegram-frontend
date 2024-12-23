@@ -1,7 +1,14 @@
 import type { Identifier, RaRecord } from 'react-admin';
 
 export interface VideoClipRecord extends RaRecord {
+  /**
+   * The S3 key of the video clip.
+   */
   key: string;
+  stream_id: Identifier;
+  /**
+   * The list of detected silence intervals in the video clip.
+   */
   silence?: Array<{ start: number; end: number }>;
   transcript?: {
     language: string;
@@ -40,16 +47,28 @@ export interface VideoClipRecord extends RaRecord {
       reasoning: number;
     }>;
   };
+  /**
+   * The start time of the video clip in the context of the stream
+   *  in seconds.
+   */
   start_time: number;
-  stream_id: Identifier;
   metadata?: {
     format: {
+      /**
+       * The duration of the video clip in seconds.
+       */
       duration: number;
       [key: string]: unknown;
     };
     streams: unknown;
   };
+  /**
+   * A list of paths to images that are keyframes in the video clip.
+   */
   keyframes?: string[];
+  /**
+   * The path to the audio file extracted from the video clip.
+   */
   audio?: string;
 }
 
