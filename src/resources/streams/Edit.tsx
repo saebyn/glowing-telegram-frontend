@@ -1,18 +1,30 @@
 import {
   DateTimeInput,
+  ListButton,
+  PrevNextButtons,
   ReferenceInput,
   SelectInput,
   SimpleForm,
   TextInput,
+  TopToolbar,
 } from 'react-admin';
 
 import DescriptionInput from '@/components/atoms/DescriptionInput';
 import { TimeDurationInput } from '@/components/atoms/TimeDurationInput';
 import TitleInput from '@/components/atoms/TitleInput';
 import Edit, { type EditProps } from '@/components/templates/Edit';
+import TimelineButton from '@/resources/streams/TimelineButton';
+
+const StreamEditActions = () => (
+  <TopToolbar>
+    <PrevNextButtons />
+    <TimelineButton />
+    <ListButton />
+  </TopToolbar>
+);
 
 const StreamEdit = (props: EditProps) => (
-  <Edit {...props}>
+  <Edit {...props} actions={<StreamEditActions />}>
     <SimpleForm>
       <TitleInput source="title" required />
 
