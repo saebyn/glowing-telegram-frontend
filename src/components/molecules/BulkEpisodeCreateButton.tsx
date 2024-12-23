@@ -1,6 +1,6 @@
-import { convertSecondsToISODuration } from '@/isoDuration';
 import type { DataStreamDataElement } from '@/types';
 import type { StreamRecord } from '@/types/dataProvider';
+import { convertSecondsToISODuration } from '@/utilities/isoDuration';
 import { useMutation } from '@tanstack/react-query';
 import {
   Button,

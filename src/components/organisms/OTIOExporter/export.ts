@@ -1,5 +1,5 @@
-import { parseIntoSeconds } from '@/isoDuration';
 import type { Episode, Stream, VideoClip } from '@/types';
+import { parseIntoSeconds } from '@/utilities/isoDuration';
 import { FPS } from './constants';
 import floatJsonSerializer, { Float } from './floatJson';
 import {

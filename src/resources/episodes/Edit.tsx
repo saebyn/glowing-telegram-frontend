@@ -25,8 +25,8 @@ import MediaPickerInput from '@/components/molecules/MediaPickerInput';
 import { ExportButton as OTIOExportButton } from '@/components/organisms/OTIOExporter';
 import { ExportButton as SRTExportButton } from '@/components/organisms/SRTExporter';
 import Edit from '@/components/templates/Edit';
-import { parseIntoSeconds } from '@/isoDuration';
 import type { Episode, Series, TranscriptSegment } from '@/types';
+import { parseIntoSeconds } from '@/utilities/isoDuration';
 
 const EditActions = () => (
   <TopToolbar>
