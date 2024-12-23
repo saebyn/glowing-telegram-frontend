@@ -64,9 +64,9 @@ export function formatDuration(seconds: number): string {
     parts.push(`${minutes}m`);
   }
 
-  if (seconds) {
+  if (remainder) {
     // Round to 2 decimal places
-    parts.push(`${Math.round(seconds * 100) / 100}s`);
+    parts.push(`${Math.round(remainder * 100) / 100}s`);
   }
 
   if (parts.length === 0) {
