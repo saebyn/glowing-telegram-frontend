@@ -49,17 +49,38 @@ const DensityLine: FC<DensityLineProps> = ({
   color,
   transitionMargin = 2,
 }) => {
+  const colorStops = getColorStops(data, start, end, transitionMargin, color);
+
+  return (
+    <div
+      style={{
+        pointerEvents: 'none',
+
+        width: '100%',
+        height: '100%',
+
+        background: `linear-gradient(to right, ${colorStops.join(', ')})`,
+      }}
+    />
+  );
+};
+
+export function getColorStops(
+  data: DensityPeriod[],
+  start: number,
+  end: number,
+  transitionMargin = 2,
+  colorOption?: [number, number, number],
+) {
   // Calculate the maximum density
   const maxDensity = Math.max(...data.map((period) => period.density || 0));
 
   // If no color is provided, default to black
-  if (!color) {
-    color = [0, 0, 0];
-  }
+  const color = colorOption || [0, 0, 0];
 
   // Create the gradient color stops
   const colorStops = [];
-  const previousPeriodEnd = start;
+  let previousPeriodEnd = start;
 
   for (const period of data) {
     // Skip periods that are outside the timeline
@@ -97,6 +118,8 @@ const DensityLine: FC<DensityLineProps> = ({
         endPosition - transitionMargin / 2
       }%`,
     );
+
+    previousPeriodEnd = period.end;
   }
 
   // if there is a gap between the end of the last period and the end of the timeline, add a pair of color stops to transition to the end of the timeline
@@ -114,18 +137,7 @@ const DensityLine: FC<DensityLineProps> = ({
     );
   }
 
-  return (
-    <div
-      style={{
-        pointerEvents: 'none',
-
-        width: '100%',
-        height: '100%',
-
-        background: `linear-gradient(to right, ${colorStops.join(', ')})`,
-      }}
-    />
-  );
-};
+  return colorStops;
+}
 
 export default DensityLine;
