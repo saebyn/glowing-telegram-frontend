@@ -2,6 +2,7 @@ import { userManager } from '@/auth';
 import type { DataProvider, Identifier } from 'react-admin';
 import { HttpError } from 'react-admin';
 import * as cursorPaginationCache from './cursorPaginationCache';
+import inMemoryListCache from './inMemoryListCache';
 import resourceMap, { validateResource } from './resourceMap';
 
 const { VITE_API_URL: baseApiUrl } = import.meta.env;
@@ -23,40 +24,40 @@ const restDataProvider: DataProvider = {
   getList: async (resource, params) => {
     console.log('GET LIST', resource, params);
 
-    const requestSignature = JSON.stringify({
+    const page = params.pagination?.page || 1;
+
+    const fetchSignature = JSON.stringify({
       resource,
       perPage: params.pagination?.perPage,
       filter: params.filter,
+      page,
     });
 
-    const page = params.pagination?.page || 1;
+    let cachedData = inMemoryListCache.get(fetchSignature);
 
-    const cursor = cursorPaginationCache.getNext(requestSignature, page);
-
-    const data: {
-      items: any[];
-      cursor: string | null;
-    } = await fetchResourceData(resource, undefined, 'GET', {
-      signal: params.signal,
-      params: {
-        cursor,
-        perPage: params.pagination?.perPage,
-        filter: params.filter,
-      },
-    });
-
-    if (data.cursor) {
-      cursorPaginationCache.set(
-        requestSignature,
-        params.pagination?.page || 1,
-        data.cursor,
-      );
+    if (cachedData === undefined) {
+      console.debug('Cache miss', fetchSignature);
+      const data: { items: any[]; cursor: string | null } =
+        await fetchResourceData(resource, undefined, 'GET', {
+          signal: params.signal,
+          params: {
+            cursor: cursorPaginationCache.getNext(fetchSignature, page),
+            perPage: params.pagination?.perPage,
+            filter: params.filter,
+          },
+        });
+      if (data.cursor) {
+        cursorPaginationCache.set(fetchSignature, page, data.cursor);
+      }
+      inMemoryListCache.set(fetchSignature, data);
+      cachedData = data;
     }
 
-    const items = data.items.map(cleanRecord(resource));
+    const { items, cursor } = cachedData;
 
     // Sort items by params.sort.field and params.sort.order
-    items.sort((a, b) => {
+    // Copy the array to avoid mutating the cache
+    const sortedItems = items.slice().sort((a, b) => {
       const field = params.sort?.field;
 
       if (!field) {
@@ -78,9 +79,9 @@ const restDataProvider: DataProvider = {
     });
 
     return {
-      data: items as any[],
+      data: sortedItems as any[],
       pageInfo: {
-        hasNextPage: data.cursor !== null,
+        hasNextPage: cursor !== null,
         hasPreviousPage: page > 1,
       },
     };
