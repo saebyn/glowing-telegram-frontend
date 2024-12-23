@@ -1,4 +1,4 @@
-import { useTimerManager, useTimers } from '@/timers';
+import { useTimerManager, useTimers } from '@/hooks/useTimers';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 

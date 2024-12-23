@@ -1,4 +1,4 @@
-import type { TwitchCategory } from '@/twitch';
+import type { TwitchCategory } from '@/utilities/twitch';
 import type { DateTime } from 'luxon';
 
 export interface Skip {
