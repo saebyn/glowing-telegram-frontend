@@ -11,14 +11,16 @@ import {
 } from 'react-admin';
 
 import DescriptionInput from '@/components/atoms/DescriptionInput';
+import IngestStreamVideosButton from '@/components/atoms/IngestStreamVideosButton';
 import { TimeDurationInput } from '@/components/atoms/TimeDurationInput';
+import TimelineButton from '@/components/atoms/TimelineButton';
 import TitleInput from '@/components/atoms/TitleInput';
 import Edit, { type EditProps } from '@/components/templates/Edit';
-import TimelineButton from '@/resources/streams/TimelineButton';
 
 const StreamEditActions = () => (
   <TopToolbar>
     <PrevNextButtons />
+    <IngestStreamVideosButton />
     <TimelineButton />
     <ListButton />
   </TopToolbar>

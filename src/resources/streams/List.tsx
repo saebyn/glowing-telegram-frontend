@@ -1,4 +1,4 @@
-import TimelineButton from '@/resources/streams/TimelineButton';
+import TimelineButton from '@/components/atoms/TimelineButton';
 import Badge from '@mui/material/Badge';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
