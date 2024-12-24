@@ -1,5 +1,15 @@
 import type { Identifier, RaRecord } from 'react-admin';
 
+export interface TranscriptSegment {
+  start: number;
+  end: number;
+  avg_logprob: number;
+  compression_ratio: number;
+  no_speech_prob: number;
+  temperature: number;
+  text: string;
+}
+
 export interface VideoClipRecord extends RaRecord {
   /**
    * The S3 key of the video clip.
@@ -13,15 +23,7 @@ export interface VideoClipRecord extends RaRecord {
   transcript?: {
     language: string;
     text: string;
-    segments: Array<{
-      start: number;
-      end: number;
-      avg_logprob: number;
-      compression_ratio: number;
-      no_speech_prob: number;
-      temperature: number;
-      text: string;
-    }>;
+    segments: Array<TranscriptSegment>;
   };
   summary?: {
     attentions: Array<{

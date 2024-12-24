@@ -105,7 +105,7 @@ const restDataProvider: DataProvider = {
     }>(resource, undefined, 'GET', {
       signal: params.signal,
       params: {
-        id: params.ids,
+        filter: JSON.stringify({ id: params.ids }),
       },
     });
 
