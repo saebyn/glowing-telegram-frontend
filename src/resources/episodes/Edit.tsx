@@ -10,6 +10,7 @@ import {
   SimpleFormIterator,
   TextInput,
   TopToolbar,
+  useGetManyReference,
   useGetOne,
   useRecordContext,
 } from 'react-admin';
@@ -21,11 +22,11 @@ import { TimeDurationInput } from '@/components/atoms/TimeDurationInput';
 import TitleInput from '@/components/atoms/TitleInput';
 import YouTubeCategoryInput from '@/components/atoms/YouTubeCategoryInput';
 import ChatButton from '@/components/molecules/ChatButton';
-import MediaPickerInput from '@/components/molecules/MediaPickerInput';
 import { ExportButton as OTIOExportButton } from '@/components/organisms/OTIOExporter';
 import { ExportButton as SRTExportButton } from '@/components/organisms/SRTExporter';
 import Edit from '@/components/templates/Edit';
-import type { Episode, Series, TranscriptSegment } from '@/types';
+import type { Episode, Series } from '@/types';
+import type { TranscriptSegment, VideoClipRecord } from '@/types/dataProvider';
 import { parseIntoSeconds } from '@/utilities/isoDuration';
 
 const EditActions = () => (
@@ -59,8 +60,6 @@ const EpisodeEdit = () => (
       <DescriptionInput source="description" />
 
       <EpisodeDescriptionChatButton />
-
-      <MediaPickerInput source="render_uri" type="render" />
 
       <ArrayInput source="tracks">
         <SimpleFormIterator>
@@ -112,11 +111,26 @@ const EpisodeDescriptionChatButton = () => {
     },
   );
 
+  const { data: videoClips } = useGetManyReference<VideoClipRecord>(
+    'video_clips',
+    {
+      target: 'stream_id',
+      id: record?.stream_id,
+    },
+    {
+      enabled: !!record?.stream_id,
+    },
+  );
+
   if (!record) {
     return null;
   }
 
   if (!stream) {
+    return null;
+  }
+
+  if (!videoClips) {
     return null;
   }
 
@@ -166,7 +180,15 @@ ${record.description}
     Here is the transcript:
 `;
 
-  const transcriptionSegments = stream.transcription_segments;
+  const transcriptionSegments = videoClips.flatMap(
+    (videoClip: VideoClipRecord): Array<TranscriptSegment> => {
+      if (!videoClip.transcript) {
+        return [];
+      }
+
+      return videoClip.transcript.segments;
+    },
+  );
 
   if (!transcriptionSegments) {
     return null;
@@ -175,15 +197,13 @@ ${record.description}
   let episodeStart: null | number = null;
 
   const transcript = transcriptionSegments
-    .filter((segment: TranscriptSegment) =>
-      transcriptSegmentOverlaps(segment, record),
-    )
+    .filter((segment) => transcriptSegmentOverlaps(segment, record))
     .map((segment: TranscriptSegment) => {
       if (episodeStart === null) {
-        episodeStart = parseIntoSeconds(segment.start);
+        episodeStart = segment.start;
       }
 
-      const start = Math.round(parseIntoSeconds(segment.start) - episodeStart);
+      const start = Math.round(segment.start - episodeStart);
 
       return `${start}s: ${segment.text}`;
     })
@@ -214,8 +234,8 @@ function transcriptSegmentOverlaps(
     return false;
   }
 
-  const startTranscript = parseIntoSeconds(segment.start);
-  const endTranscript = parseIntoSeconds(segment.end);
+  const startTranscript = segment.start;
+  const endTranscript = segment.end;
 
   for (const { start, end } of record.tracks) {
     const startCut = parseIntoSeconds(start);
