@@ -180,13 +180,27 @@ ${record.description}
     Here is the transcript:
 `;
 
+  let elapsedTime = 0;
+
   const transcriptionSegments = videoClips.flatMap(
     (videoClip: VideoClipRecord): Array<TranscriptSegment> => {
-      if (!videoClip.transcript) {
+      if (!videoClip.transcription) {
         return [];
       }
 
-      return videoClip.transcript.segments;
+      const startOffset = elapsedTime;
+
+      if (videoClip.metadata?.format.duration === undefined) {
+        throw new Error('Duration is undefined');
+      }
+
+      elapsedTime += videoClip.metadata.format.duration;
+
+      return videoClip.transcription.segments.map((segment) => ({
+        ...segment,
+        start: segment.start + startOffset,
+        end: segment.end + startOffset,
+      }));
     },
   );
 
@@ -195,6 +209,16 @@ ${record.description}
   }
 
   let episodeStart: null | number = null;
+
+  console.log('transcriptionSegments', transcriptionSegments);
+
+  console.log('tracks', {
+    start: parseIntoSeconds(record.tracks[0].start),
+    end: parseIntoSeconds(record.tracks[0].end),
+    res: transcriptionSegments.filter((segment) =>
+      transcriptSegmentOverlaps(segment, record),
+    ),
+  });
 
   const transcript = transcriptionSegments
     .filter((segment) => transcriptSegmentOverlaps(segment, record))
