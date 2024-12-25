@@ -20,7 +20,7 @@ export interface VideoClipRecord extends RaRecord {
    * The list of detected silence intervals in the video clip.
    */
   silence?: Array<{ start: number; end: number }>;
-  transcript?: {
+  transcription?: {
     language: string;
     text: string;
     segments: Array<TranscriptSegment>;
