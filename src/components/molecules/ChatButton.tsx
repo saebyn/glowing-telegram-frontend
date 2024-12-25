@@ -30,7 +30,10 @@ const ChatButton: FC<ChatButtonProps> = ({
   const handleChat = async (
     messages: ChatMessage[],
   ): Promise<ChatMessage[]> => {
-    return dataProvider.chat(messages);
+    const result = await dataProvider.create('aiChat', {
+      data: messages,
+    });
+    return result.data.messages;
   };
 
   const handleChange = (content: string) => {
