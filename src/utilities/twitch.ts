@@ -156,7 +156,14 @@ export async function getChannelInformation(
     }
 
     return {
-      ...json.data[0],
+      broadcaster_id: json.data[0].broadcaster_id,
+      broadcaster_login: json.data[0].broadcaster_login,
+      broadcaster_name: json.data[0].broadcaster_name,
+      broadcaster_language: json.data[0].broadcaster_language,
+      title: json.data[0].title,
+      tags: json.data[0].tags,
+      game_name: json.data[0].game_name,
+      is_branded_content: json.data[0].is_branded_content,
 
       game_id: json.data[0].game_id || null,
 

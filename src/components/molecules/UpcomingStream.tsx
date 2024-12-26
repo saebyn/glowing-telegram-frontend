@@ -1,5 +1,6 @@
 import type { Profile } from '@/hooks/useProfile';
 import type { StreamEvent } from '@/scheduling/types';
+import { templateStreamSeries } from '@/utilities/template';
 import Alert from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -44,7 +45,7 @@ function UpcomingStream({ nextScheduledStream, profile }: UpcomingStreamProps) {
     .split(', ');
 
   const tags = Array.from(
-    new Set([...nextScheduledStream.tags, ...profile.standardTags]),
+    new Set([...(nextScheduledStream.tags || []), ...profile.standardTags]),
   ).sort();
 
   return (
@@ -54,7 +55,9 @@ function UpcomingStream({ nextScheduledStream, profile }: UpcomingStreamProps) {
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h6">{nextScheduledStream.name}</Typography>
+          <Typography variant="h6">
+            {templateStreamSeries(nextScheduledStream)}
+          </Typography>
         </Grid>
         <Grid item xs={6}>
           <Typography variant="body2" color="textSecondary">
@@ -89,7 +92,7 @@ function UpcomingStream({ nextScheduledStream, profile }: UpcomingStreamProps) {
         </Grid>
         <Grid item xs={12}>
           <Typography variant="body2" color="textSecondary">
-            Category: {nextScheduledStream.twitch_category.name}
+            Category: {nextScheduledStream.twitch_category?.name}
           </Typography>
         </Grid>
         <Grid item xs={12}>

@@ -4,6 +4,7 @@ import Timers from '@/components/molecules/Timers';
 import UpcomingStream from '@/components/molecules/UpcomingStream';
 import useProfile from '@/hooks/useProfile';
 import findNextStream from '@/scheduling/findNextStream';
+import type { SeriesRecord } from '@/types/dataProvider';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -28,7 +29,7 @@ function StreamManagerPage() {
     error: streamPlanError,
     isLoading: streamPlanIsLoading,
     isError: streamPlanIsError,
-  } = useGetList('stream_plans', {});
+  } = useGetList<SeriesRecord>('series', {});
 
   // get the user profile
   const {

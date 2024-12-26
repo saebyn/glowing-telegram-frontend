@@ -1,5 +1,17 @@
+import { RECURRENCE_DAYS, type SeriesRecord } from '@/types/dataProvider';
 import { DateTime } from 'luxon';
-import { RECURRENCE_DAYS, type StreamEvent, type StreamPlan } from './types';
+import type { SeriesRecordWithValidTimes, StreamEvent } from './types';
+
+function guardValidSeriesRecord(
+  record: SeriesRecord,
+): record is SeriesRecordWithValidTimes {
+  return (
+    typeof record.start_time === 'string' &&
+    typeof record.end_time === 'string' &&
+    typeof record.start_date === 'string' &&
+    typeof record.timezone === 'string'
+  );
+}
 
 /**
  * Generate events for a given day based on the stream plans data, including
@@ -11,10 +23,11 @@ import { RECURRENCE_DAYS, type StreamEvent, type StreamPlan } from './types';
  */
 export default function generateEventsForDay(
   targetDate: DateTime,
-  plans: StreamPlan[],
+  plans: SeriesRecord[],
 ): StreamEvent[] {
   return (
     plans
+      .filter(guardValidSeriesRecord)
       // we are assuming that the recurrence cannot be more than once per day
       // so we can filter the list and only include the events that fall on the
       // given day, rather than having to potentially generate multiple events
@@ -61,7 +74,7 @@ export default function generateEventsForDay(
         }
 
         // validate the recurrence type
-        if (plan.recurrence.type !== 'weekly') {
+        if (plan.recurrence?.type !== 'weekly') {
           throw new Error('Unsupported recurrence type');
         }
 
