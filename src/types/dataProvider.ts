@@ -1,3 +1,4 @@
+import type { TwitchCategory } from '@/utilities/twitch';
 import type { Identifier, RaRecord } from 'react-admin';
 
 export interface TranscriptSegment {
@@ -94,4 +95,60 @@ export interface EpisodeRecord extends RaRecord {
   description: string;
   tracks: Array<{ start: string; end: string }>;
   stream_id: Identifier;
+}
+
+export interface Skip {
+  date: string;
+  reason: string;
+}
+
+export type RecurrenceType = 'weekly';
+export type RecurrenceDay =
+  | 'sunday'
+  | 'monday'
+  | 'tuesday'
+  | 'wednesday'
+  | 'thursday'
+  | 'friday'
+  | 'saturday';
+
+export const RECURRENCE_DAYS: Record<number, RecurrenceDay> = {
+  7: 'sunday',
+  1: 'monday',
+  2: 'tuesday',
+  3: 'wednesday',
+  4: 'thursday',
+  5: 'friday',
+  6: 'saturday',
+};
+
+export interface Recurrence {
+  type: RecurrenceType;
+  days: RecurrenceDay[];
+  // interval should be a positive integer
+  interval: number;
+}
+
+export interface SeriesRecord extends RaRecord {
+  category?: number;
+  created_at: string;
+  description?: string;
+  is_active?: boolean;
+  max_episode_order_index?: number;
+  notify_subscribers?: boolean;
+  playlist_id?: string;
+  prep_notes?: string;
+  skips?: Skip[];
+  recurrence?: Recurrence;
+  timezone?: string;
+  start_time?: string;
+  end_time?: string;
+  start_date?: string;
+  tags?: string[];
+  thumbnail_url?: string;
+  title: string;
+  stream_title_template?: string;
+  twitch_category?: TwitchCategory;
+  updated_at?: string;
+  stream_count?: number;
 }

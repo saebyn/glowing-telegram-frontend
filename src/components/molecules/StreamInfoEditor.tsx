@@ -4,6 +4,7 @@ import TwitchCCTAutocomplete from '@/components/atoms/TwitchCCLSelect';
 import TwitchCategoryAutocomplete from '@/components/atoms/TwitchCategoryAutocomplete';
 import type { Profile } from '@/hooks/useProfile';
 import type { StreamEvent } from '@/scheduling/types';
+import { templateStreamSeries } from '@/utilities/template';
 import {
   type GetChannelInformationResponse,
   getChannelInformation,
@@ -91,17 +92,17 @@ function StreamInfoEditor({
 
     const newTags = isMerging
       ? [
-          ...nextScheduledStream.tags,
+          ...(nextScheduledStream.tags || []),
           ...profile.standardTags,
           ...(streamInfo.tags || []),
         ]
-      : [...nextScheduledStream.tags, ...profile.standardTags];
+      : [...(nextScheduledStream.tags || []), ...profile.standardTags];
 
     setStreamInfo((streamInfo) => ({
       ...streamInfo,
-      game_id: nextScheduledStream.twitch_category.id,
-      game_name: nextScheduledStream.twitch_category.name,
-      title: nextScheduledStream.name,
+      game_id: nextScheduledStream.twitch_category?.id,
+      game_name: nextScheduledStream.twitch_category?.name,
+      title: templateStreamSeries(nextScheduledStream),
       tags: newTags,
     }));
   };

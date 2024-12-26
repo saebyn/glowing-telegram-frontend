@@ -2,6 +2,8 @@ import { createRoot } from 'react-dom/client';
 
 import App from '@/App.tsx';
 
+const { VITE_MOCKS_ENABLED: MOCKS_ENABLED } = import.meta.env;
+
 const container = document.getElementById('root');
 
 if (!container) {
@@ -10,6 +12,10 @@ if (!container) {
 
 async function enableMocking() {
   if (process.env.NODE_ENV !== 'development') {
+    return;
+  }
+
+  if (!MOCKS_ENABLED) {
     return;
   }
 

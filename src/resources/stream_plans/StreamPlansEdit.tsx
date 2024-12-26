@@ -57,6 +57,19 @@ function StreamPlansEdit() {
         <TextInput source="title" validate={required()} />
         <TextInput source="description" />
         <BooleanInput source="is_active" />
+
+        <TextInput
+          source="stream_title_template"
+          validate={required()}
+          helperText="Template for the title of the stream. Use ${title} to insert the series title and ${stream_count} to insert the stream number"
+        />
+        <NumberInput
+          source="stream_count"
+          helperText="Number of streams that have been done for this series"
+          validate={required()}
+          defaultValue={0}
+        />
+
         <RichTextInput source="prep_notes" />
 
         <DateInput
