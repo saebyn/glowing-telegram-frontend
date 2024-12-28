@@ -1,7 +1,7 @@
 import type { DataStreamDataElement } from '@/types';
-import type { StreamRecord } from '@/types/dataProvider';
 import { convertSecondsToISODuration } from '@/utilities/isoDuration';
 import { useMutation } from '@tanstack/react-query';
+import type { Stream } from 'glowing-telegram-types/src/types';
 import {
   Button,
   type ButtonProps,
@@ -12,7 +12,7 @@ import {
 
 type BulkCreateEpisodesButtonProps = {
   segments: DataStreamDataElement[];
-  stream?: StreamRecord;
+  stream?: Stream;
 } & Omit<ButtonProps, 'onClick' | 'disabled'>;
 
 const BulkCreateEpisodesButton = ({

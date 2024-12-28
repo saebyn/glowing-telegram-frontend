@@ -4,12 +4,12 @@ import Timers from '@/components/molecules/Timers';
 import UpcomingStream from '@/components/molecules/UpcomingStream';
 import useProfile from '@/hooks/useProfile';
 import findNextStream from '@/scheduling/findNextStream';
-import type { SeriesRecord } from '@/types/dataProvider';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import type { Series } from 'glowing-telegram-types/src/types';
 import { DateTime } from 'luxon';
 import { LoadingIndicator, useGetList } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
@@ -29,7 +29,7 @@ function StreamManagerPage() {
     error: streamPlanError,
     isLoading: streamPlanIsLoading,
     isError: streamPlanIsError,
-  } = useGetList<SeriesRecord>('series', {});
+  } = useGetList<Series>('series', {});
 
   // get the user profile
   const {

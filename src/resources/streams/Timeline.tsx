@@ -2,10 +2,10 @@ import BulkCreateEpisodesButton from '@/components/molecules/BulkEpisodeCreateBu
 import StreamTimeline, {
   type Segment,
 } from '@/components/molecules/StreamTimeline';
-import type { StreamRecord, VideoClipRecord } from '@/types/dataProvider';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import type { Stream, VideoClip } from 'glowing-telegram-types/src/types';
 import { useEffect, useMemo, useState } from 'react';
 import {
   Button,
@@ -26,7 +26,7 @@ function Timeline() {
   const { id } = useParams();
   const translate = useTranslate();
 
-  const { data, isPending, error } = useGetManyReference<VideoClipRecord>(
+  const { data, isPending, error } = useGetManyReference<VideoClip>(
     'video_clips',
     {
       target: 'stream_id',
@@ -38,15 +38,15 @@ function Timeline() {
     data: stream,
     isPending: isStreamPending,
     error: streamError,
-  } = useGetOne<StreamRecord>('streams', { id });
+  } = useGetOne<Stream>('streams', { id });
 
   const silenceIntervals = useMemo(() => {
     return (
       data?.flatMap((record, idx) =>
         (record.silence || []).map((sil, sIdx) => ({
           id: Number.parseInt(`${idx}${sIdx}`, 10),
-          start: sil.start + record.start_time,
-          end: sil.end + record.start_time,
+          start: sil.start ?? 0 + (record.start_time ?? 0),
+          end: sil.end ?? 0 + (record.start_time ?? 0),
         })),
       ) || []
     );
@@ -69,8 +69,8 @@ function Timeline() {
       cuts.push({ start: lastEnd, end: interval.start, id: idx++ });
       lastEnd = interval.end;
     }
-    cuts.push({ start: lastEnd, end: stream.duration, id: idx++ });
-    return cuts.filter((cut) => cut.end - cut.start > 0);
+    cuts.push({ start: lastEnd, end: stream.duration ?? 0, id: idx++ });
+    return cuts.filter((cut) => cut.end ?? 0 - cut.start > 0);
   }, [sortedSilenceIntervals, stream]);
 
   const [segments, setSegments] = useState<Segment[]>(suggestedCuts);

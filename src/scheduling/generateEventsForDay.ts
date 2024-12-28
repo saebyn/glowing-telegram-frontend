@@ -1,9 +1,19 @@
-import { RECURRENCE_DAYS, type SeriesRecord } from '@/types/dataProvider';
+import type { Day, Series } from 'glowing-telegram-types/src/types';
 import { DateTime } from 'luxon';
 import type { SeriesRecordWithValidTimes, StreamEvent } from './types';
 
+export const RECURRENCE_DAYS: Record<number, Day> = {
+  7: 'sunday',
+  1: 'monday',
+  2: 'tuesday',
+  3: 'wednesday',
+  4: 'thursday',
+  5: 'friday',
+  6: 'saturday',
+};
+
 function guardValidSeriesRecord(
-  record: SeriesRecord,
+  record: Series,
 ): record is SeriesRecordWithValidTimes {
   return (
     typeof record.start_time === 'string' &&
@@ -23,7 +33,7 @@ function guardValidSeriesRecord(
  */
 export default function generateEventsForDay(
   targetDate: DateTime,
-  plans: SeriesRecord[],
+  plans: Series[],
 ): StreamEvent[] {
   return (
     plans
@@ -47,17 +57,19 @@ export default function generateEventsForDay(
           return false;
         }
 
-        const [endHour, endMinute] = plan.end_time.split(':').map(Number);
-        const endDatetime = DateTime.fromISO(plan.end_date, {
-          zone: plan.timezone,
-        }).set({
-          hour: endHour,
-          minute: endMinute,
-        });
+        if (plan.end_date !== undefined) {
+          const [endHour, endMinute] = plan.end_time.split(':').map(Number);
+          const endDatetime = DateTime.fromISO(plan.end_date, {
+            zone: plan.timezone,
+          }).set({
+            hour: endHour,
+            minute: endMinute,
+          });
 
-        // reject if the end date of the plan is before the target date
-        if (endDatetime < targetDate.startOf('day')) {
-          return false;
+          // reject if the end date of the plan is before the target date
+          if (endDatetime < targetDate.startOf('day')) {
+            return false;
+          }
         }
 
         // reject if the plan is skipped on the target date

@@ -28,7 +28,6 @@
  * - The proceed button should be removed when the ingest process is in progress or complete.
  */
 
-import type { StreamRecord } from '@/types/dataProvider';
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import IngestVideoIcon from '@mui/icons-material/VideoLibrary';
@@ -39,6 +38,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import type { Stream } from 'glowing-telegram-types/src/types';
 import { DateTime, Duration } from 'luxon';
 import React, { useEffect } from 'react';
 import {
@@ -52,7 +52,11 @@ import {
 // This is the initial prompt template that will be shown to the user when they
 // open the dialog. This template will be populated with data from the stream
 // record.
-function getInitialPromptTemplate(record: StreamRecord): string {
+function getInitialPromptTemplate(record: Stream): string {
+  if (!record.stream_date) {
+    return 'No stream date available.';
+  }
+
   const date = DateTime.fromISO(record.stream_date).toLocaleString();
 
   return `
@@ -63,7 +67,11 @@ function getInitialPromptTemplate(record: StreamRecord): string {
 // This is the initial summary template that will be shown to the user when they
 // open the dialog. This template will be populated with data from the stream
 // record.
-function getInitialSummaryTemplate(record: StreamRecord): string {
+function getInitialSummaryTemplate(record: Stream): string {
+  if (!record.stream_date) {
+    return 'No stream date available.';
+  }
+
   const date = DateTime.fromISO(record.stream_date).toLocaleString();
   // convert duration to human readable format from seconds
   const duration = Duration.fromObject({ seconds: record.duration }).toFormat(
@@ -83,7 +91,7 @@ function getInitialSummaryTemplate(record: StreamRecord): string {
 
 const IngestStreamVideosButton = () => {
   const translate = useTranslate();
-  const record = useRecordContext<StreamRecord>();
+  const record = useRecordContext<Stream>();
   const dataProvider = useDataProvider();
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
