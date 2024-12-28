@@ -3,9 +3,11 @@ import { useFormContext } from 'react-hook-form';
 
 import ChatButton from '@/components/molecules/ChatButton';
 import type { Episode, Series } from '@/types';
-import type { TranscriptSegment, VideoClipRecord } from '@/types/dataProvider';
 import { parseIntoSeconds } from '@/utilities/isoDuration';
-
+import type {
+  TranscriptSegment,
+  VideoClip,
+} from 'glowing-telegram-types/src/types';
 const EpisodeDescriptionChatButton = () => {
   const { setValue } = useFormContext();
   const record = useRecordContext<Episode>();
@@ -30,7 +32,7 @@ const EpisodeDescriptionChatButton = () => {
     },
   );
 
-  const { data: rawRelatedVideoClips } = useGetManyReference<VideoClipRecord>(
+  const { data: rawRelatedVideoClips } = useGetManyReference<VideoClip>(
     'video_clips',
     {
       target: 'stream_id',
@@ -110,14 +112,14 @@ ${record.description}
   let elapsedTime = 0;
 
   const transcriptionSegments = relatedVideoClips.flatMap(
-    (videoClip: VideoClipRecord): Array<TranscriptSegment> => {
+    (videoClip: VideoClip): Array<TranscriptSegment> => {
       if (!videoClip.transcription) {
         return [];
       }
 
       const startOffset = elapsedTime;
 
-      if (videoClip.metadata?.format.duration === undefined) {
+      if (videoClip.metadata?.format?.duration === undefined) {
         throw new Error('Duration is undefined');
       }
 

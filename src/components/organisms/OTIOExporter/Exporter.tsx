@@ -8,17 +8,17 @@ import {
 } from 'react-admin';
 
 import type { Stream } from '@/types';
-import type { EpisodeRecord, VideoClipRecord } from '@/types/dataProvider';
+import type { Episode, VideoClip } from 'glowing-telegram-types/src/types';
 import exporter from './export';
 
-function promptDownload(episode: EpisodeRecord, videoClips: VideoClipRecord[]) {
-  const videoClipsSet = videoClips.map((clip: VideoClipRecord) => ({
+function promptDownload(episode: Episode, videoClips: VideoClip[]) {
+  const videoClipsSet = videoClips.map((clip: VideoClip) => ({
     uri: clip.key,
-    duration: clip.metadata?.format.duration,
+    duration: clip.metadata?.format?.duration,
     start_time: clip.start_time,
   }));
 
-  videoClipsSet.sort((a, b) => a.start_time - b.start_time);
+  videoClipsSet.sort((a, b) => (a.start_time ?? 0) - (b.start_time ?? 0));
 
   // take the episode data and use the OTIOExporter to genrate the OTIO string
   // then create a blob object and create a download link
@@ -27,12 +27,14 @@ function promptDownload(episode: EpisodeRecord, videoClips: VideoClipRecord[]) {
   try {
     otioString = exporter(
       {
-        title: episode.title,
-        description: episode.description,
-        tracks: episode.tracks.map((track: { start: string; end: string }) => ({
-          start: track.start,
-          end: track.end,
-        })),
+        title: episode.title || '',
+        description: episode.description || '',
+        tracks: (episode.tracks || []).map(
+          (track: { start: string; end: string }) => ({
+            start: track.start,
+            end: track.end,
+          }),
+        ),
       },
       {
         video_clips: videoClipsSet,
@@ -59,7 +61,7 @@ function promptDownload(episode: EpisodeRecord, videoClips: VideoClipRecord[]) {
 }
 
 export const ExportButton = () => {
-  const episode = useRecordContext<EpisodeRecord>();
+  const episode = useRecordContext<Episode>();
   const {
     data: videoClips,
     isLoading,
