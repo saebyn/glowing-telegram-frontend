@@ -31,8 +31,6 @@ const StreamCreate = (props: CreateProps) => (
 
       <DateTimeInput source="stream_date" required />
 
-      <TimeDurationInput source="duration" required defaultValue="PT3H" />
-
       <TextInput
         source="prefix"
         required

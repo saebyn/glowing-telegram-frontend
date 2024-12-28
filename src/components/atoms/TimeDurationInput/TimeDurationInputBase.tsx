@@ -1,9 +1,4 @@
 import {
-  type Duration,
-  parseISO8601Duration,
-  toISO8601Duration,
-} from '@/utilities/isoDuration';
-import {
   Box,
   FormControl,
   FormHelperText,
@@ -11,33 +6,72 @@ import {
   InputAdornment,
 } from '@mui/material';
 import type { TextFieldProps } from '@mui/material/TextField';
+import { Duration } from 'luxon';
 import type React from 'react';
 
-export type TimeDurationInputBaseProps = TextFieldProps;
+export type TimeDurationInputBaseProps = TextFieldProps & {
+  format: 'iso8601' | 'seconds';
+};
+
+function parseValue(
+  value: string,
+  format: TimeDurationInputBaseProps['format'],
+): Duration {
+  if (format === 'iso8601') {
+    return Duration.fromISO(value).shiftTo(
+      'hours',
+      'minutes',
+      'seconds',
+      'milliseconds',
+    );
+  }
+
+  return Duration.fromObject({
+    seconds: value ? Number.parseInt(value as string, 10) || 0 : 0,
+  }).shiftTo('hours', 'minutes', 'seconds', 'milliseconds');
+}
+
+function formatValue(
+  value: number,
+  format: TimeDurationInputBaseProps['format'],
+) {
+  if (format === 'iso8601') {
+    return Duration.fromObject({ seconds: value })
+      .shiftTo('hours', 'minutes', 'seconds', 'milliseconds')
+      .toISO();
+  }
+
+  return value.toString();
+}
 
 const TimeDurationInputBase = (props: TimeDurationInputBaseProps) => {
-  const { value, name, error, helperText, onChange } = props;
+  const { value, name, error, helperText, onChange, format } = props;
 
-  const { hours, minutes, seconds, milliseconds } = parseISO8601Duration(
-    value as string,
-  );
+  const duration = parseValue(value as string, format);
+  const hours = duration.hours;
+  const minutes = duration.minutes;
+  const seconds = Math.floor(duration.seconds);
+  const milliseconds = duration.milliseconds;
 
   const handleChange =
-    (part: keyof Duration) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = {
+    (part: 'hours' | 'minutes' | 'seconds' | 'milliseconds') =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const numericValue = Number.parseInt(event.target.value, 10);
+      const newDuration = Duration.fromObject({
         hours,
         minutes,
         seconds,
         milliseconds,
-        [part]: Number.parseInt(event.target.value, 10),
-      };
+        [part]: numericValue,
+      });
+      const updatedSeconds = newDuration.as('seconds');
 
       if (onChange) {
         onChange({
           ...event,
           target: {
             ...event.target,
-            value: toISO8601Duration(newValue),
+            value: formatValue(updatedSeconds, format),
             name: name || '',
           },
         });

@@ -63,8 +63,8 @@ const EpisodeEdit = () => (
 
       <ArrayInput source="tracks">
         <SimpleFormIterator>
-          <TimeDurationInput source="start" />
-          <TimeDurationInput source="end" />
+          <TimeDurationInput source="start" format="iso8601" />
+          <TimeDurationInput source="end" format="iso8601" />
         </SimpleFormIterator>
       </ArrayInput>
 

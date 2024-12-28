@@ -52,7 +52,7 @@ const StreamEdit = (props: EditProps) => (
 
       <DateTimeInput source="stream_date" required />
 
-      <TimeDurationInput source="duration" />
+      <TimeDurationInput source="duration" required format="seconds" />
 
       <TextInput
         source="prefix"
