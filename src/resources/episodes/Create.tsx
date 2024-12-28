@@ -11,14 +11,15 @@ import {
   SimpleForm,
   SimpleFormIterator,
   TextInput,
+  required,
 } from 'react-admin';
 
 const EpisodeCreate = (props: CreateProps) => (
   <Create {...props} title="Create an Episode">
     <SimpleForm>
-      <TextInput source="title" required />
+      <TextInput source="title" validate={required()} />
 
-      <TextInput source="stream_id" isRequired={true} />
+      <ReferenceInput source="stream_id" reference="streams" />
 
       <ReferenceInput source="series_id" reference="series">
         <SelectInput optionText="title" />
