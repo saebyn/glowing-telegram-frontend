@@ -70,6 +70,13 @@ function StreamPlansEdit() {
           defaultValue={0}
         />
 
+        <NumberInput
+          source="max_episode_order_index"
+          helperText="The maximum episode order index for this series. This is used to generate the episode order index for new episodes. This value should match the highest episode order index for the series."
+          validate={required()}
+          defaultValue={0}
+        />
+
         <RichTextInput source="prep_notes" />
 
         <DateInput
