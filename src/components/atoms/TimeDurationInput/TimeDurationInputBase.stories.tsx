@@ -15,6 +15,7 @@ const meta = {
   },
   args: {
     value: 'PT0S',
+    format: 'iso8601',
     onChange: fn(),
     onBlur: fn(),
   },

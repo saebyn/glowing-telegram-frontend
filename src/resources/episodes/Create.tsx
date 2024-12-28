@@ -11,14 +11,15 @@ import {
   SimpleForm,
   SimpleFormIterator,
   TextInput,
+  required,
 } from 'react-admin';
 
 const EpisodeCreate = (props: CreateProps) => (
   <Create {...props} title="Create an Episode">
     <SimpleForm>
-      <TextInput source="title" required />
+      <TextInput source="title" validate={required()} />
 
-      <TextInput source="stream_id" isRequired={true} />
+      <ReferenceInput source="stream_id" reference="streams" />
 
       <ReferenceInput source="series_id" reference="series">
         <SelectInput optionText="title" />
@@ -40,8 +41,8 @@ const EpisodeCreate = (props: CreateProps) => (
 
       <ArrayInput source="tracks">
         <SimpleFormIterator>
-          <TimeDurationInput source="start" />
-          <TimeDurationInput source="end" />
+          <TimeDurationInput source="start" format="iso8601" />
+          <TimeDurationInput source="end" format="iso8601" />
         </SimpleFormIterator>
       </ArrayInput>
     </SimpleForm>

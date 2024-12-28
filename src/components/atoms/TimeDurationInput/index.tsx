@@ -2,11 +2,13 @@ import type { TextFieldProps } from '@mui/material/TextField';
 import { type CommonInputProps, useInput } from 'react-admin';
 import TimeDurationInputBase from './TimeDurationInputBase';
 
-export type TimeDurationInputProps = CommonInputProps &
-  Omit<TextFieldProps, 'helperText' | 'label'>;
+export type TimeDurationInputProps = Omit<CommonInputProps, 'format'> &
+  Omit<TextFieldProps, 'helperText' | 'label'> & {
+    format: 'iso8601' | 'seconds';
+  };
 
 export const TimeDurationInput = (props: TimeDurationInputProps) => {
-  const { onChange, onBlur, label, ...rest } = props;
+  const { onChange, onBlur, label, format, ...rest } = props;
   const {
     field,
     fieldState: { isTouched, invalid, error },
@@ -20,6 +22,7 @@ export const TimeDurationInput = (props: TimeDurationInputProps) => {
 
   return (
     <TimeDurationInputBase
+      format={format}
       onChange={field.onChange}
       onBlur={field.onBlur}
       value={field.value}
