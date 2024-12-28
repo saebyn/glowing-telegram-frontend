@@ -70,8 +70,12 @@ function ChatDialog({
       <DialogTitle>ChatDialog</DialogTitle>
 
       <DialogContent>
-        {baseMessages.map((message, index) => (
-          <ChatMessageView key={index} message={message} disabled={true} />
+        {baseMessages.map((message) => (
+          <ChatMessageView
+            key={`${message.role}:${message.content.slice(0, 20)}`}
+            message={message}
+            disabled={true}
+          />
         ))}
 
         {chatMessages.map((message, index) => (
