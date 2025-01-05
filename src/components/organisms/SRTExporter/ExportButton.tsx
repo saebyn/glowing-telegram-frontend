@@ -1,8 +1,7 @@
 import DownloadIcon from '@mui/icons-material/Download';
 
+import type { Episode } from '@/types';
 import { Button, useGetOne, useRecordContext } from 'react-admin';
-
-import type { Episode } from '../types';
 import exportSRT from './exporter';
 
 const ExportButton = () => {

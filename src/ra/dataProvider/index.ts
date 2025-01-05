@@ -3,7 +3,7 @@ import { type DataProvider, combineDataProviders } from 'react-admin';
 import chatDataProvider from './aiChat';
 import resourceMap from './resourceMap';
 import restDataProvider from './restDataProvider';
-import twitchVideosDataProvider from './twitchVideosDataProvider';
+import twitchDataProvider from './twitchDataProvider';
 
 const dataProvider = combineDataProviders((resource) => {
   if (resource === 'aiChat') {
@@ -14,8 +14,8 @@ const dataProvider = combineDataProviders((resource) => {
     return restDataProvider;
   }
 
-  if (resource === 'twitch_streams') {
-    return twitchVideosDataProvider;
+  if (resource === 'twitch') {
+    return twitchDataProvider;
   }
 
   throw new Error(`Unknown resource: ${resource}`);

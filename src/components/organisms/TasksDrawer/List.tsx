@@ -1,3 +1,4 @@
+import type { TaskStatus, TaskSummary } from '@/types';
 import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
@@ -18,7 +19,6 @@ import { blue, green, orange, red } from '@mui/material/colors';
 import useTheme from '@mui/material/styles/useTheme';
 import { type FC, useRef } from 'react';
 import { LoadingIndicator } from 'react-admin';
-import type { TaskStatus, TaskSummary } from '../types';
 import Notifications from './Notifications';
 import useTasks from './useTasks';
 

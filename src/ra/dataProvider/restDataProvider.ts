@@ -1,3 +1,4 @@
+import { authenticatedFetch } from '@/api';
 import { userManager } from '@/utilities/auth';
 import type { DataProvider, Identifier } from 'react-admin';
 import { HttpError } from 'react-admin';
@@ -215,14 +216,6 @@ async function fetchResourceData<T>(
 ): Promise<T> {
   validateResource(resource);
 
-  const user = await userManager.getUser();
-
-  if (!user) {
-    throw new Error('User not found');
-  }
-
-  const token = user.id_token;
-
   const url = getResourceUrl(resource, recordId, options?.relatedFieldName);
 
   const { signal, params, data } = options || {};
@@ -237,12 +230,11 @@ async function fetchResourceData<T>(
     }
   }
 
-  const response = await fetch(url.toString(), {
+  const response = await authenticatedFetch(url.toString(), {
     body: data ? JSON.stringify(data) : undefined,
     method,
     signal,
     headers: {
-      Authorization: `${token}`,
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },

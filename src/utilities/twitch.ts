@@ -1,24 +1,6 @@
 import { DateTime } from 'luxon';
 
-const {
-  VITE_TWITCH_CLIENT_ID: clientId,
-  VITE_TWITCH_REDIRECT_URI: redirectUri,
-} = import.meta.env;
-
-export function generateAuthorizeUri(
-  csrfToken: string,
-  scope: string[],
-): string {
-  const params = new URLSearchParams({
-    client_id: clientId,
-    redirect_uri: redirectUri,
-    response_type: 'token',
-    scope: scope.join(' '),
-    state: csrfToken,
-  });
-
-  return `https://id.twitch.tv/oauth2/authorize?${params.toString()}`;
-}
+const { VITE_TWITCH_CLIENT_ID: clientId } = import.meta.env;
 
 interface ValidateAccessTokenResponse {
   client_id: string;
@@ -42,53 +24,6 @@ export async function validateAccessToken(
   }
 
   throw new Error('Invalid access token');
-}
-
-interface AuthorizeSuccess {
-  status: 'success';
-  accessToken: string;
-}
-
-interface AuthorizeError {
-  status: 'error';
-  error: string;
-  errorDescription: string;
-}
-
-export function parseReturnedData(
-  csrfToken: string,
-  location: Location,
-): AuthorizeError | AuthorizeSuccess {
-  const params = new URLSearchParams(location.hash.slice(1));
-  const searchParams = new URLSearchParams(location.search);
-
-  if (searchParams.has('error')) {
-    if (searchParams.get('state') !== csrfToken) {
-      return {
-        status: 'error',
-        error: 'csrf_mismatch',
-        errorDescription: 'CSRF token mismatch',
-      };
-    }
-
-    return {
-      status: 'error',
-      error: searchParams.get('error') || 'unknown',
-      errorDescription: searchParams.get('error_description') || 'unknown',
-    };
-  }
-
-  if (params.get('state') !== csrfToken) {
-    return {
-      status: 'error',
-      error: 'csrf_mismatch',
-      errorDescription: 'CSRF token mismatch',
-    };
-  }
-  return {
-    status: 'success',
-    accessToken: params.get('access_token') || '',
-  };
 }
 
 export interface ContentClassificationLabel {
@@ -452,4 +387,77 @@ export async function snoozeNextAd(
   }
 
   throw new Error('Failed to snooze next ad');
+}
+
+/**
+ * Get Videos
+ *
+ * Gets information about one or more published videos. You may get videos by
+ * ID, by user, or by game/category.
+ *
+ * You may apply several filters to get a subset of the videos. The filters are
+ *  applied as an AND operation to each video. For example, if language is set
+ * to ‘de’ and game_id is set to 21779, the response includes only videos that
+ * show playing League of Legends by users that stream in German. The filters
+ * apply only if you get videos by user ID or game ID.
+ *
+ * Authorization
+ *
+ * Requires an app access token or user access token.
+ */
+export interface Video {
+  id: string;
+  stream_id: string;
+  user_id: string;
+  user_login: string;
+  user_name: string;
+  title: string;
+  description: string;
+  created_at: string;
+  published_at: string;
+  url: string;
+  thumbnail_url: string;
+  viewable: 'public';
+  view_count: number;
+  language: string;
+  type: 'archive' | 'highlight' | 'upload';
+  duration: string;
+  muted_segments: Array<{
+    duration: number;
+    offset: number;
+  }>;
+}
+
+export interface GetVideosResponse {
+  data: Video[];
+  pagination: {
+    cursor?: string;
+  };
+}
+
+export async function getVideos(
+  broadcasterId: string,
+  accessToken: string,
+  after: string | null = null,
+  options: { signal?: AbortSignal } = {},
+): Promise<GetVideosResponse> {
+  let url = `https://api.twitch.tv/helix/videos?user_id=${encodeURIComponent(broadcasterId)}`;
+
+  if (after) {
+    url += `&after=${encodeURIComponent(after)}`;
+  }
+
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Client-Id': clientId,
+    },
+    signal: options.signal,
+  });
+
+  if (response.ok) {
+    return response.json();
+  }
+
+  throw new Error('Failed to get videos');
 }

@@ -222,7 +222,7 @@ function MonthCalendarView({
                   <Typography variant="caption">
                     {event.startDatetime.toLocaleString(DateTime.TIME_SIMPLE)}
                   </Typography>{' '}
-                  | <Typography variant="caption">{event.name}</Typography>
+                  | <Typography variant="caption">{event.title}</Typography>
                   <Typography variant="body2">{event.prep_notes}</Typography>
                 </Box>
               ))}

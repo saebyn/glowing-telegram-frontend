@@ -29,6 +29,10 @@ function AdManager({ profile }: AdManagerProps) {
   useEffect(() => {
     const abortController = new AbortController();
 
+    if (!profile.twitch?.accessToken || !profile.twitch?.broadcasterId) {
+      return;
+    }
+
     getAdSchedule(profile.twitch.broadcasterId, profile.twitch.accessToken, {
       signal: abortController.signal,
     })
@@ -36,9 +40,13 @@ function AdManager({ profile }: AdManagerProps) {
       .catch((e) => setError(e));
 
     return () => abortController.abort();
-  }, [profile.twitch.accessToken, profile.twitch.broadcasterId]);
+  }, [profile.twitch?.accessToken, profile.twitch?.broadcasterId]);
 
   const handleSnooze = async () => {
+    if (!profile.twitch?.accessToken || !profile.twitch?.broadcasterId) {
+      return;
+    }
+
     setIsPending(true);
     try {
       const data = await snoozeNextAd(
@@ -55,6 +63,10 @@ function AdManager({ profile }: AdManagerProps) {
   };
 
   const handleStartCommercial = async () => {
+    if (!profile.twitch?.accessToken || !profile.twitch?.broadcasterId) {
+      return;
+    }
+
     setIsPending(true);
     try {
       await startCommercial(

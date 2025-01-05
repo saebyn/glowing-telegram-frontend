@@ -1,18 +1,19 @@
+import type { Series } from 'glowing-telegram-types/src/types';
 import { DateTime } from 'luxon';
 import { describe, expect, it } from 'vitest';
 import generateEventsForDay from './generateEventsForDay';
-import type { StreamPlan } from './types';
 
 describe('generateEventsForDay', () => {
   it('should return an event for yesterday when the plan is in an earlier timezone', () => {
     const date = DateTime.fromISO('2024-11-25T00:00:00.000-04:00', {
       setZone: true,
     });
-    const plans: StreamPlan[] = [
+    const plans: Series[] = [
       {
-        id: 1,
-        name: 'Event 1',
+        id: '1',
+        title: 'Event 1',
         description: 'Description 1',
+        created_at: '2024-11-01T00:00:00.000-08:00',
         prep_notes: 'Prep notes 1',
         start_date: '2024-11-24',
         end_date: '2024-11-24',
@@ -26,7 +27,7 @@ describe('generateEventsForDay', () => {
         start_time: '23:00',
         end_time: '23:30',
         tags: ['tag1'],
-        category: { id: '1', name: 'category1', box_art_url: '' },
+        twitch_category: { id: '1', name: 'category1', box_art_url: '' },
       },
     ];
 
@@ -34,8 +35,8 @@ describe('generateEventsForDay', () => {
 
     expect(events).toHaveLength(1);
     expect(events[0]).toMatchObject({
-      id: 1,
-      name: 'Event 1',
+      id: '1',
+      title: 'Event 1',
       startDatetime: DateTime.fromISO('2024-11-25T03:00:00.000-04:00', {
         setZone: true,
       }),
@@ -50,10 +51,11 @@ describe('generateEventsForDay', () => {
     const date = DateTime.fromISO('2024-11-25T00:00:00.000-08:00', {
       setZone: true,
     });
-    const plans: StreamPlan[] = [
+    const plans: Series[] = [
       {
-        id: 1,
-        name: 'Event 1',
+        id: '1',
+        title: 'Event 1',
+        created_at: '2024-11-01T00:00:00.000-08:00',
         description: 'Description 1',
         prep_notes: 'Prep notes 1',
         start_date: '2024-11-25',
@@ -68,15 +70,15 @@ describe('generateEventsForDay', () => {
         start_time: '23:00',
         end_time: '23:30',
         tags: ['tag1'],
-        category: { id: '1', name: 'category1', box_art_url: '' },
+        twitch_category: { id: '1', name: 'category1', box_art_url: '' },
       },
     ];
 
     const events = generateEventsForDay(date, plans);
     expect(events).toHaveLength(1);
     expect(events[0]).toMatchObject({
-      id: 1,
-      name: 'Event 1',
+      id: '1',
+      title: 'Event 1',
       prep_notes: 'Prep notes 1',
     });
     expect(events[0].startDatetime.toJSDate()).toEqual(
@@ -88,11 +90,12 @@ describe('generateEventsForDay', () => {
     const date = DateTime.fromISO('2024-11-25T00:00:00.000-08:00', {
       setZone: true,
     });
-    const plans: StreamPlan[] = [
+    const plans: Series[] = [
       {
-        id: 1,
-        name: 'Event 1',
+        id: '1',
+        title: 'Event 1',
         description: 'Description 1',
+        created_at: '2024-11-01T00:00:00.000-08:00',
         prep_notes: 'Prep notes 1',
         start_date: '2024-11-26',
         end_date: '2024-11-26',
@@ -106,7 +109,7 @@ describe('generateEventsForDay', () => {
         start_time: '03:00',
         end_time: '23:30',
         tags: ['tag1'],
-        category: { id: '1', name: 'category1', box_art_url: '' },
+        twitch_category: { id: '1', name: 'category1', box_art_url: '' },
       },
     ];
 
@@ -119,11 +122,12 @@ describe('generateEventsForDay', () => {
     const date = DateTime.fromISO('2024-11-28T00:00:00.000-08:00', {
       setZone: true,
     });
-    const plans: StreamPlan[] = [
+    const plans: Series[] = [
       {
-        id: 1,
-        name: 'Event 1',
+        id: '1',
+        title: 'Event 1',
         description: 'Description 1',
+        created_at: '2024-11-01T00:00:00.000-08:00',
         prep_notes: 'Prep notes 1',
         start_date: '2024-11-01',
         end_date: '2024-11-30',
@@ -142,7 +146,7 @@ describe('generateEventsForDay', () => {
         start_time: '18:00',
         end_time: '21:00',
         tags: ['tag1'],
-        category: { id: '1', name: 'category1', box_art_url: '' },
+        twitch_category: { id: '1', name: 'category1', box_art_url: '' },
       },
     ];
 
@@ -155,11 +159,12 @@ describe('generateEventsForDay', () => {
     const date = DateTime.fromISO('2024-11-28T00:00:00.000-08:00', {
       setZone: true,
     });
-    const plans: StreamPlan[] = [
+    const plans: Series[] = [
       {
-        id: 1,
-        name: 'Event 1',
+        id: '1',
+        title: 'Event 1',
         description: 'Description 1',
+        created_at: '2024-11-01T00:00:00.000-08:00',
         prep_notes: 'Prep notes 1',
         start_date: '2024-11-01',
         end_date: '2024-11-30',
@@ -173,7 +178,7 @@ describe('generateEventsForDay', () => {
         start_time: '18:00',
         end_time: '21:00',
         tags: ['tag1'],
-        category: { id: '1', name: 'category1', box_art_url: '' },
+        twitch_category: { id: '1', name: 'category1', box_art_url: '' },
       },
     ];
 
@@ -186,11 +191,12 @@ describe('generateEventsForDay', () => {
     const date = DateTime.fromISO('2024-11-25T00:00:00.000-08:00', {
       setZone: true,
     });
-    const plans: StreamPlan[] = [
+    const plans: Series[] = [
       {
-        id: 1,
-        name: 'Event 1',
+        id: '1',
+        title: 'Event 1',
         description: 'Description 1',
+        created_at: '2024-11-01T00:00:00.000-08:00',
         prep_notes: 'Prep notes 1',
         start_date: '2024-11-01',
         end_date: '2024-11-30',
@@ -204,7 +210,7 @@ describe('generateEventsForDay', () => {
         start_time: '18:00',
         end_time: '21:00',
         tags: ['tag1'],
-        category: { id: '1', name: 'category1', box_art_url: '' },
+        twitch_category: { id: '1', name: 'category1', box_art_url: '' },
       },
     ];
 
@@ -217,10 +223,11 @@ describe('generateEventsForDay', () => {
     const date = DateTime.fromISO('2024-11-04T00:00:00.000-08:00', {
       setZone: true,
     });
-    const plans: StreamPlan[] = [
+    const plans: Series[] = [
       {
-        id: 1,
-        name: 'Event 1',
+        id: '1',
+        title: 'Event 1',
+        created_at: '2024-11-01T00:00:00.000-08:00',
         description: 'Description 1',
         prep_notes: 'Prep notes 1',
         start_date: '2024-11-01',
@@ -235,7 +242,7 @@ describe('generateEventsForDay', () => {
         start_time: '18:00',
         end_time: '21:00',
         tags: ['tag1'],
-        category: { id: '1', name: 'category1', box_art_url: '' },
+        twitch_category: { id: '1', name: 'category1', box_art_url: '' },
       },
     ];
 
@@ -243,8 +250,8 @@ describe('generateEventsForDay', () => {
 
     expect(events).toHaveLength(1);
     expect(events[0]).toMatchObject({
-      id: 1,
-      name: 'Event 1',
+      id: '1',
+      title: 'Event 1',
       prep_notes: 'Prep notes 1',
     });
     expect(events[0].startDatetime.toJSDate()).toEqual(

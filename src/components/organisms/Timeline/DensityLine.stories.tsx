@@ -8,8 +8,8 @@ const meta = {
   argTypes: {
     start: { control: 'number' },
     end: { control: 'number' },
-    data: { control: 'array' },
-    color: { control: 'array' },
+    data: { control: 'object' },
+    color: { control: 'object' },
     transitionMargin: {
       control: {
         type: 'range',
