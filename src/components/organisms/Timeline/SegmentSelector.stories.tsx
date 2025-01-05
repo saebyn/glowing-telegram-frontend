@@ -10,8 +10,8 @@ const meta = {
   argTypes: {
     boundsStart: { control: 'number' },
     boundsEnd: { control: 'number' },
-    segments: { control: 'array' },
-    onUpdateSegment: { control: 'function' },
+    segments: { control: 'object' },
+    onUpdateSegment: {},
   },
   args: {
     onUpdateSegment: fn(),
@@ -47,11 +47,11 @@ export const Interacting: Story = {
   render: (args) => {
     const [segments, setSegments] = useState(args.segments);
 
-    const onUpdateSegment = (id: number, segment: any) => {
-      console.log(`Segment ${id} updated:`, segment);
+    const onUpdateSegment = (segment: any) => {
+      console.log('Segment updated:', segment);
       setSegments((prevSegments) =>
         prevSegments.map((prevSegment) =>
-          prevSegment.id === id ? segment : prevSegment,
+          prevSegment.id === segment.id ? segment : prevSegment,
         ),
       );
     };

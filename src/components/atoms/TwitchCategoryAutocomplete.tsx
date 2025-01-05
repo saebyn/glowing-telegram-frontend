@@ -39,6 +39,11 @@ function TwitchCategoryAutocomplete({
           return;
         }
 
+        if (!profile.twitch?.accessToken) {
+          setError(new Error('Missing Twitch access token'));
+          return;
+        }
+
         const abortController = new AbortController();
 
         setLoading(true);
@@ -61,7 +66,7 @@ function TwitchCategoryAutocomplete({
           setLoading(false);
         }
       }, FETCH_CATEGORIES_DEBOUNCE_TIME),
-    [profile.twitch.accessToken],
+    [profile.twitch?.accessToken],
   );
 
   useEffect(() => {

@@ -47,6 +47,10 @@ function StreamInfoEditor({
   useEffect(() => {
     const abortController = new AbortController();
 
+    if (!profile.twitch?.accessToken || !profile.twitch?.broadcasterId) {
+      return;
+    }
+
     getChannelInformation(
       profile.twitch.broadcasterId,
       profile.twitch.accessToken,
@@ -63,13 +67,17 @@ function StreamInfoEditor({
     return () => {
       abortController.abort();
     };
-  }, [profile.twitch.accessToken, profile.twitch.broadcasterId, reloadCount]);
+  }, [profile.twitch?.accessToken, profile.twitch?.broadcasterId, reloadCount]);
 
   const handleRefresh = () => {
     setReloadCount((count) => count + 1);
   };
 
   const handleSave = async () => {
+    if (!profile.twitch?.accessToken || !profile.twitch?.broadcasterId) {
+      return;
+    }
+
     setIsPending(true);
     try {
       await modifyChannelInformation(

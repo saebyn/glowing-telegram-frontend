@@ -68,7 +68,11 @@ const ProfilePage = () => {
             title={translate('gt.profile.credentials', { _: 'Credentials' })}
           />
           <CardActions>
-            <TwitchOAuthButton tokens={profile.twitch} />
+            <TwitchOAuthButton
+              tokens={{
+                accessToken: profile.twitch?.accessToken,
+              }}
+            />
           </CardActions>
         </Card>
 

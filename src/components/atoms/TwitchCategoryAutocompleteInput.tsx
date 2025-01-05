@@ -18,7 +18,7 @@ function TwitchCategoryAutocompleteInput({
       category={field.value === '' ? null : field.value}
       onChange={field.onChange}
       profile={profile}
-      label={label}
+      label={label || ''}
     />
   );
 }

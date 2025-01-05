@@ -1,64 +1,62 @@
-import { getCsrfToken } from '@/utilities/csrf';
-import { parseReturnedData, validateAccessToken } from '@/utilities/twitch';
-import { useEffect } from 'react';
-import { LoadingIndicator, useUpdate } from 'react-admin';
-import { useNavigate } from 'react-router-dom';
+import { handleOAuthCallback } from '@/api';
+import { useEffect, useState } from 'react';
 
 function TwitchCallbackPage() {
-  const [update, { isPending, isIdle, isError }] = useUpdate();
-  const navigate = useNavigate();
+  const searchParams = new URLSearchParams(window.location.search);
+  const error = searchParams.get('error');
+  const errorDescription = searchParams.get('error_description');
+  const code = searchParams.get('code');
+  const state = searchParams.get('state');
 
-  const csrfToken = getCsrfToken();
-  const result = parseReturnedData(csrfToken, window.location);
-
-  const accessToken = result.status === 'success' ? result.accessToken : null;
+  const [loading, setLoading] = useState(true);
+  const [finalError, setFinalError] = useState<string | null>(null);
 
   useEffect(() => {
-    const abortController = new AbortController();
-
-    if (accessToken) {
-      validateAccessToken(accessToken, { signal: abortController.signal })
-        .then((info) => {
-          update('profile', {
-            id: 'my-profile',
-            data: { twitch: { accessToken, broadcasterId: info.user_id } },
-          });
-        })
-        .catch(() => {
-          update('profile', {
-            id: 'my-profile',
-            data: { twitch: { accessToken: null } },
-          });
-        })
-        .then(() => {
-          navigate('/profile');
-        });
+    if (error) {
+      setLoading(false);
+      return;
     }
 
-    return () => {
-      abortController.abort();
-    };
-  }, [accessToken, update, navigate]);
+    setLoading(true);
 
-  if (isPending || isIdle) {
-    return <LoadingIndicator />;
-  }
+    if (code && state) {
+      console.log('Handling OAuth callback');
+      handleOAuthCallback('twitch', code, state)
+        .catch((err) => {
+          setFinalError(err.message);
+          throw err;
+        })
+        .then((url) => {
+          window.location.href = url;
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [code, state, error]);
 
-  if (isError) {
+  if (error) {
     return (
       <div>
         <h1>Error</h1>
-        <p>There was an error saving the access token</p>
+        <p>{errorDescription}</p>
       </div>
     );
   }
 
-  if (result.status === 'error') {
+  if (loading) {
+    return (
+      <div>
+        <h1>Loading</h1>
+      </div>
+    );
+  }
+
+  if (finalError) {
     return (
       <div>
         <h1>Error</h1>
-        <p>{result.error}</p>
-        <p>{result.errorDescription}</p>
+        <p>{finalError}</p>
       </div>
     );
   }

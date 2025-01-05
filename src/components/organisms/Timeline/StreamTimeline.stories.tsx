@@ -15,4 +15,4 @@ type Story = StoryObj<typeof meta>;
 
 export const Empty: Story = {
   args: {},
-};
+} as Story;

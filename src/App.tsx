@@ -5,7 +5,7 @@ import { Route, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import episodes from '@/resources/episodes';
 import streamPlans, { StreamPlansCalendar } from '@/resources/stream_plans';
 import streams from '@/resources/streams';
-import twitch_streams from '@/resources/twitch_streams';
+import twitch from '@/resources/twitch';
 import video_clips from '@/resources/video_clips';
 
 import GlobalStyles from '@mui/material/GlobalStyles';
@@ -79,7 +79,11 @@ function App() {
             </Resource>
             <Resource name="episodes" {...episodes} />
             <Resource name="video_clips" {...video_clips} />
-            <Resource name="twitch_streams" {...twitch_streams} />
+            <Resource
+              name="twitch"
+              {...twitch}
+              options={{ label: 'Twitch Streams' }}
+            />
             <Resource name="profile" />
 
             <CustomRoutes>

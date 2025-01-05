@@ -1,3 +1,4 @@
+import type { TwitchAccess } from '@/types';
 import { useGetIdentity, useGetOne } from 'react-admin';
 
 export interface Profile {
@@ -8,7 +9,7 @@ export interface Profile {
   fullName: string;
   timezone: string;
   standardTags: string[];
-  twitch: {
+  twitch?: {
     accessToken: string;
     broadcasterId: string;
   };
@@ -48,7 +49,21 @@ function useProfile(): Return {
     },
   );
 
-  if (!identity || isPending) {
+  const {
+    data: twitchToken,
+    isPending: twitchTokenIsPending,
+    error: twitchTokenError,
+  } = useGetOne<TwitchAccess>(
+    'twitch',
+    {
+      id: 'twitchToken',
+    },
+    {
+      enabled: !!identity,
+    },
+  );
+
+  if (!identity || isPending || twitchTokenIsPending) {
     return {
       isPending: true,
       error: undefined,
@@ -59,6 +74,15 @@ function useProfile(): Return {
 
   if (error) {
     return { error, status: 'error', profile: undefined, isPending: false };
+  }
+
+  if (twitchTokenError) {
+    return {
+      error: twitchTokenError,
+      status: 'error',
+      profile: undefined,
+      isPending: false,
+    };
   }
 
   return {
@@ -72,6 +96,10 @@ function useProfile(): Return {
       fullName: identity.fullName,
       avatar: identity.avatar,
       accessToken: identity.accessToken,
+      twitch: twitchToken.valid && {
+        accessToken: twitchToken.accessToken,
+        broadcasterId: twitchToken.id,
+      },
     },
   };
 }

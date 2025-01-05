@@ -1,5 +1,6 @@
+import type { Series } from 'glowing-telegram-types/src/types';
 import type { DateTime } from 'luxon';
-import type { StreamEvent, StreamPlan } from './types';
+import type { StreamEvent } from './types';
 
 import generateEventsForDay from './generateEventsForDay';
 
@@ -15,7 +16,7 @@ import generateEventsForDay from './generateEventsForDay';
 function findNextStream(
   startDateTime: DateTime,
   daysToSearch: number,
-  plans: StreamPlan[],
+  plans: Series[],
 ): StreamEvent | null {
   // first check for the current day from the start time
   const currentDayEvents = generateEventsForDay(startDateTime, plans).filter(

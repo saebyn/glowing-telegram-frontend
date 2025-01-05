@@ -43,6 +43,11 @@ function TwitchCCLSelect({
   useEffect(() => {
     const abortController = new AbortController();
 
+    if (!profile.twitch?.accessToken) {
+      setError(new Error('Missing Twitch access token'));
+      return;
+    }
+
     setLoading(true);
 
     getContentClassificationLabels(getLocale(), profile.twitch.accessToken, {
@@ -62,7 +67,7 @@ function TwitchCCLSelect({
     return () => {
       abortController.abort();
     };
-  }, [profile.twitch.accessToken, getLocale]);
+  }, [profile.twitch?.accessToken, getLocale]);
 
   return (
     <FormControl error={Boolean(error)}>

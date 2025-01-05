@@ -8,11 +8,11 @@ const meta = {
   tags: ['autodocs'],
   argTypes: {
     open: { control: 'boolean' },
-    onChat: { control: 'function' },
-    onChange: { control: 'function' },
-    job: { control: 'string' },
-    transcript: { control: 'string' },
-    context: { control: 'string' },
+    onChat: {},
+    onChange: {},
+    job: { control: 'text' },
+    transcript: { control: 'text' },
+    context: { control: 'text' },
   },
   args: {
     open: true,
@@ -28,7 +28,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Empty: Story = {};
+export const Empty: Story = {} as Story;
 
 export const WithMessages: Story = {
   args: {
@@ -45,4 +45,4 @@ export const WithMessages: Story = {
       ];
     }),
   },
-};
+} as Story;

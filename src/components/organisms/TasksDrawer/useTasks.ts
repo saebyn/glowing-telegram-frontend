@@ -1,5 +1,5 @@
+import type { TaskSummary } from '@/types';
 import { useGetList, useStore } from 'react-admin';
-import type { TaskSummary } from '../types';
 
 const useTasks = () => {
   const [hideViewed, setHideViewed] = useStore('hideViewedTasks', false);
