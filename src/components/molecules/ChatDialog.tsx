@@ -65,8 +65,15 @@ function ChatDialog({
     setMessages(() => baseMessages);
   };
 
+  const handleClose = () => {
+    handleClear();
+    setLoading(false);
+    setMessageContent('');
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} fullWidth={true} maxWidth="lg">
+    <Dialog open={open} onClose={handleClose} fullWidth={true} maxWidth="lg">
       <DialogTitle>ChatDialog</DialogTitle>
 
       <DialogContent>
