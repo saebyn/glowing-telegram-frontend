@@ -112,6 +112,12 @@ const IngestStreamVideosButton = () => {
   };
 
   const handleClose = () => {
+    // Reset the dialog state
+    setInitialPrompt('');
+    setInitialSummary('');
+    setLoading(false);
+    setError(null);
+    setSuccess(false);
     setOpen(false);
   };
 

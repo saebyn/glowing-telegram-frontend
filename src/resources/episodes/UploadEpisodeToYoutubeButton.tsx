@@ -53,7 +53,11 @@ const UploadEpisodeToYoutubeButton = () => {
     );
     setOpen(true);
   };
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    // Reset the episodes and close the dialog
+    setEpisodes([]);
+    setOpen(false);
+  };
 
   return (
     <>
