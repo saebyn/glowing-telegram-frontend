@@ -20,12 +20,13 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
+import type { Series } from 'glowing-telegram-types/src/types';
 
 import { useEffect, useState } from 'react';
 import { useTranslate } from 'react-admin';
 
 interface StreamInfoEditorProps {
-  nextScheduledStream: StreamEvent | null;
+  nextScheduledStream: StreamEvent | Series | null;
   profile: Profile;
 }
 
