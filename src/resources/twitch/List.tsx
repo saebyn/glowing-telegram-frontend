@@ -1,5 +1,6 @@
 import ThumbnailField from '@/components/atoms/ThumbnailField';
 import ImportIcon from '@mui/icons-material/ImportExport';
+import type { Stream } from 'glowing-telegram-types/src/types';
 import {
   Button,
   Datagrid,
@@ -57,23 +58,26 @@ const BulkActionButtons = () => {
     // get the selected records
     const selectedRecords = data
       .filter((record) => selectedIds.includes(record.id))
-      .map(({ title, duration, thumbnail_url, stream_id, created_at }) => {
-        // convert the duration in the format "HHhMMmSSs" to the ISO 8601 format
-        const durationParts = duration.match(/(\d+)h(\d+)m(\d+)s/);
+      .map<Omit<Stream, 'id' | 'created_at'>>((record) => {
+        // convert the duration in the format "HHhMMmSSs"
+        const durationParts = record.duration.match(/(\d+)h(\d+)m(\d+)s/);
 
         if (!durationParts) {
-          throw new Error(`Invalid duration format: ${duration}`);
+          throw new Error(`Invalid duration format: ${record.duration}`);
         }
 
-        const durationISO = `PT${durationParts[1]}H${durationParts[2]}M${durationParts[3]}S`;
+        const durationSeconds =
+          Number.parseInt(durationParts[1], 10) * 3600 +
+          Number.parseInt(durationParts[2], 10) * 60 +
+          Number.parseInt(durationParts[3], 10);
 
-        const createdAt = new Date(created_at);
+        const createdAt = new Date(record.created_at);
         return {
-          title,
-          duration: durationISO,
-          thumbnail: thumbnail_url,
-          stream_id,
-          stream_date: created_at,
+          title: record.title,
+          duration: durationSeconds,
+          thumbnail: record.thumbnail_url,
+          stream_id: record.stream_id,
+          stream_date: record.created_at,
           stream_platform: 'twitch',
 
           // the date portion of the created_at field
@@ -83,11 +87,15 @@ const BulkActionButtons = () => {
             .getDate()
             .toString()
             .padStart(2, '0')}`,
+
+          description: `Stream from ${record.created_at}`,
+          has_episodes: false,
+          video_clip_count: 0,
         };
       });
 
     // Perform the import
-    dataProvider.importStreams(selectedRecords).then(() => {
+    dataProvider.bulkCreate('streams', { data: selectedRecords }).then(() => {
       notify('Streams imported');
 
       // Unselect all records
