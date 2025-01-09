@@ -149,3 +149,29 @@ export default function generateEventsForDay(
       })
   );
 }
+
+export function convertSeriesToStreamEvent(series: Series): StreamEvent | null {
+  if (!guardValidSeriesRecord(series)) {
+    return null;
+  }
+
+  const startDatetime = DateTime.fromISO(series.start_date, {
+    zone: series.timezone,
+  }).set({
+    hour: Number(series.start_time.split(':')[0]),
+    minute: Number(series.start_time.split(':')[1]),
+  });
+
+  const endDatetime = DateTime.fromISO(series.end_date ?? series.start_date, {
+    zone: series.timezone,
+  }).set({
+    hour: Number(series.end_time.split(':')[0]),
+    minute: Number(series.end_time.split(':')[1]),
+  });
+
+  return {
+    ...series,
+    startDatetime,
+    endDatetime,
+  };
+}

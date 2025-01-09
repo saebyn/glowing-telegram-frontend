@@ -5,6 +5,7 @@ import Alert from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import type { Series } from 'glowing-telegram-types/src/types';
 import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
 
@@ -17,7 +18,7 @@ const upcomingStreamTimeStyle = {
 };
 
 interface UpcomingStreamProps {
-  nextScheduledStream: StreamEvent | null;
+  nextScheduledStream: StreamEvent | Series | null;
   profile: Profile;
 }
 
@@ -36,13 +37,26 @@ function UpcomingStream({ nextScheduledStream, profile }: UpcomingStreamProps) {
     return <Alert severity="info">No upcoming stream in the next 7 days</Alert>;
   }
 
-  const diff = nextScheduledStream.startDatetime
-    .diff(now, ['days', 'hours', 'minutes', 'seconds'])
-    .toHuman({
-      unitDisplay: 'narrow',
-      maximumFractionDigits: 0,
-    })
-    .split(', ');
+  const diff =
+    'startDatetime' in nextScheduledStream
+      ? nextScheduledStream.startDatetime
+          .diff(now, ['days', 'hours', 'minutes', 'seconds'])
+          .toHuman({
+            unitDisplay: 'narrow',
+            maximumFractionDigits: 0,
+          })
+          .split(', ')
+      : null;
+
+  const date =
+    'startDatetime' in nextScheduledStream
+      ? nextScheduledStream.startDatetime.toLocaleString(DateTime.DATE_FULL)
+      : null;
+
+  const time =
+    'startDatetime' in nextScheduledStream
+      ? nextScheduledStream.startDatetime.toLocaleString(DateTime.TIME_SIMPLE)
+      : null;
 
   const tags = Array.from(
     new Set([...(nextScheduledStream.tags || []), ...profile.standardTags]),
@@ -59,37 +73,35 @@ function UpcomingStream({ nextScheduledStream, profile }: UpcomingStreamProps) {
             {templateStreamSeries(nextScheduledStream)}
           </Typography>
         </Grid>
-        <Grid item xs={6}>
-          <Typography variant="body2" color="textSecondary">
-            Date:{' '}
-            {nextScheduledStream.startDatetime.toLocaleString(
-              DateTime.DATE_FULL,
-            )}
-          </Typography>
-          <Typography color="textSecondary" sx={upcomingStreamTimeStyle.time}>
-            in
-            <Typography variant="h6" component="span" color="textPrimary">
-              {diff[0]}
+        {date && diff && (
+          <Grid item xs={6}>
+            <Typography variant="body2" color="textSecondary">
+              Date: {date}
             </Typography>
-            <Typography variant="h6" component="span" color="textPrimary">
-              {diff[1]}
+            <Typography color="textSecondary" sx={upcomingStreamTimeStyle.time}>
+              in
+              <Typography variant="h6" component="span" color="textPrimary">
+                {diff[0]}
+              </Typography>
+              <Typography variant="h6" component="span" color="textPrimary">
+                {diff[1]}
+              </Typography>
+              <Typography variant="h6" component="span" color="textPrimary">
+                {diff[2]}
+              </Typography>
+              <Typography variant="h6" component="span" color="textPrimary">
+                {diff[3]}
+              </Typography>
             </Typography>
-            <Typography variant="h6" component="span" color="textPrimary">
-              {diff[2]}
+          </Grid>
+        )}
+        {time && (
+          <Grid item xs={6}>
+            <Typography variant="body2" color="textSecondary">
+              Time: {time}
             </Typography>
-            <Typography variant="h6" component="span" color="textPrimary">
-              {diff[3]}
-            </Typography>
-          </Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="body2" color="textSecondary">
-            Time:{' '}
-            {nextScheduledStream.startDatetime.toLocaleString(
-              DateTime.TIME_SIMPLE,
-            )}
-          </Typography>
-        </Grid>
+          </Grid>
+        )}
         <Grid item xs={12}>
           <Typography variant="body2" color="textSecondary">
             Category: {nextScheduledStream.twitch_category?.name}
