@@ -273,6 +273,10 @@ function cleanRecord(resource: string) {
       record.id = record.key;
     }
 
+    if (resource === 'streamIngest') {
+      record.id = record.executionArn;
+    }
+
     return record;
   };
 }
