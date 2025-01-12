@@ -3,6 +3,7 @@ const resourceMap = {
   profile: 'records/profiles',
   streams: 'records/streams',
   episodes: 'records/episodes',
+  tasks: 'records/tasks',
   video_clips: 'records/video_clips',
   streamIngest: 'stream',
 } as const;
