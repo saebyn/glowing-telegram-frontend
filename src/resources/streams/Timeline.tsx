@@ -41,14 +41,14 @@ function Timeline() {
   } = useGetOne<Stream>('streams', { id });
 
   const silenceIntervals = useMemo(() => {
-    return (
-      data?.flatMap((record, idx) =>
-        (record.silence || []).map((sil, sIdx) => ({
-          id: Number.parseInt(`${idx}${sIdx}`, 10),
-          start: sil.start ?? 0 + (record.start_time ?? 0),
-          end: sil.end ?? 0 + (record.start_time ?? 0),
-        })),
-      ) || []
+    if (!data) return [];
+
+    return data.flatMap((record, idx) =>
+      (record.silence || []).map((sil, sIdx) => ({
+        id: Number.parseInt(`${idx}${sIdx}`, 10),
+        start: (sil.start ?? 0) + (record.start_time ?? 0),
+        end: (sil.end ?? 0) + (record.start_time ?? 0),
+      })),
     );
   }, [data]);
 
