@@ -23,43 +23,43 @@ const useTasks = () => {
 
   const handleMarkAllViewed = () => {
     if (tasks && tasks.length > 0) {
-      setLastViewedTaskTimestamp(new Date(tasks[0].last_updated));
+      setLastViewedTaskTimestamp(new Date(tasks[0].updated_at));
     }
   };
 
-  const handleMarkViewed = (taskId: number) => {
+  const handleMarkViewed = (taskId: string) => {
     if (tasks) {
       const task = tasks.find((t) => t.id === taskId);
       if (task) {
-        setLastViewedTaskTimestamp(new Date(task.last_updated));
+        setLastViewedTaskTimestamp(new Date(task.updated_at));
       }
     }
   };
 
   const allViewed = tasks
     ? tasks.every(
-        (task) => new Date(task.last_updated) <= lastViewedTaskTimestamp,
+        (task) => new Date(task.updated_at) <= lastViewedTaskTimestamp,
       )
     : false;
 
   const filteredTasks = (tasks || [])
     .filter((task: TaskSummary) =>
-      hideViewed ? new Date(task.last_updated) > lastViewedTaskTimestamp : true,
+      hideViewed ? new Date(task.updated_at) > lastViewedTaskTimestamp : true,
     )
     /**
-     * Sort tasks by last_updated timestamp in descending order.
-     * If last_updated is undefined, sort by id in descend
+     * Sort tasks by updated_at timestamp in descending order.
+     * If updated_at is undefined, sort by id in descend
      */
     .sort((a: TaskSummary, b: TaskSummary) => {
-      if (a.last_updated === undefined || b.last_updated === undefined) {
-        return b.id - a.id;
+      if (a.updated_at === undefined || b.updated_at === undefined) {
+        return b.id.localeCompare(a.id);
       }
 
-      if (a.last_updated < b.last_updated) {
+      if (a.updated_at < b.updated_at) {
         return 1;
       }
 
-      if (a.last_updated > b.last_updated) {
+      if (a.updated_at > b.updated_at) {
         return -1;
       }
 

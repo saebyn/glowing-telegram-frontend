@@ -60,13 +60,11 @@ export interface YoutubeUploadTaskPayload {
 }
 
 export interface TaskSummary {
-  id: number;
-  url: string;
-  title: string;
+  id: string;
+  created_at: string;
+  updated_at: string;
   status: TaskStatus;
-  last_updated: number;
-
-  has_next_task: boolean;
+  time: string;
 }
 
 export interface ChatMessage {
@@ -81,11 +79,11 @@ export interface DataStreamDataElement {
 }
 
 export type TaskStatus =
-  | 'queued'
-  | 'processing'
-  | 'complete'
-  | 'failed'
-  | 'invalid';
+  | 'RUNNING'
+  | 'SUCCEEDED'
+  | 'FAILED'
+  | 'TIMED_OUT'
+  | 'ABORTED';
 
 interface Metadata {
   filename: string;

@@ -1,7 +1,6 @@
 import type { TaskStatus, TaskSummary } from '@/types';
 import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
-import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import ProcessingIcon from '@mui/icons-material/Loop';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import Avatar from '@mui/material/Avatar';
@@ -17,6 +16,7 @@ import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import { blue, green, orange, red } from '@mui/material/colors';
 import useTheme from '@mui/material/styles/useTheme';
+import { DateTime } from 'luxon';
 import { type FC, useRef } from 'react';
 import { LoadingIndicator } from 'react-admin';
 import Notifications from './Notifications';
@@ -28,25 +28,25 @@ const containerStyles = {
 };
 
 const statusIcons: Record<TaskStatus, JSX.Element> = {
-  processing: <ProcessingIcon titleAccess="Processing" />,
-  complete: <DoneIcon titleAccess="Complete" />,
-  failed: <ErrorIcon titleAccess="Failed" />,
-  queued: <HourglassEmptyIcon titleAccess="Queued" />,
-  invalid: <ErrorIcon titleAccess="Invalid" />,
+  RUNNING: <ProcessingIcon titleAccess="Processing" />,
+  SUCCEEDED: <DoneIcon titleAccess="Complete" />,
+  FAILED: <ErrorIcon titleAccess="Failed" />,
+  ABORTED: <ErrorIcon titleAccess="Aborted" />,
+  TIMED_OUT: <ErrorIcon titleAccess="Timed out" />,
 };
 
 const statusColors: Record<TaskStatus, string> = {
-  processing: orange[500],
-  complete: green[500],
-  failed: red[500],
-  queued: blue[500],
-  invalid: red[500],
+  RUNNING: orange[500],
+  SUCCEEDED: green[500],
+  FAILED: red[500],
+  ABORTED: blue[500],
+  TIMED_OUT: red[500],
 };
 
 interface TaskProps {
   task: TaskSummary;
   lastViewedTaskTimestamp: Date;
-  markViewed: (id: number) => void;
+  markViewed: (id: string) => void;
 }
 
 const Task: FC<TaskProps> = ({
@@ -57,12 +57,11 @@ const Task: FC<TaskProps> = ({
 }) => {
   const theme = useTheme();
 
-  const timestamp = task.last_updated
-    ? new Date(task.last_updated).toLocaleString()
+  const timestamp = task.updated_at
+    ? DateTime.fromISO(task.updated_at).toLocaleString(DateTime.DATETIME_SHORT)
     : 'unknown';
 
-  const newSinceLastView =
-    new Date(task.last_updated) > lastViewedTaskTimestamp;
+  const newSinceLastView = new Date(task.updated_at) > lastViewedTaskTimestamp;
 
   return (
     <ListItem
@@ -84,7 +83,6 @@ const Task: FC<TaskProps> = ({
         <Badge
           color="secondary"
           variant="dot"
-          invisible={!task.has_next_task}
           overlap="circular"
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         >
@@ -98,19 +96,11 @@ const Task: FC<TaskProps> = ({
         </Badge>
       </ListItemAvatar>
       <ListItemText
-        primary={task.title || task.id}
+        primary={task.id}
         secondary={
-          <>
-            <Typography variant="body2" color="text.primary">
-              {timestamp}
-            </Typography>
-
-            {task.has_next_task && (
-              <Typography variant="caption">
-                More tasks will start when this one finishes
-              </Typography>
-            )}
-          </>
+          <Typography variant="body2" color="text.primary">
+            {timestamp}
+          </Typography>
         }
       />
     </ListItem>
