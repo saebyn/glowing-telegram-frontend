@@ -1,0 +1,47 @@
+name: "Publish to s3"
+
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "Release version"
+        required: true
+      environment:
+        description: "Environment"
+        required: true
+        type: environment
+
+concurrency: # Limit to one concurrent job
+  group: ${{ github.workflow }}
+
+permissions: # Define permissions for the job
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Upload to S3
+        run: aws s3 sync dist s3://${{ vars.BUCKET_NAME }}/${{ inputs.release }}/
