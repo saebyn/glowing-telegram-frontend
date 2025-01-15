@@ -18,7 +18,12 @@ jobs:
         with:
           cache: "npm"
           node-version: "22"
+          registry-url: "https://npm.pkg.github.com"
 
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - run: npm run biome:ci
       - run: npm test
