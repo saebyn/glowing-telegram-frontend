@@ -1,5 +1,4 @@
 import { authenticatedFetch } from '@/api';
-import { userManager } from '@/utilities/auth';
 import type { DataProvider, Identifier } from 'react-admin';
 import { HttpError } from 'react-admin';
 import * as cursorPaginationCache from './cursorPaginationCache';
