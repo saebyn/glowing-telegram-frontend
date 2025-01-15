@@ -14,14 +14,16 @@ on:
 concurrency: # Limit to one concurrent job
   group: ${{ github.workflow }}
 
-permissions: # Define permissions for the job
-  id-token: write
-  contents: read
-  packages: read
-
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
+
+    environment: ${{ inputs.environment }}
 
     steps:
       - uses: actions/checkout@v4
