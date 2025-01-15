@@ -7,7 +7,7 @@ import { parseIntoSeconds } from '@/utilities/isoDuration';
 import type {
   TranscriptSegment,
   VideoClip,
-} from 'glowing-telegram-types/src/types';
+} from '@saebyn/glowing-telegram-types/src/types';
 const EpisodeDescriptionChatButton = () => {
   const { setValue } = useFormContext();
   const record = useRecordContext<Episode>();

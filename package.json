@@ -49,9 +49,13 @@
 		"vite": "^6.0.5",
 		"vitest": "^2.1.8",
 		"@mui/x-date-pickers": "^7",
-		"glowing-telegram-types": "file:../glowing-telegram/types"
+		"@saebyn/glowing-telegram-types": "*"
 	},
 	"msw": {
 		"workerDirectory": ["public"]
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/saebyn/glowing-telegram-frontend.git"
 	}
 }

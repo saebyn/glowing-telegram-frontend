@@ -5,7 +5,10 @@ import StreamTimeline, {
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import type { Stream, VideoClip } from 'glowing-telegram-types/src/types';
+import type {
+  Stream,
+  VideoClip,
+} from '@saebyn/glowing-telegram-types/src/types';
 import { useEffect, useMemo, useState } from 'react';
 import {
   Button,

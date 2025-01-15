@@ -3,7 +3,7 @@ import { userManager } from '@/utilities/auth';
 import type {
   TwitchAuthRequest,
   TwitchCallbackRequest,
-} from 'glowing-telegram-types/src/types';
+} from '@saebyn/glowing-telegram-types/src/types';
 
 const { VITE_API_URL: baseApiUrl } = import.meta.env;
 

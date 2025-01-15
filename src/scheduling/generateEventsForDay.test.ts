@@ -1,4 +1,4 @@
-import type { Series } from 'glowing-telegram-types/src/types';
+import type { Series } from '@saebyn/glowing-telegram-types/src/types';
 import { DateTime } from 'luxon';
 import { describe, expect, it } from 'vitest';
 import generateEventsForDay from './generateEventsForDay';
