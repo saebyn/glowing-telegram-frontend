@@ -8,7 +8,10 @@ import {
 } from 'react-admin';
 
 import type { Stream } from '@/types';
-import type { Episode, VideoClip } from 'glowing-telegram-types/src/types';
+import type {
+  Episode,
+  VideoClip,
+} from '@saebyn/glowing-telegram-types/src/types';
 import exporter from './export';
 
 function promptDownload(episode: Episode, videoClips: VideoClip[]) {

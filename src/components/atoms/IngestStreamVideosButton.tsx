@@ -38,7 +38,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import type { Stream } from 'glowing-telegram-types/src/types';
+import type { Stream } from '@saebyn/glowing-telegram-types/src/types';
 import { DateTime, Duration } from 'luxon';
 import React, { useEffect } from 'react';
 import {

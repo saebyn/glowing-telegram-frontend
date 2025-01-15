@@ -1,4 +1,4 @@
-import type { Series } from 'glowing-telegram-types/src/types';
+import type { Series } from '@saebyn/glowing-telegram-types/src/types';
 import type { DateTime } from 'luxon';
 
 export interface SeriesRecordWithValidTimes extends Series {
