@@ -42,6 +42,16 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          VITE_API_URL: ${{ vars.API_URL }}
+          VITE_AWS_REGION: ${{ vars.AWS_REGION }}
+          VITE_COGNITO_CLIENT_ID: ${{ vars.COGNITO_CLIENT_ID }}
+          VITE_COGNITO_USER_POOL_ID: ${{ vars.COGNITO_USER_POOL_ID }}
+          VITE_COGNITO_DOMAIN: ${{ vars.COGNITO_DOMAIN }}
+          VITE_LOGOUT_URI: ${{ vars.LOGOUT_URI }}
+          VITE_REDIRECT_URI: ${{ vars.REDIRECT_URI }}
+          VITE_TWITCH_CLIENT_ID: ${{ vars.TWITCH_CLIENT_ID }}
+          VITE_WEBSOCKET_URL: ${{ vars.WEBSOCKET_URL }}
 
       - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v1
