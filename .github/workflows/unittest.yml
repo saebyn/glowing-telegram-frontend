@@ -26,4 +26,8 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - run: npm run biome:ci
+        name: Run the Biome checks
+      - run: npm run build
+        name: Build the project to check for errors
       - run: npm test
+        name: Run the unit tests
