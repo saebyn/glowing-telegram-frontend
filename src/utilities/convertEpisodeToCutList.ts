@@ -131,47 +131,10 @@ export default function exportEpisodeToCutList(
     mediaIndex: outroIndex,
     sectionIndex: 0,
     transitionIn: {
-      type: 'fadein',
+      type: 'fade',
       duration: 5 * frameRate, // 5 seconds
     },
   });
-
-  const totalOutputFrames = outputTrack.reduce(
-    (acc, { mediaIndex, sectionIndex, transitionIn, transitionOut }, index) => {
-      const media = inputMedia[mediaIndex];
-      const section = media.sections[sectionIndex];
-      let transitionFrames = 0;
-
-      // If this is not the first section, add the transition in duration
-      if (index > 0) {
-        transitionFrames += transitionIn?.duration || 0;
-      }
-      // If this is not the last section, add the transition out duration
-      if (index < outputTrack.length - 1) {
-        transitionFrames += transitionOut?.duration || 0;
-      }
-
-      // Subtract the transition frames from the total duration
-      // of the section to get the total output frames.
-      // This is the number of frames that will be output to the final video
-      // for this section.
-      // The transition frames are not included in the output because they
-      // are used to blend the sections together, so are already included
-      // in the previous or next section.
-      return acc + (section.endFrame - section.startFrame) - transitionFrames;
-    },
-    0,
-  );
-
-  // Create audio mix changes
-  const audioMixChanges: CutList['audioMixChanges'] = [
-    // fade in audio for outro
-    {
-      startFrame: totalOutputFrames - 35 * frameRate, // 35 seconds from the end
-      endFrame: totalOutputFrames - 25 * frameRate, // 25 seconds from the end
-      effect: 'fade',
-    },
-  ];
 
   // Create overlay tracks
   // hex iris effect
@@ -218,7 +181,6 @@ export default function exportEpisodeToCutList(
     inputMedia,
     outputTrack,
     version: '1.0.0',
-    audioMixChanges,
     overlayTracks,
   };
 }
