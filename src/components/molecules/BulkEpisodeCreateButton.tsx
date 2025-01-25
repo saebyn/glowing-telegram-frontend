@@ -97,7 +97,7 @@ const BulkCreateEpisodesButton = ({
   };
 
   if (errorSeries) {
-    return <div>{errorSeries}</div>;
+    return <div>{errorSeries.toString()}</div>;
   }
 
   if (error) {
