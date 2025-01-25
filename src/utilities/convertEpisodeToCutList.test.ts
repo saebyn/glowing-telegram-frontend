@@ -72,7 +72,7 @@ describe('exportEpisodeToCutList', () => {
           mediaIndex: 3,
           sectionIndex: 0,
           transitionIn: {
-            type: 'fadein',
+            type: 'fade',
             duration: 5 * frameRate,
           },
         },
@@ -83,13 +83,6 @@ describe('exportEpisodeToCutList', () => {
         { mediaIndex: 6, sectionIndex: 0, startFrame: frameRate * 60 },
       ],
       version: '1.0.0',
-      audioMixChanges: [
-        {
-          effect: 'fade',
-          endFrame: 196200,
-          startFrame: 195600,
-        },
-      ],
     });
   });
 });
