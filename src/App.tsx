@@ -4,7 +4,10 @@ import { Route, RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import episodes from '@/resources/episodes';
 import streamPlans, { StreamPlansCalendar } from '@/resources/stream_plans';
-import streams from '@/resources/streams';
+import streams, {
+  StreamTimeline,
+  StreamVideoEditor,
+} from '@/resources/streams';
 import twitch from '@/resources/twitch';
 import video_clips from '@/resources/video_clips';
 
@@ -21,7 +24,6 @@ import authProvider from '@/ra/authProvider';
 import dataProvider from '@/ra/dataProvider';
 import i18nProvider from '@/ra/i18nProvider';
 import { darkTheme, lightTheme } from '@/ra/theme';
-import StreamTimeline from '@/resources/streams/Timeline';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { QueryClient } from '@tanstack/react-query';
@@ -76,6 +78,7 @@ function App() {
             </Resource>
             <Resource name="streams" {...streams}>
               <Route path=":id/timeline" element={<StreamTimeline />} />
+              <Route path=":id/editor" element={<StreamVideoEditor />} />
             </Resource>
             <Resource name="episodes" {...episodes} />
             <Resource name="video_clips" {...video_clips} />
