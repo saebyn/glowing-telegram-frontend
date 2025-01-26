@@ -49,7 +49,8 @@
 		"vite": "^6.0.5",
 		"vitest": "^3.0.4",
 		"@mui/x-date-pickers": "^7",
-		"@saebyn/glowing-telegram-types": "*"
+		"@saebyn/glowing-telegram-types": "*",
+		"@saebyn/glowing-telegram-video-editor": "*"
 	},
 	"msw": {
 		"workerDirectory": ["public"]
