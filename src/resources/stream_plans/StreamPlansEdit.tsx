@@ -5,7 +5,11 @@ import TwitchCategoryAutocompleteInput from '@/components/atoms/TwitchCategoryAu
 import YouTubeCategoryInput from '@/components/atoms/YouTubeCategoryInput';
 import useProfile from '@/hooks/useProfile';
 import Alert from '@mui/material/Alert';
-import { RichTextInput } from 'ra-input-rich-text';
+import { Suspense, lazy } from 'react';
+const RichTextInput = lazy(async () => {
+  const module = await import('ra-input-rich-text');
+  return { default: module.RichTextInput };
+});
 import {
   ArrayInput,
   BooleanInput,
@@ -77,7 +81,9 @@ function StreamPlansEdit() {
           defaultValue={0}
         />
 
-        <RichTextInput source="prep_notes" />
+        <Suspense fallback={<LoadingIndicator />}>
+          <RichTextInput source="prep_notes" />
+        </Suspense>
 
         <DateInput
           source="start_date"

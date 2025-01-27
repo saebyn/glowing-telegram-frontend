@@ -2,8 +2,9 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { createFilterOptions } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 
-import { getTimeZones } from '@vvo/tzdb';
-import { SystemZone } from 'luxon';
+import { useEffect, useState } from 'react';
+
+import type { RawTimeZone } from '@vvo/tzdb';
 
 interface TimezoneSelectProps {
   label?: string;
@@ -11,8 +12,19 @@ interface TimezoneSelectProps {
   onChange: (timezone: string) => void;
 }
 
+type TimeZoneWithFormat = RawTimeZone & { currentTimeFormat: string };
+
 function TimezoneSelect({ value, onChange, label }: TimezoneSelectProps) {
-  const { timeZones, defaultTimezone } = fetchAndValidateTimezones(value);
+  const [timeZones, setTimeZones] = useState<TimeZoneWithFormat[]>([]);
+  const [defaultTimezone, setDefaultTimezone] =
+    useState<TimeZoneWithFormat | null>(null);
+
+  useEffect(() => {
+    fetchAndValidateTimezones(value).then(({ timeZones, defaultTimezone }) => {
+      setTimeZones(timeZones);
+      setDefaultTimezone(defaultTimezone);
+    });
+  }, [value]);
 
   const filterOptions = createFilterOptions<(typeof timeZones)[0]>({
     stringify: (option) =>
@@ -39,7 +51,13 @@ function TimezoneSelect({ value, onChange, label }: TimezoneSelectProps) {
 
 export default TimezoneSelect;
 
-function fetchAndValidateTimezones(value: string | undefined) {
+async function fetchAndValidateTimezones(value: string | undefined): Promise<{
+  timeZones: TimeZoneWithFormat[];
+  defaultTimezone: TimeZoneWithFormat | null;
+}> {
+  const { getTimeZones } = await import('@vvo/tzdb');
+  const { SystemZone } = await import('luxon');
+
   const currentZoneName = value || SystemZone.instance.name;
   const timeZones = [];
   let defaultTimezone = null;
