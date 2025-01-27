@@ -25,6 +25,9 @@ function VideoEditor() {
     return <LoadingIndicator />;
   }
 
+  // to stop the warning about this being unused
+  console.log('stream', stream);
+
   return <VideoSelectionPage />;
 }
 
