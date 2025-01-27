@@ -1,8 +1,16 @@
 import type { Stream } from '@saebyn/glowing-telegram-types';
-import { VideoSelectionPage } from '@saebyn/glowing-telegram-video-editor';
+import { Suspense, lazy } from 'react';
 import { LoadingIndicator } from 'react-admin';
 import { useGetOne } from 'react-admin';
 import { useParams } from 'react-router-dom';
+
+const VideoSelectionPage = lazy(async () => {
+  const { VideoSelectionPage } = await import(
+    '@saebyn/glowing-telegram-video-editor'
+  );
+
+  return { default: VideoSelectionPage };
+});
 
 function VideoEditor() {
   const { id } = useParams();
@@ -28,7 +36,11 @@ function VideoEditor() {
   // to stop the warning about this being unused
   console.log('stream', stream);
 
-  return <VideoSelectionPage />;
+  return (
+    <Suspense fallback={<LoadingIndicator />}>
+      <VideoSelectionPage />
+    </Suspense>
+  );
 }
 
 export default VideoEditor;
