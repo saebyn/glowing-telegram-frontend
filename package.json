@@ -21,6 +21,9 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
+		"@mui/x-date-pickers": "^7",
+		"@saebyn/glowing-telegram-video-editor": "^0.1.0",
+		"@saebyn/glowing-telegram-types": "^0.1.0",
 		"@storybook/addon-essentials": "^8",
 		"@storybook/addon-interactions": "^8",
 		"@storybook/addon-links": "^8",
@@ -47,13 +50,12 @@
 		"storybook": "^8",
 		"typescript": "^5",
 		"vite": "^6.0.5",
-		"vitest": "^3.0.4",
-		"@mui/x-date-pickers": "^7",
-		"@saebyn/glowing-telegram-types": "*",
-		"@saebyn/glowing-telegram-video-editor": "*"
+		"vitest": "^3.0.4"
 	},
 	"msw": {
-		"workerDirectory": ["public"]
+		"workerDirectory": [
+			"public"
+		]
 	},
 	"repository": {
 		"type": "git",
