@@ -78,7 +78,6 @@ function App() {
             </Resource>
             <Resource name="streams" {...streams}>
               <Route path=":id/timeline" element={<StreamTimeline />} />
-              <Route path=":id/editor" element={<StreamVideoEditor />} />
             </Resource>
             <Resource name="episodes" {...episodes} />
             <Resource name="video_clips" {...video_clips} />
@@ -117,6 +116,11 @@ function App() {
                     <StreamManagerPage />
                   </Authenticated>
                 }
+              />
+
+              <Route
+                path="/streams/:id/editor"
+                element={<StreamVideoEditor />}
               />
 
               {/*

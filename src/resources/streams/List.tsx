@@ -1,3 +1,4 @@
+import EditorButton from '@/components/atoms/EditorButton';
 import TimelineButton from '@/components/atoms/TimelineButton';
 import Badge from '@mui/material/Badge';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
@@ -104,14 +105,14 @@ const CalendarView = () => {
   const days: Record<string, number> = {};
 
   if (list.data) {
-    list.data.forEach((stream: any) => {
+    for (const stream of list.data) {
       if (!stream || !stream.stream_date) {
         return;
       }
       const date = DateTime.fromISO(stream.stream_date);
       const key = getDateKey(date);
       days[key] = (days[key] || 0) + 1;
-    });
+    }
   }
 
   return (
@@ -145,6 +146,7 @@ const StreamList = (props: ListProps) => (
 
       <TimelineButton />
       <EditButton />
+      <EditorButton />
     </Datagrid>
   </List>
 );
