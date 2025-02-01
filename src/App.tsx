@@ -120,7 +120,11 @@ function App() {
 
               <Route
                 path="/streams/:id/editor"
-                element={<StreamVideoEditor />}
+                element={
+                  <Authenticated>
+                    <StreamVideoEditor />
+                  </Authenticated>
+                }
               />
 
               {/*
