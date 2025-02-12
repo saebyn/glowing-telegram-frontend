@@ -1,5 +1,7 @@
 import { createRoot } from 'react-dom/client';
 
+import '@saebyn/glowing-telegram-video-editor/styles.css';
+
 import App from '@/App.tsx';
 
 const { VITE_MOCKS_ENABLED: MOCKS_ENABLED } = import.meta.env;
