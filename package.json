@@ -22,7 +22,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"@mui/x-date-pickers": "^7",
-		"@saebyn/glowing-telegram-video-editor": "^0.1.5",
+		"@saebyn/glowing-telegram-video-editor": "^0.1.6",
 		"@saebyn/glowing-telegram-types": "^0.1.0",
 		"@storybook/addon-essentials": "^8",
 		"@storybook/addon-interactions": "^8",
