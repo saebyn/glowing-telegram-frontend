@@ -14,6 +14,7 @@ import {
   TextField,
   TopToolbar,
 } from 'react-admin';
+import RenderEpisodesButton from './RenderEpisodesButton';
 import UploadEpisodeToYoutubeButton from './UploadEpisodeToYoutubeButton';
 
 const ListActions = (props: ListActionsProps) => (
@@ -26,6 +27,8 @@ const ListActions = (props: ListActionsProps) => (
 const BulkActionButtons = () => (
   <>
     <UploadEpisodeToYoutubeButton />
+
+    <RenderEpisodesButton />
 
     <BulkExportButton />
   </>
