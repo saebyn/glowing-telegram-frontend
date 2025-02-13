@@ -17,7 +17,7 @@ import Typography from '@mui/material/Typography';
 import { blue, green, orange, red } from '@mui/material/colors';
 import useTheme from '@mui/material/styles/useTheme';
 import { DateTime } from 'luxon';
-import { type FC, useRef } from 'react';
+import { type FC, type JSX, useRef } from 'react';
 import { LoadingIndicator } from 'react-admin';
 import Notifications from './Notifications';
 import useTasks from './useTasks';

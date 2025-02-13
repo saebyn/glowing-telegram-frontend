@@ -35,7 +35,7 @@ function startTextJumble(element: HTMLElement, originalText: string) {
   };
 }
 
-export default function useTextJumble(ref: RefObject<HTMLElement>) {
+export default function useTextJumble(ref: RefObject<HTMLElement | null>) {
   let originalText: string | null = null;
 
   useEffect(() => {
