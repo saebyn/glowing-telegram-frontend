@@ -1,3 +1,4 @@
+import useBulkEpisodeCreate from '@/hooks/useBulkEpisodeCreate';
 import type { Stream, VideoClip } from '@saebyn/glowing-telegram-types';
 import type {
   Section,
@@ -29,6 +30,12 @@ function VideoEditor() {
   } = useGetOne<Stream>('streams', { id });
 
   const {
+    action: handleBulkCreateEpisodes,
+    error: bulkCreateEpisodesError,
+    isLoading: isBulkCreateEpisodesLoading,
+  } = useBulkEpisodeCreate(stream);
+
+  const {
     data: rawRelatedVideoClips,
     isPending: isRelatedVideoClipsPending,
     error: relatedVideoClipsError,
@@ -55,7 +62,15 @@ function VideoEditor() {
     return <p>Error: {relatedVideoClipsError.message}</p>;
   }
 
-  if (isStreamPending || isRelatedVideoClipsPending) {
+  if (bulkCreateEpisodesError) {
+    return <p>Error: {bulkCreateEpisodesError.message}</p>;
+  }
+
+  if (
+    isStreamPending ||
+    isRelatedVideoClipsPending ||
+    isBulkCreateEpisodesLoading
+  ) {
     return <LoadingIndicator />;
   }
 
@@ -92,7 +107,10 @@ function VideoEditor() {
 
   return (
     <Suspense fallback={<LoadingIndicator />}>
-      <VideoSelectionPage content={content} />
+      <VideoSelectionPage
+        content={content}
+        onExport={handleBulkCreateEpisodes}
+      />
     </Suspense>
   );
 }
