@@ -2,7 +2,7 @@ import { useWebsocket } from '@/hooks/useWebsocket';
 import type { TaskStatusWebsocketMessage } from '@/hooks/useWebsocket';
 import ListIcon from '@mui/icons-material/List';
 import { Badge, Button } from '@mui/material';
-import { type Reducer, useCallback, useEffect, useReducer } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 
 interface Props {
   onClick: () => void;
@@ -15,7 +15,7 @@ interface TasksStatus {
 type Action = TaskStatusWebsocketMessage | { event: 'reset' };
 
 const TasksDrawerButton = ({ onClick }: Props) => {
-  const [tasksStatus, dispatch] = useReducer<Reducer<TasksStatus, Action>>(
+  const [tasksStatus, dispatch] = useReducer<TasksStatus, [Action]>(
     (state, action) => {
       switch (action.event) {
         case 'task_status_change':
