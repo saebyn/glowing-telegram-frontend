@@ -122,6 +122,7 @@ export default function useBulkEpisodeCreate(stream: Stream | undefined) {
         notify_subscribers: series.notify_subscribers,
         category: series.category,
         tags: series.tags,
+        is_published: false,
         tracks: [
           {
             start: convertSecondsToISODuration(clip.start / 1000),
