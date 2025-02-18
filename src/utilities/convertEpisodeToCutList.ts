@@ -2,7 +2,69 @@ import type { Episode, Stream } from '@/types';
 import { parseIntoSeconds } from '@/utilities/isoDuration';
 import type { CutList } from '@saebyn/glowing-telegram-types';
 
-function buildCutListFromTracks(
+type StreamVideoClip = {
+  uri: string;
+  duration: number;
+};
+
+type TrackTimeRange = {
+  start: string;
+  end: string;
+};
+
+function getVideoClipsForTrack(
+  streamVideoClips: StreamVideoClip[],
+  frameRate: number,
+  { start, end }: TrackTimeRange,
+) {
+  const cutStartFrame = parseIntoSeconds(start) * frameRate;
+  const cutEndFrame = parseIntoSeconds(end) * frameRate;
+
+  // Keep track of the elapsed frames so far, as we iterate through each
+  // video clip in the stream
+  let elapsedFrames = 0;
+
+  return (
+    streamVideoClips
+      // convert video clip durations to frames and calculate start and end
+      // frames for each clip based on the elapsed frames so far
+      .map(function mapVideoClipToFrames({ uri, duration }) {
+        // start frame is the elapsed frames so far
+        const startFrame = elapsedFrames;
+
+        const frames = duration * frameRate;
+
+        // move elapsed frames forward by the duration of this video clip
+        elapsedFrames += frames;
+
+        return {
+          s3Location: uri,
+          startFrame: Math.floor(startFrame),
+          endFrame: Math.ceil(elapsedFrames),
+          relativeStartFrame: Math.floor(
+            Math.max(0, cutStartFrame - startFrame),
+          ),
+          relativeEndFrame: Math.ceil(
+            Math.min(frames, cutEndFrame - startFrame),
+          ),
+        };
+      })
+      // filter out video clips that are not within the time range of the track
+      .filter(function isClipWithinTimeRange({ startFrame, endFrame }) {
+        if (startFrame >= cutEndFrame) {
+          return false;
+        }
+
+        if (endFrame <= cutStartFrame) {
+          return false;
+        }
+
+        return true;
+      })
+  );
+}
+
+export function buildCutListFromTracks(
   episodeTracks: Episode['tracks'],
   streamVideoClips: Stream['video_clips'],
   frameRate: number,
@@ -11,43 +73,7 @@ function buildCutListFromTracks(
     episodeTracks
       // convert start and end times to frames and select video clips
       // that are within the time range of each track
-      .flatMap(function getVideoClipsForTrack({ start, end }) {
-        const cutStartFrame = parseIntoSeconds(start) * frameRate;
-        const cutEndFrame = parseIntoSeconds(end) * frameRate;
-
-        let elapsedFrames = 0;
-
-        return (
-          streamVideoClips
-            // convert video clip durations to frames and calculate start and end
-            // frames for each clip based on the elapsed frames so far
-            .map(function mapVideoClipToFrames({ uri, duration }) {
-              const startFrame = elapsedFrames;
-
-              elapsedFrames += duration * frameRate;
-
-              return {
-                s3Location: uri,
-                startFrame: Math.floor(startFrame),
-                endFrame: Math.ceil(elapsedFrames),
-                relativeStartFrame: Math.floor(cutStartFrame - startFrame),
-                relativeEndFrame: Math.ceil(cutEndFrame - startFrame),
-              };
-            })
-            // filter out video clips that are not within the time range of the track
-            .filter(function isClipWithinTimeRange({ startFrame, endFrame }) {
-              if (startFrame >= cutEndFrame) {
-                return false;
-              }
-
-              if (endFrame <= cutStartFrame) {
-                return false;
-              }
-
-              return true;
-            })
-        );
-      })
+      .flatMap(getVideoClipsForTrack.bind(null, streamVideoClips, frameRate))
       .reduce(
         function groupByS3Location(
           acc,
