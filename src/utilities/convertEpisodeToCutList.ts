@@ -140,19 +140,19 @@ export default function exportEpisodeToCutList(
   // hex iris effect
   const hexIrisIndex =
     inputMedia.push({
-      s3Location: '/assets/intro.mp4',
+      s3Location: 'my_stock/introhex.mkv',
       sections: [{ startFrame: 0, endFrame: 60 * frameRate }],
     }) - 1;
   // streamed live on twitch watermark
   const twitchWatermarkIndex =
     inputMedia.push({
-      s3Location: '/assets/twitch-watermark.mp4',
+      s3Location: 'my_stock/LiveOnTwitch Render 1.mov',
       sections: [{ startFrame: 0, endFrame: 114 }],
     }) - 1;
   // like/sub reminder
   const likeSubIndex =
     inputMedia.push({
-      s3Location: '/assets/like-sub.mp4',
+      s3Location: 'my_stock/LikeReminder1 Render 1.mov',
       sections: [{ startFrame: 0, endFrame: 300 }],
     }) - 1;
 
