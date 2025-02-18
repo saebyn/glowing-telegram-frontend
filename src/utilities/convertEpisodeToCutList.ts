@@ -162,18 +162,21 @@ export default function exportEpisodeToCutList(
       mediaIndex: hexIrisIndex,
       sectionIndex: 0,
       startFrame: 0,
+      type: 'alpha',
     },
     // streamed live on twitch watermark
     {
       mediaIndex: twitchWatermarkIndex,
       sectionIndex: 0,
       startFrame: frameRate * 30, // 30 seconds in
+      type: 'colorkey',
     },
     // like/sub reminder
     {
       mediaIndex: likeSubIndex,
       sectionIndex: 0,
       startFrame: frameRate * 60, // 60 seconds in
+      type: 'colorkey',
     },
   ];
 
