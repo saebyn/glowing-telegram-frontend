@@ -123,7 +123,7 @@ export default function exportEpisodeToCutList(
   // index 1, outro
   const outroIndex =
     inputMedia.push({
-      s3Location: '/assets/outro.mp4',
+      s3Location: 'my_stock/outro_2.mov',
       sections: [{ startFrame: 0, endFrame: 1800 }],
     }) - 1;
   // Add outro to output track
