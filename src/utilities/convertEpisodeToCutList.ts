@@ -28,10 +28,10 @@ function buildCutListFromTracks(
 
               return {
                 s3Location: uri,
-                startFrame,
-                endFrame: elapsedFrames,
-                relativeStartFrame: cutStartFrame - startFrame,
-                relativeEndFrame: cutEndFrame - startFrame,
+                startFrame: Math.floor(startFrame),
+                endFrame: Math.ceil(elapsedFrames),
+                relativeStartFrame: Math.floor(cutStartFrame - startFrame),
+                relativeEndFrame: Math.ceil(cutEndFrame - startFrame),
               };
             })
             // filter out video clips that are not within the time range of the track
