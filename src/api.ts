@@ -1,8 +1,8 @@
-import type { TwitchAccess } from '@/types';
 import { userManager } from '@/utilities/auth';
 import type {
   TwitchAuthRequest,
   TwitchCallbackRequest,
+  YouTubeCallbackRequest,
 } from '@saebyn/glowing-telegram-types/src/types';
 
 const { VITE_API_URL: baseApiUrl } = import.meta.env;
@@ -33,8 +33,13 @@ export async function authenticatedFetch(
   });
 }
 
-export async function fetchTwitchAccessToken(): Promise<TwitchAccess> {
-  const url = new URL('auth/twitch/token', baseApiUrl);
+export async function fetchAccessToken(
+  provider: 'twitch' | 'youtube',
+): Promise<
+  | { id: string; valid: true; accessToken: string }
+  | { id: string; valid: false }
+> {
+  const url = new URL(`auth/${provider}/token`, baseApiUrl);
 
   try {
     const res = await authenticatedFetch(url.toString());
@@ -55,7 +60,7 @@ export async function fetchTwitchAccessToken(): Promise<TwitchAccess> {
 }
 
 export async function generateAuthorizeUri(
-  provider: 'twitch',
+  provider: 'twitch' | 'youtube',
   scopes: string[],
 ): Promise<string> {
   const url = new URL(`auth/${provider}/url`, baseApiUrl);
@@ -79,11 +84,11 @@ export async function generateAuthorizeUri(
 }
 
 export async function handleOAuthCallback(
-  provider: 'twitch',
+  provider: 'twitch' | 'youtube',
   code: string,
   state: string,
 ): Promise<string> {
-  const body: TwitchCallbackRequest = {
+  const body: TwitchCallbackRequest | YouTubeCallbackRequest = {
     code,
     state,
     scope: [],

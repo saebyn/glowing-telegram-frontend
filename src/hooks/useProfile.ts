@@ -1,4 +1,3 @@
-import type { TwitchAccess } from '@/types';
 import { useGetIdentity, useGetOne } from 'react-admin';
 
 export interface Profile {
@@ -12,6 +11,9 @@ export interface Profile {
   twitch?: {
     accessToken: string;
     broadcasterId: string;
+  };
+  youtube?: {
+    accessToken: string;
   };
 }
 
@@ -53,7 +55,7 @@ function useProfile(): Return {
     data: twitchToken,
     isPending: twitchTokenIsPending,
     error: twitchTokenError,
-  } = useGetOne<TwitchAccess>(
+  } = useGetOne(
     'twitch',
     {
       id: 'twitchToken',
@@ -63,7 +65,21 @@ function useProfile(): Return {
     },
   );
 
-  if (!identity || isPending || twitchTokenIsPending) {
+  const {
+    data: youtubeToken,
+    isPending: youtubeTokenIsPending,
+    error: youtubeTokenError,
+  } = useGetOne(
+    'youtube',
+    {
+      id: 'youtubeToken',
+    },
+    {
+      enabled: !!identity,
+    },
+  );
+
+  if (!identity || isPending || twitchTokenIsPending || youtubeTokenIsPending) {
     return {
       isPending: true,
       error: undefined,
@@ -85,6 +101,15 @@ function useProfile(): Return {
     };
   }
 
+  if (youtubeTokenError) {
+    return {
+      error: youtubeTokenError,
+      status: 'error',
+      profile: undefined,
+      isPending: false,
+    };
+  }
+
   return {
     status: 'success',
     error: undefined,
@@ -99,6 +124,9 @@ function useProfile(): Return {
       twitch: twitchToken.valid && {
         accessToken: twitchToken.accessToken,
         broadcasterId: twitchToken.id,
+      },
+      youtube: youtubeToken.valid && {
+        accessToken: youtubeToken.accessToken,
       },
     },
   };

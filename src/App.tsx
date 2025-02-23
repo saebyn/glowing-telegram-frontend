@@ -13,10 +13,10 @@ import video_clips from '@/resources/video_clips';
 
 import GlobalStyles from '@mui/material/GlobalStyles';
 
+import OAuthCallbackPage from '@/components/pages/OAuthCallbackPage';
 import ProfilePage from '@/components/pages/ProfilePage';
 import StreamManagerPage from '@/components/pages/StreamManagerPage';
 import StreamWidget from '@/components/pages/StreamWidget';
-import TwitchCallbackPage from '@/components/pages/TwitchCallbackPage';
 import { TimerManagerProvider } from '@/hooks/useTimers';
 import { WebsocketProvider } from '@/hooks/useWebsocket';
 import Layout from '@/ra/Layout';
@@ -101,10 +101,10 @@ function App() {
 
             <CustomRoutes noLayout>
               <Route
-                path="/twitch-callback"
+                path="/:provider/callback"
                 element={
                   <Authenticated>
-                    <TwitchCallbackPage />
+                    <OAuthCallbackPage />
                   </Authenticated>
                 }
               />

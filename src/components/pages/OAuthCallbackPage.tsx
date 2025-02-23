@@ -1,5 +1,6 @@
 import { handleOAuthCallback } from '@/api';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 function TwitchCallbackPage() {
   const searchParams = new URLSearchParams(window.location.search);
@@ -7,6 +8,10 @@ function TwitchCallbackPage() {
   const errorDescription = searchParams.get('error_description');
   const code = searchParams.get('code');
   const state = searchParams.get('state');
+
+  const { provider } = useParams<{
+    provider: 'twitch' | 'youtube';
+  }>();
 
   const [loading, setLoading] = useState(true);
   const [finalError, setFinalError] = useState<string | null>(null);
@@ -17,11 +22,17 @@ function TwitchCallbackPage() {
       return;
     }
 
+    if (!provider) {
+      setFinalError('Missing provider');
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
 
     if (code && state) {
       console.log('Handling OAuth callback');
-      handleOAuthCallback('twitch', code, state)
+      handleOAuthCallback(provider, code, state)
         .catch((err) => {
           setFinalError(err.message);
           throw err;
@@ -33,7 +44,16 @@ function TwitchCallbackPage() {
           setLoading(false);
         });
     }
-  }, [code, state, error]);
+  }, [code, state, error, provider]);
+
+  if (!provider) {
+    return (
+      <div>
+        <h1>Error</h1>
+        <p>Missing provider</p>
+      </div>
+    );
+  }
 
   if (error) {
     return (

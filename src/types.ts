@@ -109,14 +109,3 @@ interface FileEntry {
 export interface FindFilesResponse {
   entries: FileEntry[];
 }
-
-export type TwitchAccess =
-  | {
-      accessToken: string;
-      id: string;
-      valid: true;
-    }
-  | {
-      id: string;
-      valid: false;
-    };
