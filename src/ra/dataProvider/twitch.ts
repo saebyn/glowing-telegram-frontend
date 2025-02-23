@@ -1,4 +1,4 @@
-import { fetchTwitchAccessToken, generateAuthorizeUri } from '@/api';
+import { fetchAccessToken, generateAuthorizeUri } from '@/api';
 import { getVideos } from '@/utilities/twitch';
 import type { DataProvider, GetListParams } from 'react-admin';
 
@@ -7,7 +7,7 @@ const twitchDataProvider = {
   cursor: '',
 
   async getOne() {
-    const accessToken = await fetchTwitchAccessToken();
+    const accessToken = await fetchAccessToken('twitch');
 
     return {
       data: accessToken,
@@ -23,7 +23,7 @@ const twitchDataProvider = {
     _resource: string,
     params: GetListParams,
   ) {
-    const accessToken = await fetchTwitchAccessToken();
+    const accessToken = await fetchAccessToken('twitch');
 
     if (!accessToken.valid) {
       throw new Error('Invalid Twitch access token');

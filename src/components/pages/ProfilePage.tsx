@@ -1,6 +1,7 @@
 import TagEditor from '@/components/atoms/TagEditor';
 import TimezoneSelect from '@/components/atoms/TimezoneSelect';
 import TwitchOAuthButton from '@/components/atoms/TwitchOAuthButton';
+import YouTubeOAuthButton from '@/components/atoms/YouTubeOAuthButton';
 import useProfile, { type Profile } from '@/hooks/useProfile';
 import {
   Avatar,
@@ -71,6 +72,12 @@ const ProfilePage = () => {
             <TwitchOAuthButton
               tokens={{
                 accessToken: profile.twitch?.accessToken,
+              }}
+            />
+
+            <YouTubeOAuthButton
+              tokens={{
+                accessToken: profile.youtube?.accessToken,
               }}
             />
           </CardActions>
