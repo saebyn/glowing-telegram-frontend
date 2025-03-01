@@ -49,6 +49,7 @@ jobs:
           VITE_REDIRECT_URI: ${{ vars.REDIRECT_URI }}
           VITE_TWITCH_CLIENT_ID: ${{ vars.TWITCH_CLIENT_ID }}
           VITE_WEBSOCKET_URL: ${{ vars.WEBSOCKET_URL }}
+          VITE_CONTENT_URL: ${{ vars.CONTENT_URL }}
 
       - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v1
