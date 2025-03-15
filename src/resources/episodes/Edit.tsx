@@ -18,7 +18,6 @@ import TitleInput from '@/components/atoms/TitleInput';
 import YouTubeCategoryInput from '@/components/atoms/YouTubeCategoryInput';
 import EpisodeDescriptionChatButton from '@/components/organisms/EpisodeDescriptionChatButton';
 import { ExportButton as OTIOExportButton } from '@/components/organisms/OTIOExporter';
-import { ExportButton as SRTExportButton } from '@/components/organisms/SRTExporter';
 import Edit from '@/components/templates/Edit';
 
 const EditActions = () => (
@@ -26,7 +25,6 @@ const EditActions = () => (
     <PrevNextButtons />
     <DeleteButton />
     <OTIOExportButton />
-    <SRTExportButton />
   </TopToolbar>
 );
 
