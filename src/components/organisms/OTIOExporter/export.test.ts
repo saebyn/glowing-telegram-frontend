@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { Episode, Stream } from '@/types';
+import type { Episode, VideoClip } from '@saebyn/glowing-telegram-types';
 import exportOTIO, { generateChildren, OTIOError } from './export';
 import type { ConvertedEpisode, InternalTrack } from './types';
 
@@ -15,13 +15,11 @@ describe('generateChildren', () => {
       ],
     };
 
-    const stream: Stream = {
-      video_clips: [
-        { uri: 'video1.mp4', duration: 100 },
-        { uri: 'video2.mp4', duration: 100 },
-        { uri: 'video3.mp4', duration: 100 },
-      ],
-    } as Stream;
+    const video_clips: VideoClip[] = [
+      { key: 'video1.mp4', metadata: { format: { duration: 100 } } },
+      { key: 'video2.mp4', metadata: { format: { duration: 100 } } },
+      { key: 'video3.mp4', metadata: { format: { duration: 100 } } },
+    ];
 
     const expected: InternalTrack[] = [
       {
@@ -40,7 +38,7 @@ describe('generateChildren', () => {
       },
     ];
 
-    const result = generateChildren(convertedepisode, stream);
+    const result = generateChildren(convertedepisode, video_clips);
 
     expect(result).toEqual(expected);
   });
@@ -55,13 +53,11 @@ describe('generateChildren', () => {
       ],
     };
 
-    const stream: Stream = {
-      video_clips: [
-        { uri: 'video1.mp4', duration: 100 },
-        { uri: 'video2.mp4', duration: 200 },
-        { uri: 'video3.mp4', duration: 100 },
-      ],
-    } as Stream;
+    const video_clips: VideoClip[] = [
+      { key: 'video1.mp4', metadata: { format: { duration: 100 } } },
+      { key: 'video2.mp4', metadata: { format: { duration: 200 } } },
+      { key: 'video3.mp4', metadata: { format: { duration: 100 } } },
+    ];
 
     const expected: InternalTrack[] = [
       {
@@ -90,7 +86,7 @@ describe('generateChildren', () => {
       },
     ];
 
-    const result = generateChildren(convertedepisode, stream);
+    const result = generateChildren(convertedepisode, video_clips);
 
     expect(result).toEqual(expected);
   });
@@ -102,15 +98,13 @@ describe('generateChildren', () => {
       tracks: [],
     };
 
-    const stream: Stream = {
-      video_clips: [
-        { uri: 'video1.mp4', duration: 100 },
-        { uri: 'video2.mp4', duration: 100 },
-        { uri: 'video3.mp4', duration: 100 },
-      ],
-    } as Stream;
+    const video_clips: VideoClip[] = [
+      { key: 'video1.mp4', metadata: { format: { duration: 100 } } },
+      { key: 'video2.mp4', metadata: { format: { duration: 100 } } },
+      { key: 'video3.mp4', metadata: { format: { duration: 100 } } },
+    ];
 
-    const result = generateChildren(convertedepisode, stream);
+    const result = generateChildren(convertedepisode, video_clips);
 
     expect(result).toEqual([]);
   });
@@ -125,11 +119,9 @@ describe('generateChildren', () => {
       ],
     };
 
-    const stream: Stream = {
-      video_clips: [],
-    } as unknown as Stream;
+    const video_clips: VideoClip[] = [];
 
-    const result = generateChildren(convertedepisode, stream);
+    const result = generateChildren(convertedepisode, video_clips);
 
     expect(result).toEqual([]);
   });
@@ -141,11 +133,9 @@ describe('generateChildren', () => {
       tracks: [],
     };
 
-    const stream: Stream = {
-      video_clips: [],
-    } as unknown as Stream;
+    const video_clips: VideoClip[] = [];
 
-    const result = generateChildren(convertedepisode, stream);
+    const result = generateChildren(convertedepisode, video_clips);
 
     expect(result).toEqual([]);
   });
@@ -160,15 +150,13 @@ describe('generateChildren', () => {
       ],
     };
 
-    const stream: Stream = {
-      video_clips: [
-        { uri: 'video1.mp4', duration: 100 },
-        { uri: 'video2.mp4', duration: 100 },
-        { uri: 'video3.mp4', duration: 100 },
-      ],
-    } as Stream;
+    const video_clips: VideoClip[] = [
+      { key: 'video1.mp4', metadata: { format: { duration: 100 } } },
+      { key: 'video2.mp4', metadata: { format: { duration: 100 } } },
+      { key: 'video3.mp4', metadata: { format: { duration: 100 } } },
+    ];
 
-    expect(() => generateChildren(convertedepisode, stream)).toThrowError(
+    expect(() => generateChildren(convertedepisode, video_clips)).toThrowError(
       OTIOError,
     );
   });
@@ -191,28 +179,26 @@ describe('generateChildren', () => {
       ],
     };
 
-    const stream: Stream = {
-      video_clips: [
-        {
-          uri: 'F:\\Video\\OBS\\2024-01-31 17-54-59.mkv',
-          duration: 72251.0 / 60,
-        },
-        {
-          uri: 'F:\\Video\\OBS\\2024-01-31 18-15-04.mkv',
-          duration: 72000.0 / 60,
-        },
-        {
-          uri: 'F:\\Video\\OBS\\2024-01-31 18-35-04.mkv',
-          duration: 72000.0 / 60,
-        },
-        {
-          uri: 'F:\\Video\\OBS\\2024-01-31 18-55-04.mkv',
-          duration: 72000.0 / 60,
-        },
-      ],
-    } as Stream;
+    const video_clips: VideoClip[] = [
+      {
+        key: 'F:\\Video\\OBS\\2024-01-31 17-54-59.mkv',
+        metadata: { format: { duration: 72251.0 / 60 } },
+      },
+      {
+        key: 'F:\\Video\\OBS\\2024-01-31 18-15-04.mkv',
+        metadata: { format: { duration: 72000.0 / 60 } },
+      },
+      {
+        key: 'F:\\Video\\OBS\\2024-01-31 18-35-04.mkv',
+        metadata: { format: { duration: 72000.0 / 60 } },
+      },
+      {
+        key: 'F:\\Video\\OBS\\2024-01-31 18-55-04.mkv',
+        metadata: { format: { duration: 72000.0 / 60 } },
+      },
+    ];
 
-    const result = generateChildren(convertedepisode, stream);
+    const result = generateChildren(convertedepisode, video_clips);
 
     const expected: InternalTrack[] = [
       {
@@ -256,16 +242,23 @@ describe('exportOTIO', () => {
       ],
     };
 
-    const stream: Stream = {
-      video_clips: [
-        { uri: '2024-01-31 17-54-59.mkv', duration: 100 },
-        { uri: '2024-01-31 18-15-04.mkv', duration: 100 },
-        { uri: '2024-01-31 18-35-04.mkv', duration: 100 },
-      ],
-    } as Stream;
+    const video_clips: VideoClip[] = [
+      {
+        key: '2024-01-31 17-54-59.mkv',
+        metadata: { format: { duration: 100 } },
+      },
+      {
+        key: '2024-01-31 18-15-04.mkv',
+        metadata: { format: { duration: 100 } },
+      },
+      {
+        key: '2024-01-31 18-35-04.mkv',
+        metadata: { format: { duration: 100 } },
+      },
+    ];
 
     // snapshot the result to avoid having to write a complex expected value
-    const result = exportOTIO(episode, stream);
+    const result = exportOTIO(episode, video_clips);
 
     expect(result).toMatchSnapshot();
 
@@ -298,28 +291,26 @@ describe('exportOTIO', () => {
       ],
     };
 
-    const stream: Stream = {
-      video_clips: [
-        {
-          uri: 'F:\\Video\\OBS\\2024-01-31 17-54-59.mkv',
-          duration: 72251.0 / 60,
-        },
-        {
-          uri: 'F:\\Video\\OBS\\2024-01-31 18-15-04.mkv',
-          duration: 72000.0 / 60,
-        },
-        {
-          uri: 'F:\\Video\\OBS\\2024-01-31 18-35-04.mkv',
-          duration: 72000.0 / 60,
-        },
-        {
-          uri: 'F:\\Video\\OBS\\2024-01-31 18-55-04.mkv',
-          duration: 72000.0 / 60,
-        },
-      ],
-    } as Stream;
+    const video_clips: VideoClip[] = [
+      {
+        key: 'F:\\Video\\OBS\\2024-01-31 17-54-59.mkv',
+        metadata: { format: { duration: 72251.0 / 60 } },
+      },
+      {
+        key: 'F:\\Video\\OBS\\2024-01-31 18-15-04.mkv',
+        metadata: { format: { duration: 72000.0 / 60 } },
+      },
+      {
+        key: 'F:\\Video\\OBS\\2024-01-31 18-35-04.mkv',
+        metadata: { format: { duration: 72000.0 / 60 } },
+      },
+      {
+        key: 'F:\\Video\\OBS\\2024-01-31 18-55-04.mkv',
+        metadata: { format: { duration: 72000.0 / 60 } },
+      },
+    ];
 
-    const actual = exportOTIO(episode, stream);
+    const actual = exportOTIO(episode, video_clips);
 
     await expect(actual).toMatchFileSnapshot('__snapshots__/test1.otio');
   });
@@ -334,10 +325,8 @@ describe('exportOTIO', () => {
       ],
     };
 
-    const stream: Stream = {
-      video_clips: [],
-    } as unknown as Stream;
+    const video_clips: VideoClip[] = [];
 
-    expect(() => exportOTIO(episode, stream)).toThrowError(OTIOError);
+    expect(() => exportOTIO(episode, video_clips)).toThrowError(OTIOError);
   });
 });

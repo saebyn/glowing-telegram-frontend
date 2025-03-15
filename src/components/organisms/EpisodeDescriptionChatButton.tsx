@@ -2,9 +2,10 @@ import { useGetManyReference, useGetOne, useRecordContext } from 'react-admin';
 import { useFormContext } from 'react-hook-form';
 
 import ChatButton from '@/components/molecules/ChatButton';
-import type { Episode, Series } from '@/types';
 import { parseIntoSeconds } from '@/utilities/isoDuration';
 import type {
+  Episode,
+  Series,
   TranscriptSegment,
   VideoClip,
 } from '@saebyn/glowing-telegram-types/src/types';
@@ -32,7 +33,9 @@ const EpisodeDescriptionChatButton = () => {
     },
   );
 
-  const { data: rawRelatedVideoClips } = useGetManyReference<VideoClip>(
+  const { data: rawRelatedVideoClips } = useGetManyReference<
+    Required<VideoClip>
+  >(
     'video_clips',
     {
       target: 'stream_id',

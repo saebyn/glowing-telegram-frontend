@@ -1,11 +1,10 @@
-import type { Episode, Stream } from '@/types';
 import { parseIntoSeconds } from '@/utilities/isoDuration';
-import type { CutList } from '@saebyn/glowing-telegram-types';
-
-type StreamVideoClip = {
-  uri: string;
-  duration: number;
-};
+import type {
+  CutList,
+  Episode,
+  Track,
+  VideoClip,
+} from '@saebyn/glowing-telegram-types';
 
 type TrackTimeRange = {
   start: string;
@@ -13,7 +12,7 @@ type TrackTimeRange = {
 };
 
 function getVideoClipsForTrack(
-  streamVideoClips: StreamVideoClip[],
+  streamVideoClips: VideoClip[],
   frameRate: number,
   { start, end }: TrackTimeRange,
 ) {
@@ -28,9 +27,11 @@ function getVideoClipsForTrack(
     streamVideoClips
       // convert video clip durations to frames and calculate start and end
       // frames for each clip based on the elapsed frames so far
-      .map(function mapVideoClipToFrames({ uri, duration }) {
+      .map(function mapVideoClipToFrames({ key, metadata }) {
         // start frame is the elapsed frames so far
         const startFrame = elapsedFrames;
+
+        const duration = metadata?.format?.duration || 0;
 
         const frames = duration * frameRate;
 
@@ -38,7 +39,7 @@ function getVideoClipsForTrack(
         elapsedFrames += frames;
 
         return {
-          s3Location: uri,
+          s3Location: key,
           startFrame: Math.floor(startFrame),
           endFrame: Math.ceil(elapsedFrames),
           relativeStartFrame: Math.floor(
@@ -65,8 +66,8 @@ function getVideoClipsForTrack(
 }
 
 export function buildCutListFromTracks(
-  episodeTracks: Episode['tracks'],
-  streamVideoClips: Stream['video_clips'],
+  episodeTracks: Track[],
+  streamVideoClips: VideoClip[],
   frameRate: number,
 ) {
   return (
@@ -108,11 +109,10 @@ export function buildCutListFromTracks(
 
 export default function exportEpisodeToCutList(
   episode: Episode,
-  stream: Stream,
+  videoClips: VideoClip[],
   frameRate = 60,
 ): CutList {
   const tracks = episode.tracks || [];
-  const videoClips = stream.video_clips || [];
 
   // For each track, add which video clip to use and the start and end frames
   // if the track spans multiple video clips, add multiple items to

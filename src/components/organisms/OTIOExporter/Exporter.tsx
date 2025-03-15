@@ -7,7 +7,6 @@ import {
   useRecordContext,
 } from 'react-admin';
 
-import type { Stream } from '@/types';
 import type {
   Episode,
   VideoClip,
@@ -15,13 +14,7 @@ import type {
 import exporter from './export';
 
 function promptDownload(episode: Episode, videoClips: VideoClip[]) {
-  const videoClipsSet = videoClips.map((clip: VideoClip) => ({
-    uri: clip.key,
-    duration: clip.metadata?.format?.duration,
-    start_time: clip.start_time,
-  }));
-
-  videoClipsSet.sort((a, b) => (a.start_time ?? 0) - (b.start_time ?? 0));
+  videoClips.sort((a, b) => (a.start_time ?? 0) - (b.start_time ?? 0));
 
   // take the episode data and use the OTIOExporter to genrate the OTIO string
   // then create a blob object and create a download link
@@ -39,9 +32,7 @@ function promptDownload(episode: Episode, videoClips: VideoClip[]) {
           }),
         ),
       },
-      {
-        video_clips: videoClipsSet,
-      } as unknown as Stream,
+      videoClips,
     );
   } catch (e) {
     console.error('Error exporting OTIO file', e, {

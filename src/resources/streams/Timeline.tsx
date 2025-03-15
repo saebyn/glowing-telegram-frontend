@@ -29,7 +29,7 @@ function Timeline() {
   const { id } = useParams();
   const translate = useTranslate();
 
-  const { data, isPending, error } = useGetManyReference<VideoClip>(
+  const { data, isPending, error } = useGetManyReference<Required<VideoClip>>(
     'video_clips',
     {
       target: 'stream_id',
