@@ -4,49 +4,6 @@ export interface TranscriptSegment {
   text: string;
 }
 
-export interface Cut {
-  start: string;
-  end: string;
-}
-
-/**
- * A sequence of cuts that make up an episode.
- *
- * The cuts are in order, and the end of one cut is the start of the next.
- * The value of each `start` and `end` is relative to the start of the
- * overall stream of media that the media is being cut from.
- */
-export type CutSequence = Cut[];
-
-export interface Episode {
-  id?: string;
-  stream_id?: string;
-  title: string;
-  description: string;
-  tracks: CutSequence;
-}
-
-export interface VideoClip {
-  uri: string;
-  duration: number;
-}
-
-export interface Stream {
-  transcription_segments?: TranscriptSegment[];
-
-  series_id: string | null;
-
-  video_clips: VideoClip[];
-}
-
-export interface Series {
-  created_at: string;
-  id: string;
-  title: string;
-  updated_at?: string;
-  max_episode_order_index: number;
-}
-
 export interface YoutubeUploadTaskPayload {
   episode_id: string;
   title: string;
@@ -69,7 +26,7 @@ export interface TaskSummary {
 
 export interface ChatMessage {
   content: string;
-  role: 'system' | 'user' | 'assistant' | 'function';
+  role: "system" | "user" | "assistant" | "function";
 }
 
 export interface DataStreamDataElement {
@@ -79,11 +36,11 @@ export interface DataStreamDataElement {
 }
 
 export type TaskStatus =
-  | 'RUNNING'
-  | 'SUCCEEDED'
-  | 'FAILED'
-  | 'TIMED_OUT'
-  | 'ABORTED';
+  | "RUNNING"
+  | "SUCCEEDED"
+  | "FAILED"
+  | "TIMED_OUT"
+  | "ABORTED";
 
 interface Metadata {
   filename: string;

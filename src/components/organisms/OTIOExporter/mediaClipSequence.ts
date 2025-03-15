@@ -1,4 +1,4 @@
-import type { VideoClip } from '@/types';
+import type { VideoClip } from '@saebyn/glowing-telegram-types';
 import { FPS } from './constants';
 import type { ConvertedCut, InternalTrack } from './types';
 
@@ -80,10 +80,13 @@ export function convertMediaClipCursorToInternalTrack(
   cursor: MediaClipCursor,
 ): InternalTrack {
   const clip = videoClips[cursor.clipIndex];
+
+  const duration = clip.metadata?.format?.duration || 0;
+
   return {
-    sourcePath: clip.uri,
+    sourcePath: clip.key,
     sourceStartFrames: cursor.time * FPS,
     durationFrames: cursor.duration * FPS,
-    totalMediaDurationFrames: clip.duration * FPS,
+    totalMediaDurationFrames: duration * FPS,
   };
 }

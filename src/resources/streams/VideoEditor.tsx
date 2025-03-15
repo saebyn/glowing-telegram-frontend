@@ -39,7 +39,7 @@ function VideoEditor() {
     data: rawRelatedVideoClips,
     isPending: isRelatedVideoClipsPending,
     error: relatedVideoClipsError,
-  } = useGetManyReference<VideoClip>(
+  } = useGetManyReference<Required<VideoClip>>(
     'video_clips',
     {
       target: 'stream_id',

@@ -1,10 +1,6 @@
 import convertEpisodeToCutList from '@/utilities/convertEpisodeToCutList';
 import { convertSecondsToISODuration } from '@/utilities/isoDuration';
-import type {
-  Episode,
-  Stream,
-  VideoClip as StreamMedia,
-} from '@saebyn/glowing-telegram-types/src/types';
+import type { Episode, Stream } from '@saebyn/glowing-telegram-types/src/types';
 import type { VideoClip } from '@saebyn/glowing-telegram-video-editor';
 import { useMutation } from '@tanstack/react-query';
 import {
@@ -92,23 +88,11 @@ export default function useBulkEpisodeCreate(stream: Stream | undefined) {
       return;
     }
 
-    const processedMediaSegments = streamMedia.map(
-      (mediaSegment: StreamMedia) => ({
-        uri: mediaSegment.key,
-        duration: mediaSegment.metadata?.format?.duration || 0,
-        start_time: mediaSegment.start_time,
-      }),
-    );
+    const processedMediaSegments = streamMedia.slice();
 
     processedMediaSegments.sort(
       (a, b) => (a.start_time ?? 0) - (b.start_time ?? 0),
     );
-
-    const streamWithVideoClips = {
-      ...stream,
-      video_clips: processedMediaSegments,
-      series_id: stream.series_id || null,
-    };
 
     const baseEpIndex = (series?.max_episode_order_index || 0) + 1;
 
@@ -132,7 +116,7 @@ export default function useBulkEpisodeCreate(stream: Stream | undefined) {
       }))
       .map((episode) => ({
         ...episode,
-        cut_list: convertEpisodeToCutList(episode, streamWithVideoClips, 60),
+        cut_list: convertEpisodeToCutList(episode, processedMediaSegments, 60),
       }));
 
     mutate(episodes, {
