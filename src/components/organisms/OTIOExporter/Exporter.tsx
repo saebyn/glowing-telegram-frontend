@@ -14,7 +14,9 @@ import type {
 import exporter from './export';
 
 function promptDownload(episode: Episode, videoClips: VideoClip[]) {
-  const sortedVideoClips = [...videoClips].sort((a, b) => (a.start_time ?? 0) - (b.start_time ?? 0));
+  const sortedVideoClips = [...videoClips].sort(
+    (a, b) => (a.start_time ?? 0) - (b.start_time ?? 0),
+  );
   // take the episode data and use the OTIOExporter to genrate the OTIO string
   // then create a blob object and create a download link
   // then click the link to download the file
@@ -31,7 +33,7 @@ function promptDownload(episode: Episode, videoClips: VideoClip[]) {
           }),
         ),
       },
-      videoClips,
+      sortedVideoClips,
     );
   } catch (e) {
     console.error('Error exporting OTIO file', e, {
