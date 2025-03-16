@@ -8,24 +8,19 @@ import twitchDataProvider from './twitch';
 import youtubeDataProvider from './youtube';
 
 const dataProvider = combineDataProviders((resource) => {
-  if (resource === 'aiChat') {
-    return chatDataProvider as unknown as DataProvider;
-  }
-
-  if (resource === 'render') {
-    return renderDataProvider as unknown as DataProvider;
+  switch (resource) {
+    case 'aiChat':
+      return chatDataProvider as unknown as DataProvider;
+    case 'render':
+      return renderDataProvider as unknown as DataProvider;
+    case 'twitch':
+      return twitchDataProvider;
+    case 'youtube':
+      return youtubeDataProvider;
   }
 
   if (resource in resourceMap) {
     return restDataProvider;
-  }
-
-  if (resource === 'twitch') {
-    return twitchDataProvider;
-  }
-
-  if (resource === 'youtube') {
-    return youtubeDataProvider;
   }
 
   throw new Error(`Unknown resource: ${resource}`);

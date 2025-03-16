@@ -1,5 +1,6 @@
 import { BulkExportButton } from '@/components/organisms/OTIOExporter/Exporter';
 import {
+  BooleanField,
   CreateButton,
   Datagrid,
   FilterButton,
@@ -49,6 +50,9 @@ const EpisodeList = (props: ListProps) => (
         <TextField source="title" />
       </ReferenceField>
       <NumberField source="order_index" />
+      <BooleanField source="youtube_video_id" looseValue={true} />
+      <BooleanField source="render_uri" looseValue={true} />
+      <TextField source="upload_status" />
     </Datagrid>
   </List>
 );

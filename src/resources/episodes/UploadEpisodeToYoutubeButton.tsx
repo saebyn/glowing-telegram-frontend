@@ -22,11 +22,11 @@ const UploadEpisodeToYoutubeButton = () => {
   const dataProvider = useDataProvider();
 
   const handleUpload = async () => {
-    await Promise.all(
-      episodes
-        .filter((episode: any) => episode.render_uri)
-        .map(dataProvider.uploadEpisodeToYoutube),
-    );
+    await dataProvider.createMany('youtube', {
+      data: episodes.map((episode) => ({
+        id: episode.episode_id,
+      })),
+    });
 
     setOpen(false);
   };
