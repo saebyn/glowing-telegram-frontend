@@ -113,7 +113,7 @@ export async function handleOAuthCallback(
 
 export async function uploadEpisodesToYoutube(
   episodeIds: string[],
-): Promise<{ id: string }> {
+): Promise<void> {
   const url = new URL('upload/youtube', baseApiUrl);
 
   const res = await authenticatedFetch(url.toString(), {
@@ -129,6 +129,4 @@ export async function uploadEpisodesToYoutube(
   if (!res.ok) {
     throw new Error('Failed to upload episode to YouTube');
   }
-
-  return res.json();
 }
