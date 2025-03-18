@@ -8,6 +8,8 @@ import {
   SelectInput,
   SimpleForm,
   SimpleFormIterator,
+  Tab,
+  TabbedForm,
   TextInput,
   TopToolbar,
 } from 'react-admin';
@@ -30,51 +32,90 @@ const EditActions = () => (
 
 const EpisodeEdit = () => (
   <Edit actions={<EditActions />}>
-    <SimpleForm mode="onBlur" reValidateMode="onBlur">
-      <TitleInput source="title" />
+    <TabbedForm mode="onBlur" reValidateMode="onBlur">
+      <TabbedForm.Tab label="Summary">
+        <TitleInput source="title" />
 
-      <ReferenceInput source="series_id" reference="series">
-        <SelectInput
-          optionText={(record) =>
-            `${record.title} (${record.max_episode_order_index})`
-          }
-        />
-      </ReferenceInput>
+        <ReferenceInput source="series_id" reference="series">
+          <SelectInput
+            optionText={(record) =>
+              `${record.title} (${record.max_episode_order_index})`
+            }
+          />
+        </ReferenceInput>
 
-      <NumberInput source="order_index" />
+        <NumberInput source="order_index" />
 
-      <TextInput source="youtube_video_id" />
-      <TextInput source="render_uri" />
+        <DescriptionInput source="description" />
 
-      <BooleanInput source="is_published" />
+        <EpisodeDescriptionChatButton />
 
-      <DescriptionInput source="description" />
+        <ReferenceInput source="stream_id" reference="streams">
+          <SelectInput
+            optionText={(record) =>
+              `${new Date(record.stream_date).toDateString()} (${record.title})`
+            }
+          />
+        </ReferenceInput>
+      </TabbedForm.Tab>
 
-      <EpisodeDescriptionChatButton />
+      <TabbedForm.Tab label="Render">
+        <ArrayInput source="cut_list.inputMedia">
+          <SimpleFormIterator inline>
+            <TextInput source="s3Location" />
+            <ArrayInput source="sections">
+              <SimpleFormIterator>
+                <NumberInput source="startFrame" />
+                <NumberInput source="endFrame" />
+              </SimpleFormIterator>
+            </ArrayInput>
+          </SimpleFormIterator>
+        </ArrayInput>
 
-      <ArrayInput source="tracks">
-        <SimpleFormIterator>
-          <TimeDurationInput source="start" format="iso8601" />
-          <TimeDurationInput source="end" format="iso8601" />
-        </SimpleFormIterator>
-      </ArrayInput>
+        <ArrayInput source="cut_list.outputTrack">
+          <SimpleFormIterator inline>
+            <NumberInput source="mediaIndex" />
+            <NumberInput source="sectionIndex" />
+            <TextInput source="transition.type" />
+            <NumberInput source="transition.duration" />
+          </SimpleFormIterator>
+        </ArrayInput>
 
-      <ReferenceInput source="stream_id" reference="streams">
-        <SelectInput
-          optionText={(record) =>
-            `${new Date(record.stream_date).toDateString()} (${record.title})`
-          }
-        />
-      </ReferenceInput>
+        <ArrayInput source="cut_list.overlayTracks">
+          <SimpleFormIterator inline>
+            <NumberInput source="startFrame" />
+            <NumberInput source="mediaIndex" />
+            <NumberInput source="sectionIndex" />
+            <NumberInput source="x" />
+            <NumberInput source="y" />
+            <TextInput source="type" />
+          </SimpleFormIterator>
+        </ArrayInput>
 
-      <BooleanInput source="notify_subscribers" />
-      <YouTubeCategoryInput source="category" />
-      <ArrayInput source="tags">
-        <SimpleFormIterator>
-          <TextInput source="" />
-        </SimpleFormIterator>
-      </ArrayInput>
-    </SimpleForm>
+        <ArrayInput source="tracks" label="Legacy tracks list">
+          <SimpleFormIterator inline>
+            <TimeDurationInput source="start" format="iso8601" />
+            <TimeDurationInput source="end" format="iso8601" />
+          </SimpleFormIterator>
+        </ArrayInput>
+
+        <TextInput source="youtube_video_id" />
+        <TextInput source="render_uri" />
+
+        <BooleanInput source="is_published" />
+      </TabbedForm.Tab>
+
+      <TabbedForm.Tab label="YouTube">
+        <TextInput source="youtube_video_id" />
+        <BooleanInput source="notify_subscribers" />
+        <YouTubeCategoryInput source="category" />
+        <ArrayInput source="tags">
+          <SimpleFormIterator>
+            <TextInput source="" />
+          </SimpleFormIterator>
+        </ArrayInput>
+      </TabbedForm.Tab>
+    </TabbedForm>
   </Edit>
 );
 
