@@ -44,6 +44,7 @@ const EpisodeEdit = () => (
       <NumberInput source="order_index" />
 
       <TextInput source="youtube_video_id" />
+      <TextInput source="render_uri" />
 
       <BooleanInput source="is_published" />
 
