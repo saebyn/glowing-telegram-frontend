@@ -1,5 +1,4 @@
 import EditorButton from '@/components/atoms/EditorButton';
-import TimelineButton from '@/components/atoms/TimelineButton';
 import Badge from '@mui/material/Badge';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
@@ -9,11 +8,9 @@ import {
   Datagrid,
   DateField,
   DateInput,
-  EditButton,
   List,
   type ListProps,
   NullableBooleanInput,
-  NumberField,
   ReferenceField,
   ReferenceInput,
   SearchInput,
@@ -25,21 +22,6 @@ import {
 const streamsFilter = [
   <SearchInput source="title" alwaysOn key="title" />,
 
-  <NullableBooleanInput
-    source="has_transcription"
-    label="Transcription"
-    key="has_transcription"
-  />,
-  <NullableBooleanInput
-    source="has_silence_detection"
-    label="Silence Detection"
-    key="has_silence_detection"
-  />,
-  <NullableBooleanInput
-    source="has_video_clips"
-    label="Video Clips"
-    key="has_video_clips"
-  />,
   <NullableBooleanInput
     source="has_episodes"
     label="Episodes"
@@ -133,19 +115,14 @@ const CalendarView = () => {
 
 const StreamList = (props: ListProps) => (
   <List {...props} filters={streamsFilter} aside={<CalendarView />}>
-    <Datagrid rowClick={false}>
+    <Datagrid rowClick="edit">
       <DateField source="stream_date" />
       <TextField source="title" />
       <ReferenceField source="series_id" reference="series">
         <TextField source="title" />
       </ReferenceField>
-      <NumberField source="video_clip_count" />
-      <BooleanField source="has_transcription" />
-      <BooleanField source="has_silence_detection" />
       <BooleanField source="has_episodes" />
 
-      <TimelineButton />
-      <EditButton />
       <EditorButton />
     </Datagrid>
   </List>

@@ -5,6 +5,7 @@ import {
   PrevNextButtons,
   ReferenceInput,
   SelectInput,
+  ShowButton,
   SimpleForm,
   TextInput,
   TopToolbar,
@@ -13,7 +14,6 @@ import {
 import DescriptionInput from '@/components/atoms/DescriptionInput';
 import IngestStreamVideosButton from '@/components/atoms/IngestStreamVideosButton';
 import { TimeDurationInput } from '@/components/atoms/TimeDurationInput';
-import TimelineButton from '@/components/atoms/TimelineButton';
 import TitleInput from '@/components/atoms/TitleInput';
 import Edit, { type EditProps } from '@/components/templates/Edit';
 
@@ -21,8 +21,8 @@ const StreamEditActions = () => (
   <TopToolbar>
     <PrevNextButtons />
     <IngestStreamVideosButton />
-    <TimelineButton />
     <ListButton />
+    <ShowButton />
   </TopToolbar>
 );
 

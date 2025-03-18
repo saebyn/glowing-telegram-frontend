@@ -40,6 +40,16 @@ const episodeFilters = [
   <ReferenceInput source="series_id" reference="series" key="series_id" />,
   <ReferenceInput source="stream_id" reference="streams" key="stream_id" />,
   <NullableBooleanInput source="is_published" key="is_published" />,
+  <NullableBooleanInput
+    source="youtube_video_id__exists"
+    key="youtube_video_id"
+    label="Is uploaded"
+  />,
+  <NullableBooleanInput
+    source="render_uri__exists"
+    key="render_uri"
+    label="Is rendered"
+  />,
 ];
 
 const EpisodeList = (props: ListProps) => (
