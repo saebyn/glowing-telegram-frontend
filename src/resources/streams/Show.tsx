@@ -1,37 +1,15 @@
+import EpisodesListButton from '@/components/atoms/EpisodesListButton';
 import ThumbnailField from '@/components/atoms/ThumbnailField';
 import {
-  Button,
   Datagrid,
   DateField,
-  Link,
   NumberField,
   ReferenceManyField,
   Show,
   type ShowProps,
   SimpleShowLayout,
   TextField,
-  useRecordContext,
-  useTranslate,
 } from 'react-admin';
-
-const EpisodesButton = () => {
-  const translate = useTranslate();
-  const record = useRecordContext();
-  const filter = { stream_id: record?.id };
-
-  return (
-    <Button
-      component={Link}
-      to={{
-        pathname: '/episodes',
-        search: `filter=${JSON.stringify(filter)}`,
-      }}
-      label={translate('gt.streams.episodes_button', {
-        _: 'View Episodes',
-      })}
-    />
-  );
-};
 
 const StreamShow = (props: ShowProps) => (
   <Show {...props}>
@@ -51,7 +29,7 @@ const StreamShow = (props: ShowProps) => (
         </Datagrid>
       </ReferenceManyField>
 
-      <EpisodesButton />
+      <EpisodesListButton />
 
       <DateField source="created_at" />
       <TextField source="updated_at" />
