@@ -15,7 +15,7 @@ import {
   TextField,
   TopToolbar,
 } from 'react-admin';
-import RenderEpisodesButton from './RenderEpisodesButton';
+import RenderEpisodesButton from '../../components/atoms/RenderEpisodesButton';
 import UploadEpisodeToYoutubeButton from './UploadEpisodeToYoutubeButton';
 
 const ListActions = (props: ListActionsProps) => (
