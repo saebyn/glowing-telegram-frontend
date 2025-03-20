@@ -1,7 +1,12 @@
 import convertEpisodeToCutList from '@/utilities/convertEpisodeToCutList';
 import { convertSecondsToISODuration } from '@/utilities/isoDuration';
-import type { Episode, Stream } from '@saebyn/glowing-telegram-types/src/types';
-import type { VideoClip } from '@saebyn/glowing-telegram-video-editor';
+import type {
+  Episode,
+  VideoClip as OutputVideoClip,
+  Series,
+  Stream,
+} from '@saebyn/glowing-telegram-types/src/types';
+import type { VideoClip as InputVideoClip } from '@saebyn/glowing-telegram-video-editor';
 import { useMutation } from '@tanstack/react-query';
 import {
   useDataProvider,
@@ -17,8 +22,9 @@ export default function useBulkEpisodeCreate(stream: Stream | undefined) {
   const {
     referenceRecord: series,
     isLoading: isLoadingSeries,
+    isPending: isPendingSeries,
     error: errorSeries,
-  } = useReference({
+  } = useReference<Series>({
     reference: 'series',
     id: stream?.series_id || '', // empty string if no series_id, enabled will be false anyway
     options: { enabled: !!stream?.series_id },
@@ -28,7 +34,7 @@ export default function useBulkEpisodeCreate(stream: Stream | undefined) {
     data: streamMedia,
     isLoading: isStreamMediaLoading,
     error: streamMediaError,
-  } = useGetManyReference(
+  } = useGetManyReference<Required<OutputVideoClip>>(
     'video_clips',
     {
       target: 'stream_id',
@@ -39,11 +45,11 @@ export default function useBulkEpisodeCreate(stream: Stream | undefined) {
     },
   );
 
-  const { mutate, isPending, error } = useMutation<
-    void,
-    Error,
-    Partial<Episode>[]
-  >({
+  const {
+    mutate,
+    isPending,
+    error: mutationError,
+  } = useMutation<void, Error, Partial<Episode>[]>({
     mutationKey: ['bulkCreateEpisodes', stream?.id],
     mutationFn: async (episodes) => {
       if (isLoadingSeries) {
@@ -73,51 +79,17 @@ export default function useBulkEpisodeCreate(stream: Stream | undefined) {
     },
   });
 
-  const bulkCreateEpisodes = (clips: VideoClip[]) => {
-    if (
-      isLoadingSeries ||
-      !stream ||
-      !series ||
-      clips.length === 0 ||
-      isPending
-    ) {
+  const bulkCreateEpisodes = (clips: InputVideoClip[]) => {
+    if (isPending || isPendingSeries || !stream || !series || !streamMedia) {
       return;
     }
 
-    if (!stream || !series || !streamMedia) {
-      return;
-    }
-
-    const processedMediaSegments = streamMedia.slice();
-
-    processedMediaSegments.sort(
-      (a, b) => (a.start_time ?? 0) - (b.start_time ?? 0),
+    const episodes: Partial<Episode>[] = createEpisodesFromClips(
+      streamMedia,
+      series,
+      clips,
+      stream,
     );
-
-    const baseEpIndex = (series?.max_episode_order_index || 0) + 1;
-
-    const episodes: Partial<Episode>[] = clips
-      .map((clip, index) => ({
-        stream_id: stream.id,
-        series_id: stream.series_id,
-        order_index: baseEpIndex + index,
-        title: `${stream.title} - Episode ${baseEpIndex + index}`,
-        description: stream.description || '',
-        notify_subscribers: series.notify_subscribers,
-        category: series.category,
-        tags: series.tags,
-        is_published: false,
-        tracks: [
-          {
-            start: convertSecondsToISODuration(clip.start / 1000),
-            end: convertSecondsToISODuration(clip.end / 1000),
-          },
-        ],
-      }))
-      .map((episode) => ({
-        ...episode,
-        cut_list: convertEpisodeToCutList(episode, processedMediaSegments, 60),
-      }));
 
     mutate(episodes, {
       onSuccess: () => {
@@ -133,10 +105,123 @@ export default function useBulkEpisodeCreate(stream: Stream | undefined) {
     });
   };
 
+  const validationError = validateState(stream, series, streamMedia);
+
   return {
     action: bulkCreateEpisodes,
     isLoading: isLoadingSeries || isStreamMediaLoading,
     isPending,
-    error: errorSeries || streamMediaError || error,
+    errors: [
+      errorSeries,
+      streamMediaError,
+      mutationError,
+      validationError,
+    ].filter(Boolean),
   };
+}
+
+function validateState(
+  stream: Stream | undefined,
+  series: Series | undefined,
+  streamMedia: OutputVideoClip[] | undefined,
+): Error | undefined {
+  if (!stream) {
+    return new Error('Stream is required');
+  }
+  if (!series) {
+    return new Error('Series is required');
+  }
+  if (!streamMedia || streamMedia.length === 0) {
+    return new Error('Stream media is required');
+  }
+  if (!validateSeries(series)) {
+    return new Error(
+      'Series missing required fields: max_episode_order_index, notify_subscribers, category, tags',
+    );
+  }
+  if (!validateStream(stream)) {
+    return new Error(
+      'Stream missing required fields: id, series_id, title, description',
+    );
+  }
+  return undefined;
+}
+
+function validateSeries(series: Series | undefined): boolean {
+  if (!series) {
+    return false;
+  }
+  if (series.max_episode_order_index === undefined) {
+    return false;
+  }
+  if (series.notify_subscribers === undefined) {
+    return false;
+  }
+  if (series.category === undefined) {
+    return false;
+  }
+  if (series.tags === undefined) {
+    return false;
+  }
+  return true;
+}
+
+function validateStream(stream: Stream | undefined): boolean {
+  if (!stream) {
+    return false;
+  }
+  if (stream.id === undefined) {
+    return false;
+  }
+  if (stream.series_id === undefined) {
+    return false;
+  }
+  if (stream.title === undefined) {
+    return false;
+  }
+  if (stream.description === undefined) {
+    return false;
+  }
+  return true;
+}
+
+function createEpisodesFromClips(
+  streamMedia: OutputVideoClip[],
+  series: Series,
+  clips: InputVideoClip[],
+  stream: Stream,
+): Partial<Episode>[] {
+  const processedMediaSegments = streamMedia.slice();
+
+  processedMediaSegments.sort(
+    (a, b) => (a.start_time ?? 0) - (b.start_time ?? 0),
+  );
+
+  const baseEpIndex = (series.max_episode_order_index || 0) + 1;
+
+  const episodes: Partial<Episode>[] = clips
+    .map((clip, index) => {
+      return {
+        stream_id: stream.id,
+        series_id: stream.series_id,
+        order_index: baseEpIndex + index,
+        title: `${stream.title} - Episode ${baseEpIndex + index}`,
+        description: stream.description || '',
+        notify_subscribers: series.notify_subscribers,
+        category: series.category,
+        tags: series.tags,
+        is_published: false,
+        tracks: [
+          {
+            start: convertSecondsToISODuration(clip.start / 1000),
+            end: convertSecondsToISODuration(clip.end / 1000),
+          },
+        ],
+      };
+    })
+    .map((episode) => ({
+      ...episode,
+      cut_list: convertEpisodeToCutList(episode, processedMediaSegments, 60),
+    }));
+  return episodes;
 }
