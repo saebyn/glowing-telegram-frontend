@@ -12,6 +12,8 @@ import {
 } from 'react-admin';
 
 import DescriptionInput from '@/components/atoms/DescriptionInput';
+import EditorButton from '@/components/atoms/EditorButton';
+import EpisodesListButton from '@/components/atoms/EpisodesListButton';
 import IngestStreamVideosButton from '@/components/atoms/IngestStreamVideosButton';
 import { TimeDurationInput } from '@/components/atoms/TimeDurationInput';
 import TitleInput from '@/components/atoms/TitleInput';
@@ -22,6 +24,9 @@ const StreamEditActions = () => (
     <PrevNextButtons />
     <IngestStreamVideosButton />
     <ListButton />
+    <EditorButton />
+    <ListButton />
+    <EpisodesListButton />
     <ShowButton />
   </TopToolbar>
 );
@@ -58,7 +63,9 @@ const StreamEdit = (props: EditProps) => (
         source="prefix"
         required
         helperText="The prefix is used to identify related video clips for this stream. It's typically in the format YYYY-MM-DD."
-        inputProps={{ pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}' }}
+        slotProps={{
+          htmlInput: { pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}' },
+        }}
       />
 
       <BooleanInput source="has_episodes" />
