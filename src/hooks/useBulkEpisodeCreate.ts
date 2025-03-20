@@ -116,7 +116,7 @@ export default function useBulkEpisodeCreate(stream: Stream | undefined) {
       streamMediaError,
       mutationError,
       validationError,
-    ].filter(Boolean),
+    ].filter((error) => !!error),
   };
 }
 

@@ -31,7 +31,7 @@ function VideoEditor() {
 
   const {
     action: handleBulkCreateEpisodes,
-    error: bulkCreateEpisodesError,
+    errors: bulkCreateEpisodesErrors,
     isLoading: isBulkCreateEpisodesLoading,
   } = useBulkEpisodeCreate(stream);
 
@@ -62,8 +62,10 @@ function VideoEditor() {
     return <p>Error: {relatedVideoClipsError.message}</p>;
   }
 
-  if (bulkCreateEpisodesError) {
-    return <p>Error: {bulkCreateEpisodesError.message}</p>;
+  if (bulkCreateEpisodesErrors.length > 0) {
+    return (
+      <p>Error: {bulkCreateEpisodesErrors.map((e) => e.message).join(', ')}</p>
+    );
   }
 
   if (
