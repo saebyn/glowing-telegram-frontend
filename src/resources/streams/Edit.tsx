@@ -23,7 +23,6 @@ const StreamEditActions = () => (
   <TopToolbar>
     <PrevNextButtons />
     <IngestStreamVideosButton />
-    <ListButton />
     <EditorButton />
     <ListButton />
     <EpisodesListButton />
