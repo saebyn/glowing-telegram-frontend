@@ -212,6 +212,7 @@ function createEpisodesFromClips(
         episode_order_index: (baseEpIndex + index).toString(),
         stream_title: stream.title || '',
         stream_description: stream.description || '',
+        stream_count: (series.stream_count || 1).toString(),
       };
 
       const title = applyTemplate(titleTemplate, templateVars);
