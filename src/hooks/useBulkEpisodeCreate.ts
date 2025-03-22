@@ -199,14 +199,30 @@ function createEpisodesFromClips(
 
   const baseEpIndex = (series.max_episode_order_index || 0) + 1;
 
+  const titleTemplate =
+    series.episode_title_template ||
+    '${title} - Episode ${episode_order_index}';
+  const descriptionTemplate =
+    series.episode_description_template || '${stream_description}';
+
   const episodes: Partial<Episode>[] = clips
     .map((clip, index) => {
+      const templateVars = {
+        title: stream.title || '',
+        episode_order_index: (baseEpIndex + index).toString(),
+        stream_title: stream.title || '',
+        stream_description: stream.description || '',
+      };
+
+      const title = applyTemplate(titleTemplate, templateVars);
+      const description = applyTemplate(descriptionTemplate, templateVars);
+
       return {
         stream_id: stream.id,
         series_id: stream.series_id,
         order_index: baseEpIndex + index,
-        title: `${stream.title} - Episode ${baseEpIndex + index}`,
-        description: stream.description || '',
+        title,
+        description,
         notify_subscribers: series.notify_subscribers,
         category: series.category,
         tags: series.tags,
@@ -224,4 +240,10 @@ function createEpisodesFromClips(
       cut_list: convertEpisodeToCutList(episode, processedMediaSegments, 60),
     }));
   return episodes;
+}
+
+function applyTemplate(template: string, data: Record<string, string>): string {
+  return template.replace(/\$\{(\w+)\}/g, (_, key) => {
+    return data[key] !== undefined ? data[key] : '';
+  });
 }
