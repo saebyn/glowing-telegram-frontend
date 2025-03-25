@@ -49,7 +49,7 @@
 		"react-dom": "^19",
 		"storybook": "8",
 		"typescript": "^5",
-		"vite": "^6.2.2",
+		"vite": "^6.2.3",
 		"vitest": "^3.0.9",
 		"@mui/icons-material": "^6.4.7",
 		"@mui/material": "^6.0.0"
