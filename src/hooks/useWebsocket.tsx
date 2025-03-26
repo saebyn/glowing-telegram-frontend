@@ -2,7 +2,10 @@
  * websocket hook and context provider
  */
 
-import type { Task, Status as TaskStatus } from '@saebyn/glowing-telegram-types';
+import type {
+  Task,
+  Status as TaskStatus,
+} from '@saebyn/glowing-telegram-types';
 import type { FC, ReactNode } from 'react';
 import { createContext, useContext, useEffect, useRef } from 'react';
 

@@ -1,3 +1,4 @@
+import TaskView from '@/components/atoms/TaskView';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import List from '@mui/material/List';
@@ -10,7 +11,6 @@ import type { DateTime } from 'luxon';
 import { useRef } from 'react';
 import { LoadingIndicator } from 'react-admin';
 import Notifications from './Notifications';
-import TaskView from '@/components/atoms/TaskView';
 
 const containerStyles = {
   minWidth: 250,
