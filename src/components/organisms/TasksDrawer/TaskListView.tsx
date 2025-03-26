@@ -10,7 +10,7 @@ import type { DateTime } from 'luxon';
 import { useRef } from 'react';
 import { LoadingIndicator } from 'react-admin';
 import Notifications from './Notifications';
-import TaskView from './TaskView';
+import TaskView from '@/components/atoms/TaskView';
 
 const containerStyles = {
   minWidth: 250,

@@ -90,9 +90,23 @@ const TaskView: FC<TaskProps> = ({
         </Badge>
       </ListItemAvatar>
       <ListItemText
-        primary={task.id}
+        primary={
+          <Typography
+            component="span"
+            variant="body1"
+            sx={{ display: 'block' }}
+            color="text.primary"
+          >
+            {task.record_id} - {task.task_type}
+          </Typography>
+        }
         secondary={
-          <Typography variant="body2" color="text.primary">
+          <Typography
+            component="span"
+            variant="body2"
+            sx={{ display: 'block' }}
+            color="text.secondary"
+          >
             {formattedTimestamp}
           </Typography>
         }
