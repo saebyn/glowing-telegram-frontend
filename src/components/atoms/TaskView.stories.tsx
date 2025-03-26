@@ -6,7 +6,6 @@ export default {
   title: 'Atoms/TaskView',
   component: TaskView,
   tags: ['atoms'],
-
 };
 
 export const Default = {
@@ -17,7 +16,7 @@ export const Default = {
       status: 'RUNNING',
       created_at: '2021-09-01T12:00:00Z',
       updated_at: '2021-09-01T12:00:00Z',
-      task_type: "rendering",
+      task_type: 'rendering',
     } as Task,
     lastViewedTaskTimestamp: new Date('2021-09-01T12:00:00Z'),
     markViewed: action('markViewed'),
