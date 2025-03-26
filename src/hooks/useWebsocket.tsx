@@ -2,7 +2,7 @@
  * websocket hook and context provider
  */
 
-import type { TaskStatus } from '@/types';
+import type { Task, Status as TaskStatus } from '@saebyn/glowing-telegram-types';
 import type { FC, ReactNode } from 'react';
 import { createContext, useContext, useEffect, useRef } from 'react';
 
@@ -19,7 +19,7 @@ const WebsocketContext = createContext<
 export const useWebsocket = () => useContext(WebsocketContext);
 
 export interface TaskStatusWebsocketMessage {
-  task: unknown;
+  task: Task;
   previous_status: TaskStatus;
   new_status: TaskStatus;
   event: 'task_status_change';
