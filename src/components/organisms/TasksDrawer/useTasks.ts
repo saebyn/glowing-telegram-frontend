@@ -1,4 +1,5 @@
-import type { TaskSummary } from '@/types';
+import type { Task } from '@saebyn/glowing-telegram-types';
+import { DateTime } from 'luxon';
 import { useGetList, useStore } from 'react-admin';
 
 const useTasks = () => {
@@ -9,13 +10,13 @@ const useTasks = () => {
     '',
   );
 
-  const lastViewedTaskTimestamp = new Date(rawLastViewedTaskTimestamp);
+  const lastViewedTaskTimestamp = DateTime.fromISO(rawLastViewedTaskTimestamp);
 
-  const setLastViewedTaskTimestamp = (timestamp: Date) => {
-    setRawLastViewedTaskTimestamp(timestamp.toISOString());
+  const setLastViewedTaskTimestamp = (timestamp: DateTime) => {
+    setRawLastViewedTaskTimestamp(timestamp.toISO() || '');
   };
 
-  const { data: tasks, refetch, isLoading } = useGetList<TaskSummary>('tasks');
+  const { data: tasks, refetch, isLoading } = useGetList<Task>('tasks');
 
   const handleToggleHideViewed = () => {
     setHideViewed((hideViewed) => !hideViewed);
@@ -23,7 +24,7 @@ const useTasks = () => {
 
   const handleMarkAllViewed = () => {
     if (tasks && tasks.length > 0) {
-      setLastViewedTaskTimestamp(new Date(tasks[0].updated_at));
+      setLastViewedTaskTimestamp(ts(tasks[0]));
     }
   };
 
@@ -31,39 +32,27 @@ const useTasks = () => {
     if (tasks) {
       const task = tasks.find((t) => t.id === taskId);
       if (task) {
-        setLastViewedTaskTimestamp(new Date(task.updated_at));
+        setLastViewedTaskTimestamp(ts(task));
       }
     }
   };
 
   const allViewed = tasks
-    ? tasks.every(
-        (task) => new Date(task.updated_at) <= lastViewedTaskTimestamp,
-      )
+    ? tasks.every((task) => ts(task) <= lastViewedTaskTimestamp)
     : false;
 
   const filteredTasks = (tasks || [])
-    .filter((task: TaskSummary) =>
-      hideViewed ? new Date(task.updated_at) > lastViewedTaskTimestamp : true,
+    .filter((task: Task) =>
+      hideViewed ? ts(task) > lastViewedTaskTimestamp : true,
     )
     /**
      * Sort tasks by updated_at timestamp in descending order.
      * If updated_at is undefined, sort by id in descend
      */
-    .sort((a: TaskSummary, b: TaskSummary) => {
-      if (a.updated_at === undefined || b.updated_at === undefined) {
-        return b.id.localeCompare(a.id);
-      }
-
-      if (a.updated_at < b.updated_at) {
-        return 1;
-      }
-
-      if (a.updated_at > b.updated_at) {
-        return -1;
-      }
-
-      return 0;
+    .sort((a: Task, b: Task) => {
+      const aTimestamp = ts(a);
+      const bTimestamp = ts(b);
+      return bTimestamp > aTimestamp ? 1 : bTimestamp < aTimestamp ? -1 : 0;
     });
 
   return {
@@ -81,3 +70,7 @@ const useTasks = () => {
 };
 
 export default useTasks;
+
+function ts(task: Task): DateTime {
+  return DateTime.fromISO(task.updated_at ? task.updated_at : task.created_at);
+}
