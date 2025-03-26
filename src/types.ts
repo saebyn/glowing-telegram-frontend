@@ -16,14 +16,6 @@ export interface YoutubeUploadTaskPayload {
   task_title: string;
 }
 
-export interface TaskSummary {
-  id: string;
-  created_at: string;
-  updated_at: string;
-  status: TaskStatus;
-  time: string;
-}
-
 export interface ChatMessage {
   content: string;
   role: 'system' | 'user' | 'assistant' | 'function';
@@ -34,13 +26,6 @@ export interface DataStreamDataElement {
   end: number;
   density?: number;
 }
-
-export type TaskStatus =
-  | 'RUNNING'
-  | 'SUCCEEDED'
-  | 'FAILED'
-  | 'TIMED_OUT'
-  | 'ABORTED';
 
 interface Metadata {
   filename: string;
