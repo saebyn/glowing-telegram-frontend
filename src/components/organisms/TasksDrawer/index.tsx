@@ -1,8 +1,8 @@
-import { useWebsocket } from "@/hooks/useWebsocket";
-import Menu from "@mui/material/Menu";
-import { useEffect, useState } from "react";
-import TasksDrawerButton from "./Button";
-import TasksDrawerList from "./List";
+import { useWebsocket } from '@/hooks/useWebsocket';
+import Menu from '@mui/material/Menu';
+import { useEffect, useState } from 'react';
+import TasksDrawerButton from './Button';
+import TasksDrawerList from './List';
 
 const TasksDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -15,8 +15,8 @@ const TasksDrawer = () => {
     if (!websocket) return;
 
     const handle = websocket.subscribe((message) => {
-      if (window.Notification && Notification.permission === "granted") {
-        if (message.event === "task_status_change") {
+      if (window.Notification && Notification.permission === 'granted') {
+        if (message.event === 'task_status_change') {
           new Notification(
             `The ${message.task.task_type} task for ${message.task.record_id} is now ${message.new_status}`,
           );
@@ -36,7 +36,7 @@ const TasksDrawer = () => {
         open={open}
         onClose={handleClose}
         anchorEl={document.body}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <TasksDrawerList />
       </Menu>
