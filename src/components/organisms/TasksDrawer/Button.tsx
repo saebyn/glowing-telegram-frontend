@@ -12,13 +12,13 @@ interface TasksStatus {
   count: number;
 }
 
-type Action = TaskStatusWebsocketMessage | { event: 'reset' };
+type Action = TaskStatusWebsocketMessage | { type: 'reset' };
 
 const TasksDrawerButton = ({ onClick }: Props) => {
   const [tasksStatus, dispatch] = useReducer<TasksStatus, [Action]>(
     (state, action) => {
-      switch (action.event) {
-        case 'task_status_change':
+      switch (action.type) {
+        case 'TASK_UPDATE':
           return {
             count: state.count + 1,
           };
@@ -52,7 +52,7 @@ const TasksDrawerButton = ({ onClick }: Props) => {
   }, [websocket]);
 
   const handleClick = useCallback(() => {
-    dispatch({ event: 'reset' });
+    dispatch({ type: 'reset' });
     onClick();
   }, [onClick]);
 
