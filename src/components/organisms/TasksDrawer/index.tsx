@@ -16,9 +16,9 @@ const TasksDrawer = () => {
 
     const handle = websocket.subscribe((message) => {
       if (window.Notification && Notification.permission === 'granted') {
-        if (message.event === 'task_status_change') {
+        if (message.type === 'TASK_UPDATE') {
           new Notification(
-            `The ${message.task.task_type} task for ${message.task.record_id} is now ${message.new_status}`,
+            `The ${message.task.task_type} task for ${message.task.record_id} is now ${message.task.status} (was ${message.old_status})`,
           );
         }
       }

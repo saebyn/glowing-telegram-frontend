@@ -48,6 +48,7 @@ const authProvider: AuthProvider = {
       avatar: gravatar(user.profile.email, user.profile.name),
       email: user.profile.email,
       accessToken: user.access_token,
+      idToken: user.id_token,
     };
   },
   async handleCallback() {

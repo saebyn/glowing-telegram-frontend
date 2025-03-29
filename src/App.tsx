@@ -15,7 +15,6 @@ import ProfilePage from '@/components/pages/ProfilePage';
 import StreamManagerPage from '@/components/pages/StreamManagerPage';
 import StreamWidget from '@/components/pages/StreamWidget';
 import { TimerManagerProvider } from '@/hooks/useTimers';
-import { WebsocketProvider } from '@/hooks/useWebsocket';
 import Layout from '@/ra/Layout';
 import authProvider from '@/ra/authProvider';
 import dataProvider from '@/ra/dataProvider';
@@ -26,7 +25,6 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { QueryClient } from '@tanstack/react-query';
 
 const {
-  VITE_WEBSOCKET_URL: WEBSOCKET_URL,
   VITE_QUERY_STALE_TIME: QUERY_STALE_TIME = 30 * 1000, // 30 seconds
 } = import.meta.env;
 
@@ -157,9 +155,7 @@ function App() {
 function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
-      <WebsocketProvider url={WEBSOCKET_URL}>
-        <TimerManagerProvider>{children}</TimerManagerProvider>
-      </WebsocketProvider>
+      <TimerManagerProvider>{children}</TimerManagerProvider>
     </LocalizationProvider>
   );
 }
