@@ -1,7 +1,6 @@
 /**
  * websocket hook and context provider
  */
-
 import type {
   Task,
   Status as TaskStatus,
@@ -22,15 +21,14 @@ const WebsocketContext = createContext<
 export const useWebsocket = () => useContext(WebsocketContext);
 
 export interface TaskStatusWebsocketMessage {
+  type: 'TASK_UPDATE';
   task: Task;
-  previous_status: TaskStatus;
-  new_status: TaskStatus;
-  event: 'task_status_change';
+  old_status: TaskStatus;
 }
 
 export const WebsocketProvider: FC<{
   children: ReactNode;
-  url: string;
+  url: string | null;
 }> = ({ url, children }) => {
   // use useRef to keep the websocket instance between renders
   const websocket = useRef<WebSocket | undefined>(undefined);
