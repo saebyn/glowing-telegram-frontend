@@ -52,7 +52,7 @@ jobs:
           VITE_CONTENT_URL: ${{ vars.CONTENT_URL }}
 
       - name: Configure AWS
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
