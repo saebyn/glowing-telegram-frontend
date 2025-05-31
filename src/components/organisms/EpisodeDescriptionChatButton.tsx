@@ -73,11 +73,15 @@ const EpisodeDescriptionChatButton = () => {
     I need help summarizing the video transcript into a title and description 
     for the video. I would prefer the text to be written in the first person. I 
     would like the title to be a maximum of 100 characters and the description 
-    to be a maximum of 5000 characters. I would like the description to be 
+    to be a maximum of 5000 characters. Ensure the title is concise and focused,
+    like "Step Functions & Docker for YouTube Uploads - Episode 197". Make the
+    title's topic clear and searchable, representing the central technical theme
+    succinctly while indicating the video in the context of the overall video
+    series.
+    I would like the description to be 
     broken up into paragraphs and formatted for readability. The base 
     description is provided below, and the text and links from it should be 
-    added to the end of the final description. The title should be a concise 
-    summary of the video content. The description should be a detailed summary 
+    added to the end of the final description. The description should be a detailed summary 
     of the video content. The description should include the main points of the 
     video and any relevant links or resources mentioned in the video. The 
     description should be written in the first person, in a conversational 
