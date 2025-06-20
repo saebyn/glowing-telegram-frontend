@@ -19,6 +19,7 @@ import Layout from '@/ra/Layout';
 import authProvider from '@/ra/authProvider';
 import dataProvider from '@/ra/dataProvider';
 import i18nProvider from '@/ra/i18nProvider';
+import store from '@/ra/store';
 import { darkTheme, lightTheme } from '@/ra/theme';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
@@ -48,6 +49,7 @@ function App() {
             queryClient={queryClient}
             i18nProvider={i18nProvider}
             authProvider={authProvider}
+            store={store}
             layout={Layout}
             theme={lightTheme}
             darkTheme={darkTheme}
