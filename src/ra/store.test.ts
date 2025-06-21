@@ -14,11 +14,11 @@ describe('store', () => {
   it('should handle basic get/set operations', () => {
     const key = 'test-key';
     const value = { filter: { q: 'test' } };
-    
+
     // Test basic functionality without mocking internal implementation
     store.setItem(key, value);
     const result = store.getItem(key, null);
-    
+
     // The store should handle persistence internally
     expect(result).toEqual(value);
   });
