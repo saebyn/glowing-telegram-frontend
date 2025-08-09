@@ -63,7 +63,18 @@ jobs:
       - name: Create version info
         run: |
           mkdir -p config
-          echo '{"currentVersion":"${{ inputs.release }}"}' > config/version.json
+          cat > config/version.json << EOF
+          {
+            "version": "${{ inputs.release }}",
+            "description": "Current frontend version configuration",
+            "lastUpdated": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "rollbackVersion": "",
+            "metadata": {
+              "deployedBy": "github-actions",
+              "environment": "${{ inputs.environment }}"
+            }
+          }
+          EOF
 
       - name: Upload version info to S3
         run: aws s3 cp config/version.json s3://${{ vars.BUCKET_NAME }}/config/version.json

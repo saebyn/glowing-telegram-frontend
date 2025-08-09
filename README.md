@@ -43,7 +43,19 @@ The deployment workflow supports dynamic version switching through a version inf
 #### How it works
 1. The `publish.yml` GitHub Actions workflow deploys each release to a versioned folder in S3: `s3://bucket/v1.2.3/`
 2. After successful deployment, a `config/version.json` file is created and uploaded to `s3://bucket/config/version.json`
-3. The version file contains the currently active version: `{"currentVersion":"v1.2.3"}`
+3. The version file contains the current version configuration:
+```json
+{
+  "version": "0.4.0",
+  "description": "Current frontend version configuration",
+  "lastUpdated": "2024-01-01T00:00:00Z",
+  "rollbackVersion": "0.3.0",
+  "metadata": {
+    "deployedBy": "github-actions",
+    "environment": "production"
+  }
+}
+```
 
 #### Deploying a new version
 1. Go to the "Actions" tab in GitHub
@@ -55,7 +67,7 @@ The deployment workflow supports dynamic version switching through a version inf
 #### Rolling back to a previous version
 To rollback without redeploying:
 1. Manually update the `config/version.json` file in S3 to point to the desired version
-2. Example: Change `{"currentVersion":"v1.2.3"}` to `{"currentVersion":"v1.2.2"}`
+2. Example: Change `"version": "0.4.0"` to `"version": "0.3.0"` and update the `"rollbackVersion"` field
 3. CloudFront will serve the previous version immediately
 
 #### Benefits
