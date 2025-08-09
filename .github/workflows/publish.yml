@@ -68,7 +68,7 @@ jobs:
             "version": "${{ inputs.release }}",
             "description": "Current frontend version configuration",
             "lastUpdated": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "rollbackVersion": "",
+            "rollbackVersion": "0.4.1",
             "metadata": {
               "deployedBy": "github-actions",
               "environment": "${{ inputs.environment }}"
