@@ -3,6 +3,19 @@ import type { AuthProvider } from 'react-admin';
 import { signoutRedirect, userManager } from '@/utilities/auth';
 import gravatar from '@/utilities/gravitar';
 
+const { VITE_MOCKS_ENABLED: MOCKS_ENABLED } = import.meta.env;
+
+// Mock user for development when mocks are enabled
+const mockUser = {
+  profile: {
+    sub: 'mock-user-id',
+    name: 'Mock User',
+    email: 'mock@example.com',
+  },
+  access_token: 'mock-access-token',
+  id_token: 'mock-id-token',
+};
+
 const authProvider: AuthProvider = {
   async login() {},
   async logout() {
@@ -28,6 +41,12 @@ const authProvider: AuthProvider = {
   },
   async checkAuth() {
     console.log('checkAuth');
+    
+    // If mocks are enabled, skip real auth
+    if (MOCKS_ENABLED) {
+      return Promise.resolve();
+    }
+    
     const user = await userManager.getUser();
 
     if (!user) {
@@ -36,6 +55,19 @@ const authProvider: AuthProvider = {
   },
   async getIdentity() {
     console.log('getIdentity');
+    
+    // If mocks are enabled, return mock user
+    if (MOCKS_ENABLED) {
+      return {
+        id: mockUser.profile.sub,
+        fullName: mockUser.profile.name,
+        avatar: gravatar(mockUser.profile.email, mockUser.profile.name),
+        email: mockUser.profile.email,
+        accessToken: mockUser.access_token,
+        idToken: mockUser.id_token,
+      };
+    }
+    
     const user = await userManager.getUser();
 
     if (!user) {

@@ -5,12 +5,35 @@ import type {
   YouTubeCallbackRequest,
 } from '@saebyn/glowing-telegram-types/src/types';
 
-const { VITE_API_URL: baseApiUrl } = import.meta.env;
+const { VITE_API_URL: baseApiUrl, VITE_MOCKS_ENABLED: MOCKS_ENABLED } = import.meta.env;
+
+// Mock user for development when mocks are enabled
+const mockUser = {
+  profile: {
+    sub: 'mock-user-id',
+    name: 'Mock User',
+    email: 'mock@example.com',
+  },
+  access_token: 'mock-access-token',
+  id_token: 'mock-id-token',
+};
 
 export async function authenticatedFetch(
   url: string,
   options: RequestInit = {},
 ): Promise<Response> {
+  // If mocks are enabled, return mock user and let MSW handle the request
+  if (MOCKS_ENABLED) {
+    return fetch(url, {
+      ...options,
+      headers: {
+        Authorization: mockUser.id_token,
+        Accept: 'application/json',
+        ...options.headers,
+      },
+    });
+  }
+  
   const user = await userManager.getUser();
 
   if (!user) {

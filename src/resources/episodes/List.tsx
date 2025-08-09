@@ -3,6 +3,7 @@ import {
   BooleanField,
   CreateButton,
   Datagrid,
+  DateField,
   FilterButton,
   List,
   type ListActionsProps,
@@ -58,6 +59,9 @@ const EpisodeList = (props: ListProps) => (
       <TextField source="title" />
       <ReferenceField source="series_id" reference="series">
         <TextField source="title" />
+      </ReferenceField>
+      <ReferenceField source="stream_id" reference="streams" label="Stream Date">
+        <DateField source="stream_date" />
       </ReferenceField>
       <NumberField source="order_index" />
       <BooleanField source="youtube_video_id" looseValue={true} />
