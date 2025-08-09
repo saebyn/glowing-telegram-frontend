@@ -5,7 +5,8 @@ import type {
   YouTubeCallbackRequest,
 } from '@saebyn/glowing-telegram-types/src/types';
 
-const { VITE_API_URL: baseApiUrl, VITE_MOCKS_ENABLED: MOCKS_ENABLED } = import.meta.env;
+const { VITE_API_URL: baseApiUrl, VITE_MOCKS_ENABLED: MOCKS_ENABLED } =
+  import.meta.env;
 
 // Mock user for development when mocks are enabled
 const mockUser = {
@@ -33,7 +34,7 @@ export async function authenticatedFetch(
       },
     });
   }
-  
+
   const user = await userManager.getUser();
 
   if (!user) {
