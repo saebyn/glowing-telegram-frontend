@@ -41,12 +41,12 @@ const authProvider: AuthProvider = {
   },
   async checkAuth() {
     console.log('checkAuth');
-    
+
     // If mocks are enabled, skip real auth
     if (MOCKS_ENABLED) {
       return Promise.resolve();
     }
-    
+
     const user = await userManager.getUser();
 
     if (!user) {
@@ -55,7 +55,7 @@ const authProvider: AuthProvider = {
   },
   async getIdentity() {
     console.log('getIdentity');
-    
+
     // If mocks are enabled, return mock user
     if (MOCKS_ENABLED) {
       return {
@@ -67,7 +67,7 @@ const authProvider: AuthProvider = {
         idToken: mockUser.id_token,
       };
     }
-    
+
     const user = await userManager.getUser();
 
     if (!user) {
