@@ -1,11 +1,13 @@
 import useBulkEpisodeCreate from '@/hooks/useBulkEpisodeCreate';
+import ExportOptionsDialog from '@/components/molecules/ExportOptionsDialog';
 import type { Stream, VideoClip } from '@saebyn/glowing-telegram-types';
 import type {
   Section,
   TranscriptSegment,
   VideoMetadata,
+  VideoClip as InputVideoClip,
 } from '@saebyn/glowing-telegram-video-editor';
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { LoadingIndicator, useGetManyReference } from 'react-admin';
 import { useGetOne } from 'react-admin';
 import { useParams } from 'react-router-dom';
@@ -22,6 +24,8 @@ const VideoSelectionPage = lazy(async () => {
 
 function VideoEditor() {
   const { id } = useParams();
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [selectedClips, setSelectedClips] = useState<InputVideoClip[]>([]);
 
   const {
     data: stream,
@@ -49,6 +53,15 @@ function VideoEditor() {
       enabled: !!id,
     },
   );
+
+  const handleExport = (clips: InputVideoClip[]) => {
+    setSelectedClips(clips);
+    setExportDialogOpen(true);
+  };
+
+  const handleCreateEpisodes = (clips: InputVideoClip[]) => {
+    handleBulkCreateEpisodes(clips);
+  };
 
   if (id == null) {
     return <p>No stream ID provided</p>;
@@ -108,12 +121,24 @@ function VideoEditor() {
   };
 
   return (
-    <Suspense fallback={<LoadingIndicator />}>
-      <VideoSelectionPage
-        content={content}
-        onExport={handleBulkCreateEpisodes}
-      />
-    </Suspense>
+    <>
+      <Suspense fallback={<LoadingIndicator />}>
+        <VideoSelectionPage
+          content={content}
+          onExport={handleExport}
+        />
+      </Suspense>
+      
+      {stream && (
+        <ExportOptionsDialog
+          open={exportDialogOpen}
+          onClose={() => setExportDialogOpen(false)}
+          clips={selectedClips}
+          stream={stream}
+          onCreateEpisodes={handleCreateEpisodes}
+        />
+      )}
+    </>
   );
 }
 
