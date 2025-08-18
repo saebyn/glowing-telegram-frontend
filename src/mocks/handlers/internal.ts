@@ -869,4 +869,77 @@ export const handlers = [
       ],
     });
   }),
+
+  http.get('/api/records/projects', () => {
+    return HttpResponse.json({
+      items: [
+        {
+          id: 1,
+          title: 'TypeScript Frontend Development',
+          description: 'Collection of clips about TypeScript and React development from multiple streams',
+          created_at: DateTime.now().minus({ days: 7 }).toISO(),
+          updated_at: DateTime.now().minus({ days: 2 }).toISO(),
+          cuts: [],
+        },
+        {
+          id: 2,
+          title: 'Backend Architecture Discussion',
+          description: 'Clips covering backend design patterns and architecture decisions',
+          created_at: DateTime.now().minus({ days: 14 }).toISO(),
+          updated_at: DateTime.now().minus({ days: 5 }).toISO(),
+          cuts: [],
+        },
+      ],
+    });
+  }),
+
+  http.get('/api/records/projects/:id', ({ params }) => {
+    const { id } = params;
+    if (id === '1') {
+      return HttpResponse.json({
+        id: 1,
+        title: 'TypeScript Frontend Development',
+        description: 'Collection of clips about TypeScript and React development from multiple streams',
+        created_at: DateTime.now().minus({ days: 7 }).toISO(),
+        updated_at: DateTime.now().minus({ days: 2 }).toISO(),
+        cuts: [],
+      });
+    }
+    if (id === '2') {
+      return HttpResponse.json({
+        id: 2,
+        title: 'Backend Architecture Discussion',
+        description: 'Clips covering backend design patterns and architecture decisions',
+        created_at: DateTime.now().minus({ days: 14 }).toISO(),
+        updated_at: DateTime.now().minus({ days: 5 }).toISO(),
+        cuts: [],
+      });
+    }
+    return new HttpResponse(null, { status: 404 });
+  }),
+
+  http.post('/api/records/projects', async ({ request }) => {
+    const data: any = await request.json();
+    return HttpResponse.json({
+      id: Math.floor(Math.random() * 1000),
+      created_at: DateTime.now().toISO(),
+      updated_at: DateTime.now().toISO(),
+      cuts: [],
+      ...data,
+    });
+  }),
+
+  http.put('/api/records/projects/:id', async ({ params, request }) => {
+    const { id } = params;
+    const data: any = await request.json();
+    return HttpResponse.json({
+      id: Number(id),
+      updated_at: DateTime.now().toISO(),
+      ...data,
+    });
+  }),
+
+  http.delete('/api/records/projects/:id', () => {
+    return new HttpResponse(null, { status: 204 });
+  }),
 ];

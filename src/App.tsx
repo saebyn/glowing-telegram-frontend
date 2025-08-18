@@ -3,6 +3,7 @@ import { Admin, Authenticated, CustomRoutes, Resource } from 'react-admin';
 import { Route, RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import episodes from '@/resources/episodes';
+import projects from '@/resources/projects';
 import streamPlans, { StreamPlansCalendar } from '@/resources/stream_plans';
 import streams, { StreamVideoEditor } from '@/resources/streams';
 import twitch from '@/resources/twitch';
@@ -75,6 +76,7 @@ function App() {
             </Resource>
             <Resource name="streams" {...streams} />
             <Resource name="episodes" {...episodes} />
+            <Resource name="projects" {...projects} />
             <Resource name="video_clips" {...video_clips} />
             <Resource
               name="twitch"
