@@ -951,13 +951,32 @@ export const handlers = [
   http.get('/api/eventsub/chat/status', () => {
     return HttpResponse.json({
       subscribed: false,
+      subscription: null,
     });
   }),
 
-  http.post('/api/eventsub/chat/subscribe', () => {
+  http.post('/api/eventsub/chat/subscribe', async ({ request }) => {
+    const body = await request.json().catch(() => ({}));
+    console.log('EventSub subscribe request:', body);
+
     return HttpResponse.json({
       success: true,
-      message: 'Successfully subscribed to chat events',
+      message: 'Successfully created EventSub subscription',
+      subscription: {
+        id: 'f1c2a387-161a-49f9-a165-0f21d7a4e1c4',
+        status: 'enabled',
+        type: 'channel.chat.message',
+        version: '1',
+        condition: {
+          broadcaster_user_id: '1234',
+          user_id: '1234',
+        },
+        transport: {
+          method: 'webhook',
+          callback: 'https://example.com/webhooks/callback',
+        },
+        created_at: '2023-04-11T10:11:12.123Z',
+      },
     });
   }),
 

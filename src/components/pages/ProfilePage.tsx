@@ -1,4 +1,5 @@
 import {
+  type EventSubSubscription,
   getEventSubChatStatus,
   subscribeToEventSubChat,
   unsubscribeFromEventSubChat,
@@ -39,6 +40,7 @@ const ProfilePage = () => {
   const [profileUpdate, setProfileUpdate] = useState<Partial<Profile>>({});
   const [eventSubChatStatus, setEventSubChatStatus] = useState<{
     subscribed: boolean;
+    subscription?: EventSubSubscription;
   } | null>(null);
   const [isEventSubLoading, setIsEventSubLoading] = useState(false);
 
@@ -68,9 +70,11 @@ const ProfilePage = () => {
     setIsEventSubLoading(true);
     try {
       if (checked) {
-        await subscribeToEventSubChat();
+        const response = await subscribeToEventSubChat();
+        console.log('Subscribe response:', response);
       } else {
-        await unsubscribeFromEventSubChat();
+        const response = await unsubscribeFromEventSubChat();
+        console.log('Unsubscribe response:', response);
       }
 
       // Update local state
