@@ -5,6 +5,37 @@ import type {
   YouTubeCallbackRequest,
 } from '@saebyn/glowing-telegram-types';
 
+// EventSub types based on OpenAPI spec
+export interface SubscribeChatRequest {
+  // Based on typical EventSub patterns, this would include subscription details
+  // The exact structure will be defined by the backend OpenAPI schema
+  [key: string]: unknown;
+}
+
+export interface SubscribeChatResponse {
+  success: boolean;
+  message?: string;
+  subscription?: EventSubSubscription;
+}
+
+export interface EventSubSubscription {
+  id: string;
+  status: string;
+  type: string;
+  version: string;
+  condition: Record<string, unknown>;
+  transport: {
+    method: string;
+    callback: string;
+  };
+  created_at: string;
+}
+
+export interface ChatSubscriptionStatusResponse {
+  subscribed: boolean;
+  subscription?: EventSubSubscription;
+}
+
 const { VITE_API_URL: baseApiUrl, VITE_MOCKS_ENABLED: MOCKS_ENABLED } =
   import.meta.env;
 
@@ -155,36 +186,47 @@ export async function uploadEpisodesToYoutube(
   }
 }
 
-export async function getEventSubChatStatus(): Promise<{
-  subscribed: boolean;
-}> {
+export async function getEventSubChatStatus(): Promise<ChatSubscriptionStatusResponse> {
   const url = new URL('eventsub/chat/status', baseApiUrl);
 
   const res = await authenticatedFetch(url.toString());
 
   if (!res.ok) {
+    if (res.status === 401) {
+      // Handle 401 unauthorized - return default response
+      return { subscribed: false };
+    }
     throw new Error('Failed to get EventSub chat status');
   }
 
   return res.json();
 }
 
-export async function subscribeToEventSubChat(): Promise<void> {
+export async function subscribeToEventSubChat(): Promise<SubscribeChatResponse> {
   const url = new URL('eventsub/chat/subscribe', baseApiUrl);
+
+  // Create request body - for now empty object as schema details aren't available
+  const requestBody: SubscribeChatRequest = {};
 
   const res = await authenticatedFetch(url.toString(), {
     method: 'POST',
+    body: JSON.stringify(requestBody),
     headers: {
       'Content-Type': 'application/json',
     },
   });
 
   if (!res.ok) {
+    if (res.status === 401) {
+      throw new Error('Unauthorized - invalid or missing access token');
+    }
     throw new Error('Failed to subscribe to EventSub chat');
   }
+
+  return res.json();
 }
 
-export async function unsubscribeFromEventSubChat(): Promise<void> {
+export async function unsubscribeFromEventSubChat(): Promise<SubscribeChatResponse> {
   const url = new URL('eventsub/chat/subscribe', baseApiUrl);
 
   const res = await authenticatedFetch(url.toString(), {
@@ -195,6 +237,11 @@ export async function unsubscribeFromEventSubChat(): Promise<void> {
   });
 
   if (!res.ok) {
+    if (res.status === 401) {
+      throw new Error('Unauthorized - invalid or missing access token');
+    }
     throw new Error('Failed to unsubscribe from EventSub chat');
   }
+
+  return res.json();
 }
