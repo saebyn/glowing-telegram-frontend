@@ -1,4 +1,4 @@
-import type { Stream } from '@saebyn/glowing-telegram-types/src/types';
+import type { Stream } from '@saebyn/glowing-telegram-types';
 import type { VideoClip as InputVideoClip } from '@saebyn/glowing-telegram-video-editor';
 import { useMutation } from '@tanstack/react-query';
 import { useDataProvider, useNotify } from 'react-admin';

@@ -5,7 +5,7 @@ import Alert from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import type { Series } from '@saebyn/glowing-telegram-types/src/types';
+import type { Series } from '@saebyn/glowing-telegram-types';
 import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
 

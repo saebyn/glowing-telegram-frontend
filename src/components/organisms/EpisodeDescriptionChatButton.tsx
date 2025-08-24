@@ -8,7 +8,7 @@ import type {
   Series,
   TranscriptSegment,
   VideoClip,
-} from '@saebyn/glowing-telegram-types/src/types';
+} from '@saebyn/glowing-telegram-types';
 const EpisodeDescriptionChatButton = () => {
   const { setValue } = useFormContext();
   const record = useRecordContext<Episode>();

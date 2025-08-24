@@ -1,6 +1,6 @@
 import type { DataStreamDataElement } from '@/types';
 import { convertSecondsToISODuration } from '@/utilities/isoDuration';
-import type { Stream } from '@saebyn/glowing-telegram-types/src/types';
+import type { Stream } from '@saebyn/glowing-telegram-types';
 import { useMutation } from '@tanstack/react-query';
 import {
   Button,

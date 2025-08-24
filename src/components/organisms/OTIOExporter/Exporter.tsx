@@ -7,10 +7,7 @@ import {
   useRecordContext,
 } from 'react-admin';
 
-import type {
-  Episode,
-  VideoClip,
-} from '@saebyn/glowing-telegram-types/src/types';
+import type { Episode, VideoClip } from '@saebyn/glowing-telegram-types';
 import exporter from './export';
 
 function promptDownload(episode: Episode, videoClips: VideoClip[]) {

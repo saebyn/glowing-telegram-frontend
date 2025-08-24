@@ -13,7 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
-import type { Series } from '@saebyn/glowing-telegram-types/src/types';
+import type { Series } from '@saebyn/glowing-telegram-types';
 import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
 import { LoadingIndicator, useGetList } from 'react-admin';

@@ -1,4 +1,4 @@
-import type { Series } from '@saebyn/glowing-telegram-types/src/types';
+import type { Series } from '@saebyn/glowing-telegram-types';
 
 export default function template(str: string, data: Record<string, string>) {
   return str.replace(/\${(.*?)}/g, (_match, key) => data[key] || '');
