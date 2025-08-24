@@ -946,4 +946,25 @@ export const handlers = [
   http.delete('/api/records/projects/:id', () => {
     return new HttpResponse(null, { status: 204 });
   }),
+
+  // EventSub Chat endpoints
+  http.get('/api/eventsub/chat/status', () => {
+    return HttpResponse.json({
+      subscribed: false,
+    });
+  }),
+
+  http.post('/api/eventsub/chat/subscribe', () => {
+    return HttpResponse.json({
+      success: true,
+      message: 'Successfully subscribed to chat events',
+    });
+  }),
+
+  http.delete('/api/eventsub/chat/subscribe', () => {
+    return HttpResponse.json({
+      success: true,
+      message: 'Successfully unsubscribed from chat events',
+    });
+  }),
 ];

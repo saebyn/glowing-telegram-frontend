@@ -1,3 +1,8 @@
+import {
+  getEventSubChatStatus,
+  subscribeToEventSubChat,
+  unsubscribeFromEventSubChat,
+} from '@/api';
 import TagEditor from '@/components/atoms/TagEditor';
 import TimezoneSelect from '@/components/atoms/TimezoneSelect';
 import TwitchOAuthButton from '@/components/atoms/TwitchOAuthButton';
@@ -14,7 +19,7 @@ import {
   FormControlLabel,
   Switch,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LoadingIndicator, useTranslate, useUpdate } from 'react-admin';
 
 const ProfilePage = () => {
@@ -32,6 +37,58 @@ const ProfilePage = () => {
   ] = useUpdate();
 
   const [profileUpdate, setProfileUpdate] = useState<Partial<Profile>>({});
+  const [eventSubChatStatus, setEventSubChatStatus] = useState<{
+    subscribed: boolean;
+  } | null>(null);
+  const [isEventSubLoading, setIsEventSubLoading] = useState(false);
+
+  // Load the current EventSub chat status when component mounts
+  useEffect(() => {
+    const loadEventSubStatus = async () => {
+      if (profile?.twitch?.accessToken) {
+        try {
+          const status = await getEventSubChatStatus();
+          setEventSubChatStatus(status);
+        } catch (error) {
+          console.error('Failed to load EventSub chat status:', error);
+          // Set default state if we can't load the status
+          setEventSubChatStatus({ subscribed: false });
+        }
+      }
+    };
+
+    loadEventSubStatus();
+  }, [profile?.twitch?.accessToken]);
+
+  const handleTwitchChatToggle = async (checked: boolean) => {
+    if (!profile?.twitch?.accessToken) {
+      return;
+    }
+
+    setIsEventSubLoading(true);
+    try {
+      if (checked) {
+        await subscribeToEventSubChat();
+      } else {
+        await unsubscribeFromEventSubChat();
+      }
+
+      // Update local state
+      setEventSubChatStatus({ subscribed: checked });
+
+      // Update profile state
+      setProfileUpdate((profile) => ({
+        ...profile,
+        twitchChatEnabled: checked,
+      }));
+    } catch (error) {
+      console.error('Failed to update EventSub chat subscription:', error);
+      // Revert the toggle state on error
+      setEventSubChatStatus({ subscribed: !checked });
+    } finally {
+      setIsEventSubLoading(false);
+    }
+  };
 
   if (isPending) {
     return <LoadingIndicator />;
@@ -117,16 +174,15 @@ const ProfilePage = () => {
               control={
                 <Switch
                   checked={
-                    profileUpdate.twitchChatEnabled !== undefined
-                      ? profileUpdate.twitchChatEnabled
-                      : profile.twitchChatEnabled || false
+                    eventSubChatStatus?.subscribed ||
+                    profileUpdate.twitchChatEnabled ||
+                    profile.twitchChatEnabled ||
+                    false
                   }
                   onChange={(event) => {
-                    setProfileUpdate((profile) => ({
-                      ...profile,
-                      twitchChatEnabled: event.target.checked,
-                    }));
+                    handleTwitchChatToggle(event.target.checked);
                   }}
+                  disabled={!profile?.twitch?.accessToken || isEventSubLoading}
                 />
               }
               label={translate('gt.profile.twitchChatEnabled', {

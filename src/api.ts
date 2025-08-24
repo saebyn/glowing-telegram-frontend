@@ -154,3 +154,47 @@ export async function uploadEpisodesToYoutube(
     throw new Error('Failed to upload episode to YouTube');
   }
 }
+
+export async function getEventSubChatStatus(): Promise<{
+  subscribed: boolean;
+}> {
+  const url = new URL('eventsub/chat/status', baseApiUrl);
+
+  const res = await authenticatedFetch(url.toString());
+
+  if (!res.ok) {
+    throw new Error('Failed to get EventSub chat status');
+  }
+
+  return res.json();
+}
+
+export async function subscribeToEventSubChat(): Promise<void> {
+  const url = new URL('eventsub/chat/subscribe', baseApiUrl);
+
+  const res = await authenticatedFetch(url.toString(), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to subscribe to EventSub chat');
+  }
+}
+
+export async function unsubscribeFromEventSubChat(): Promise<void> {
+  const url = new URL('eventsub/chat/subscribe', baseApiUrl);
+
+  const res = await authenticatedFetch(url.toString(), {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to unsubscribe from EventSub chat');
+  }
+}
