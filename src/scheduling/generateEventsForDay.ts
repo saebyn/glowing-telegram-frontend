@@ -1,4 +1,4 @@
-import type { Day, Series } from '@saebyn/glowing-telegram-types/src/types';
+import type { Day, Series } from '@saebyn/glowing-telegram-types';
 import { DateTime } from 'luxon';
 import type { SeriesRecordWithValidTimes, StreamEvent } from './types';
 

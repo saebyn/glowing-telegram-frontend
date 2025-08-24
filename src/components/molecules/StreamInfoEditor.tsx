@@ -20,7 +20,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
-import type { Series } from '@saebyn/glowing-telegram-types/src/types';
+import type { Series } from '@saebyn/glowing-telegram-types';
 
 import { useEffect, useState } from 'react';
 import { useTranslate } from 'react-admin';

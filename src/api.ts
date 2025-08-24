@@ -3,7 +3,7 @@ import type {
   TwitchAuthRequest,
   TwitchCallbackRequest,
   YouTubeCallbackRequest,
-} from '@saebyn/glowing-telegram-types/src/types';
+} from '@saebyn/glowing-telegram-types';
 
 const { VITE_API_URL: baseApiUrl, VITE_MOCKS_ENABLED: MOCKS_ENABLED } =
   import.meta.env;

@@ -1,6 +1,6 @@
 import ThumbnailField from '@/components/atoms/ThumbnailField';
 import ImportIcon from '@mui/icons-material/ImportExport';
-import type { Stream } from '@saebyn/glowing-telegram-types/src/types';
+import type { Stream } from '@saebyn/glowing-telegram-types';
 import {
   Button,
   Datagrid,
