@@ -876,7 +876,8 @@ export const handlers = [
         {
           id: 1,
           title: 'TypeScript Frontend Development',
-          description: 'Collection of clips about TypeScript and React development from multiple streams',
+          description:
+            'Collection of clips about TypeScript and React development from multiple streams',
           created_at: DateTime.now().minus({ days: 7 }).toISO(),
           updated_at: DateTime.now().minus({ days: 2 }).toISO(),
           cuts: [],
@@ -884,7 +885,8 @@ export const handlers = [
         {
           id: 2,
           title: 'Backend Architecture Discussion',
-          description: 'Clips covering backend design patterns and architecture decisions',
+          description:
+            'Clips covering backend design patterns and architecture decisions',
           created_at: DateTime.now().minus({ days: 14 }).toISO(),
           updated_at: DateTime.now().minus({ days: 5 }).toISO(),
           cuts: [],
@@ -899,7 +901,8 @@ export const handlers = [
       return HttpResponse.json({
         id: 1,
         title: 'TypeScript Frontend Development',
-        description: 'Collection of clips about TypeScript and React development from multiple streams',
+        description:
+          'Collection of clips about TypeScript and React development from multiple streams',
         created_at: DateTime.now().minus({ days: 7 }).toISO(),
         updated_at: DateTime.now().minus({ days: 2 }).toISO(),
         cuts: [],
@@ -909,7 +912,8 @@ export const handlers = [
       return HttpResponse.json({
         id: 2,
         title: 'Backend Architecture Discussion',
-        description: 'Clips covering backend design patterns and architecture decisions',
+        description:
+          'Clips covering backend design patterns and architecture decisions',
         created_at: DateTime.now().minus({ days: 14 }).toISO(),
         updated_at: DateTime.now().minus({ days: 5 }).toISO(),
         cuts: [],

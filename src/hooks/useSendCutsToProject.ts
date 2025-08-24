@@ -29,14 +29,14 @@ export default function useSendCutsToProject(stream: Stream | undefined) {
 
       // Get current project data
       const project = await dataProvider.getOne('projects', { id: projectId });
-      
+
       // Append new cuts to existing cuts
       const updatedCuts = [...(project.data.cuts || []), ...cuts];
 
       // Update the project with new cuts
       await dataProvider.update('projects', {
         id: projectId,
-        data: { 
+        data: {
           ...project.data,
           cuts: updatedCuts,
           updated_at: new Date().toISOString(),
@@ -51,25 +51,28 @@ export default function useSendCutsToProject(stream: Stream | undefined) {
       return;
     }
 
-    mutate({ projectId, clips }, {
-      onSuccess: () => {
-        notify('gt.send_cuts_to_project.success', {
-          type: 'success',
-          messageArgs: {
-            smart_count: clips.length,
-            _: 'Cuts sent to project',
-          },
-        });
+    mutate(
+      { projectId, clips },
+      {
+        onSuccess: () => {
+          notify('gt.send_cuts_to_project.success', {
+            type: 'success',
+            messageArgs: {
+              smart_count: clips.length,
+              _: 'Cuts sent to project',
+            },
+          });
+        },
+        onError: (error) => {
+          notify('gt.send_cuts_to_project.error', {
+            type: 'error',
+            messageArgs: {
+              _: `Failed to send cuts to project: ${error.message}`,
+            },
+          });
+        },
       },
-      onError: (error) => {
-        notify('gt.send_cuts_to_project.error', {
-          type: 'error',
-          messageArgs: {
-            _: `Failed to send cuts to project: ${error.message}`,
-          },
-        });
-      },
-    });
+    );
   };
 
   return {

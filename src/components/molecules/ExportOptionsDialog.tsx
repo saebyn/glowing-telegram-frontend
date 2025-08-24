@@ -33,14 +33,20 @@ function ExportOptionsDialog({
   onCreateEpisodes,
 }: ExportOptionsDialogProps) {
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
-  const [exportType, setExportType] = useState<'episodes' | 'project'>('episodes');
-  
-  const { data: projects, isLoading: isLoadingProjects } = useGetList('projects', {
-    pagination: { page: 1, perPage: 100 },
-    sort: { field: 'updated_at', order: 'DESC' },
-  });
+  const [exportType, setExportType] = useState<'episodes' | 'project'>(
+    'episodes',
+  );
 
-  const { action: sendCutsToProject, isPending: isSendingCuts } = useSendCutsToProject(stream);
+  const { data: projects, isLoading: isLoadingProjects } = useGetList(
+    'projects',
+    {
+      pagination: { page: 1, perPage: 100 },
+      sort: { field: 'updated_at', order: 'DESC' },
+    },
+  );
+
+  const { action: sendCutsToProject, isPending: isSendingCuts } =
+    useSendCutsToProject(stream);
 
   const handleExportTypeChange = (event: SelectChangeEvent) => {
     setExportType(event.target.value as 'episodes' | 'project');
@@ -59,18 +65,19 @@ function ExportOptionsDialog({
     onClose();
   };
 
-  const isConfirmDisabled = 
-    (exportType === 'project' && !selectedProjectId) || 
-    isSendingCuts;
+  const isConfirmDisabled =
+    (exportType === 'project' && !selectedProjectId) || isSendingCuts;
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Export {clips.length} clip{clips.length !== 1 ? 's' : ''}</DialogTitle>
+      <DialogTitle>
+        Export {clips.length} clip{clips.length !== 1 ? 's' : ''}
+      </DialogTitle>
       <DialogContent>
         <Typography variant="body2" sx={{ mb: 2 }}>
           Choose how to export your selected clips:
         </Typography>
-        
+
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Export Type</InputLabel>
           <Select
@@ -109,15 +116,16 @@ function ExportOptionsDialog({
 
         {exportType === 'project' && selectedProjectId && (
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            Clips will be added to the selected project for later episode creation.
+            Clips will be added to the selected project for later episode
+            creation.
           </Typography>
         )}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button 
-          onClick={handleConfirm} 
-          variant="contained" 
+        <Button
+          onClick={handleConfirm}
+          variant="contained"
           disabled={isConfirmDisabled}
         >
           {exportType === 'episodes' ? 'Create Episodes' : 'Send to Project'}

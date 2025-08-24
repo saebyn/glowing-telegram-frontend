@@ -18,9 +18,7 @@ const ListActions = (props: ListActionsProps) => (
   </TopToolbar>
 );
 
-const projectFilters = [
-  <SearchInput source="title" alwaysOn key="title" />,
-];
+const projectFilters = [<SearchInput source="title" alwaysOn key="title" />];
 
 const ProjectsList = (props: ListProps) => (
   <List {...props} filters={projectFilters} actions={<ListActions />}>
