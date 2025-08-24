@@ -11,6 +11,8 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  FormControlLabel,
+  Switch,
 } from '@mui/material';
 import { useState } from 'react';
 import { LoadingIndicator, useTranslate, useUpdate } from 'react-admin';
@@ -109,6 +111,27 @@ const ProfilePage = () => {
                   standardTags: tags,
                 }));
               }}
+            />
+
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={
+                    profileUpdate.twitchChatEnabled !== undefined
+                      ? profileUpdate.twitchChatEnabled
+                      : profile.twitchChatEnabled || false
+                  }
+                  onChange={(event) => {
+                    setProfileUpdate((profile) => ({
+                      ...profile,
+                      twitchChatEnabled: event.target.checked,
+                    }));
+                  }}
+                />
+              }
+              label={translate('gt.profile.twitchChatEnabled', {
+                _: 'Enable Twitch Chat Integration',
+              })}
             />
           </CardContent>
           <CardActions>
