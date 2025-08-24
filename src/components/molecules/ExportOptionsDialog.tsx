@@ -1,6 +1,4 @@
 import useSendCutsToProject from '@/hooks/useSendCutsToProject';
-import type { Stream } from '@saebyn/glowing-telegram-types';
-import type { VideoClip as InputVideoClip } from '@saebyn/glowing-telegram-video-editor';
 import {
   Button,
   Dialog,
@@ -11,9 +9,11 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent,
+  type SelectChangeEvent,
   Typography,
 } from '@mui/material';
+import type { Stream } from '@saebyn/glowing-telegram-types';
+import type { VideoClip as InputVideoClip } from '@saebyn/glowing-telegram-video-editor';
 import { useState } from 'react';
 import { useGetList } from 'react-admin';
 
