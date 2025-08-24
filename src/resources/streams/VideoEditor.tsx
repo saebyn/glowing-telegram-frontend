@@ -123,12 +123,9 @@ function VideoEditor() {
   return (
     <>
       <Suspense fallback={<LoadingIndicator />}>
-        <VideoSelectionPage
-          content={content}
-          onExport={handleExport}
-        />
+        <VideoSelectionPage content={content} onExport={handleExport} />
       </Suspense>
-      
+
       {stream && (
         <ExportOptionsDialog
           open={exportDialogOpen}
