@@ -2,7 +2,6 @@ import {
   type EventSubSubscription,
   getEventSubChatStatus,
   subscribeToEventSubChat,
-  unsubscribeFromEventSubChat,
 } from '@/api';
 import TagEditor from '@/components/atoms/TagEditor';
 import TimezoneSelect from '@/components/atoms/TimezoneSelect';
@@ -72,19 +71,26 @@ const ProfilePage = () => {
       if (checked) {
         const response = await subscribeToEventSubChat();
         console.log('Subscribe response:', response);
+
+        // Update local state to reflect successful subscription
+        setEventSubChatStatus({ subscribed: true });
+
+        // Update profile state
+        setProfileUpdate((profile) => ({
+          ...profile,
+          twitchChatEnabled: true,
+        }));
       } else {
-        const response = await unsubscribeFromEventSubChat();
-        console.log('Unsubscribe response:', response);
+        // Backend doesn't provide unsubscribe functionality
+        // Just update local state to reflect user preference
+        setEventSubChatStatus({ subscribed: false });
+
+        // Update profile state
+        setProfileUpdate((profile) => ({
+          ...profile,
+          twitchChatEnabled: false,
+        }));
       }
-
-      // Update local state
-      setEventSubChatStatus({ subscribed: checked });
-
-      // Update profile state
-      setProfileUpdate((profile) => ({
-        ...profile,
-        twitchChatEnabled: checked,
-      }));
     } catch (error) {
       console.error('Failed to update EventSub chat subscription:', error);
       // Revert the toggle state on error
