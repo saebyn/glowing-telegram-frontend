@@ -225,23 +225,3 @@ export async function subscribeToEventSubChat(): Promise<SubscribeChatResponse> 
 
   return res.json();
 }
-
-export async function unsubscribeFromEventSubChat(): Promise<SubscribeChatResponse> {
-  const url = new URL('eventsub/chat/subscribe', baseApiUrl);
-
-  const res = await authenticatedFetch(url.toString(), {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!res.ok) {
-    if (res.status === 401) {
-      throw new Error('Unauthorized - invalid or missing access token');
-    }
-    throw new Error('Failed to unsubscribe from EventSub chat');
-  }
-
-  return res.json();
-}

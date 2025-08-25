@@ -979,11 +979,4 @@ export const handlers = [
       },
     });
   }),
-
-  http.delete('/api/eventsub/chat/subscribe', () => {
-    return HttpResponse.json({
-      success: true,
-      message: 'Successfully unsubscribed from chat events',
-    });
-  }),
 ];
