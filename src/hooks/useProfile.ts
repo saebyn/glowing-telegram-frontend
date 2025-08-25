@@ -8,6 +8,7 @@ export interface Profile {
   fullName: string;
   timezone: string;
   standardTags: string[];
+  twitchChatEnabled?: boolean;
   twitch?: {
     accessToken: string;
     broadcasterId: string;
