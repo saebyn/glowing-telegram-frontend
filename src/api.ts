@@ -5,9 +5,6 @@ import type {
   YouTubeCallbackRequest,
 } from '@saebyn/glowing-telegram-types';
 
-// EventSub types based on OpenAPI spec
-export interface SubscribeChatRequest {}
-
 export interface SubscribeChatResponse {
   success: boolean;
   message?: string;
@@ -201,15 +198,8 @@ export async function getEventSubChatStatus(): Promise<ChatSubscriptionStatusRes
 export async function subscribeToEventSubChat(): Promise<SubscribeChatResponse> {
   const url = new URL('eventsub/chat/subscribe', baseApiUrl);
 
-  // Create request body - for now empty object as schema details aren't available
-  const requestBody: SubscribeChatRequest = {};
-
   const res = await authenticatedFetch(url.toString(), {
     method: 'POST',
-    body: JSON.stringify(requestBody),
-    headers: {
-      'Content-Type': 'application/json',
-    },
   });
 
   if (!res.ok) {
