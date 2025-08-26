@@ -6,11 +6,7 @@ import type {
 } from '@saebyn/glowing-telegram-types';
 
 // EventSub types based on OpenAPI spec
-export interface SubscribeChatRequest {
-  // Based on typical EventSub patterns, this would include subscription details
-  // The exact structure will be defined by the backend OpenAPI schema
-  [key: string]: unknown;
-}
+export interface SubscribeChatRequest {}
 
 export interface SubscribeChatResponse {
   success: boolean;
