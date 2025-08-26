@@ -146,18 +146,23 @@ const restDataProvider: DataProvider = {
   update: async (resource, params) => {
     console.log('UPDATE', resource, params);
 
-    const record = await fetchResourceData(resource, params.id, 'PUT', {
-      data: params.data,
-    });
+    const record = await fetchResourceData<Record<string, unknown>>(
+      resource,
+      params.id,
+      'PUT',
+      {
+        data: params.data,
+      },
+    );
 
     return {
-      data: cleanRecord(resource)(record as any) as any,
+      data: cleanRecord(resource)(record) as any,
     };
   },
   updateMany: (resource, params) => {
     console.log('UPDATE MANY', resource, params);
     alert('UPDATE MANY not implemented');
-    return Promise.resolve({ data: {} as any });
+    return Promise.resolve({ data: [] });
   },
   delete: async (resource, params) => {
     console.log('DELETE', resource, params);
