@@ -174,44 +174,54 @@ const ProfilePage = () => {
               </Typography>
 
               {!profile?.twitch?.accessToken && (
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 2 }}
+                >
                   {translate('gt.profile.twitchChatRequiresAuth', {
                     _: 'Connect to Twitch to enable chat integration',
                   })}
                 </Typography>
               )}
 
-              {profile?.twitch?.accessToken && eventSubChatStatus?.subscribed && (
-                <Button
-                  variant="contained"
-                  color="success"
-                  disabled
-                  startIcon={<CheckIcon />}
-                  sx={{ mb: 1 }}
-                >
-                  {translate('gt.profile.twitchChatEnabled', {
-                    _: 'Chat Integration Enabled',
-                  })}
-                </Button>
-              )}
+              {profile?.twitch?.accessToken &&
+                eventSubChatStatus?.subscribed && (
+                  <Button
+                    variant="contained"
+                    color="success"
+                    disabled
+                    startIcon={<CheckIcon />}
+                    sx={{ mb: 1 }}
+                  >
+                    {translate('gt.profile.twitchChatEnabled', {
+                      _: 'Chat Integration Enabled',
+                    })}
+                  </Button>
+                )}
 
-              {profile?.twitch?.accessToken && !eventSubChatStatus?.subscribed && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleEnableTwitchChat}
-                  disabled={isEventSubLoading}
-                  sx={{ mb: 1 }}
-                >
-                  {isEventSubLoading
-                    ? translate('gt.profile.enabling', { _: 'Enabling...' })
-                    : translate('gt.profile.enableTwitchChat', {
-                        _: 'Enable Chat Integration',
-                      })}
-                </Button>
-              )}
+              {profile?.twitch?.accessToken &&
+                !eventSubChatStatus?.subscribed && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleEnableTwitchChat}
+                    disabled={isEventSubLoading}
+                    sx={{ mb: 1 }}
+                  >
+                    {isEventSubLoading
+                      ? translate('gt.profile.enabling', { _: 'Enabling...' })
+                      : translate('gt.profile.enableTwitchChat', {
+                          _: 'Enable Chat Integration',
+                        })}
+                  </Button>
+                )}
 
-              <Typography variant="caption" display="block" color="text.secondary">
+              <Typography
+                variant="caption"
+                display="block"
+                color="text.secondary"
+              >
                 {translate('gt.profile.twitchChatDescription', {
                   _: 'Enable integration to collect chat messages during your Twitch streams',
                 })}
