@@ -18,8 +18,13 @@ const mockUser = {
 
 const authProvider: AuthProvider = {
   async login() {},
-  async logout() {
+  async logout(_params: unknown) {
     console.log('logout');
+
+    // Clear the stored OIDC token to prevent reauth loop when session expires
+    if (!MOCKS_ENABLED) {
+      await userManager.removeUser();
+    }
 
     await new Promise((resolve) => {
       setTimeout(resolve, 2000);
