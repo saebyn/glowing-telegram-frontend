@@ -6,6 +6,7 @@ import UpcomingStream from '@/components/molecules/UpcomingStream';
 import useProfile from '@/hooks/useProfile';
 import findNextStream from '@/scheduling/findNextStream';
 import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
@@ -13,11 +14,12 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import Select from '@mui/material/Select';
+import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import type { Series } from '@saebyn/glowing-telegram-types';
 import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
-import { LoadingIndicator, useGetList } from 'react-admin';
+import { useGetList } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
 
 const streamManagerStyles = {
@@ -60,37 +62,115 @@ function StreamManagerPage() {
     );
   }, [streamSeriesList]);
 
-  // TODO for all of these loading and error states,
-  // we should show a skeleton or something instead of just
-  // an alert, and improve the styling
-
   if (streamPlanIsLoading || profileIsLoading) {
-    return <LoadingIndicator />;
+    return (
+      <Paper sx={streamManagerStyles.root}>
+        <Box sx={{ mb: 3 }}>
+          <Skeleton variant="text" width="40%" height={40} />
+          <Skeleton variant="rectangular" width="150px" height={36} />
+        </Box>
+        <Grid container spacing={2}>
+          <Grid item xs={3}>
+            <Paper elevation={1} sx={{ p: 2, height: '400px' }}>
+              <Skeleton variant="rectangular" width="100%" height="60%" />
+              <Skeleton variant="text" width="80%" height={40} sx={{ mt: 2 }} />
+              <Skeleton variant="rectangular" width="100%" height={56} />
+            </Paper>
+          </Grid>
+          <Grid item xs={4}>
+            <Paper elevation={1} sx={{ p: 2, height: '400px' }}>
+              <Skeleton variant="text" width="60%" height={40} />
+              <Skeleton variant="text" width="100%" />
+              <Skeleton variant="text" width="100%" />
+              <Skeleton variant="rectangular" width="100%" height={100} />
+            </Paper>
+          </Grid>
+          <Grid item xs={2}>
+            <Paper elevation={1} sx={{ p: 2, height: '400px' }}>
+              <Skeleton variant="text" width="80%" height={40} />
+              <Skeleton variant="text" width="100%" />
+              <Skeleton variant="text" width="100%" />
+              <Skeleton variant="rectangular" width="100%" height={36} />
+            </Paper>
+          </Grid>
+          <Grid item xs={9}>
+            <Paper elevation={1} sx={{ p: 2, height: '200px' }}>
+              <Skeleton variant="text" width="40%" height={40} />
+              <Skeleton variant="rectangular" width="100%" height="80%" />
+            </Paper>
+          </Grid>
+        </Grid>
+      </Paper>
+    );
   }
 
   if (streamPlanIsError) {
-    return <Alert severity="error">{streamPlanError.message}</Alert>;
+    return (
+      <Paper sx={streamManagerStyles.root}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+          <Alert severity="error" sx={{ maxWidth: 600 }}>
+            <Typography variant="h6" gutterBottom>
+              Failed to load stream series
+            </Typography>
+            {streamPlanError.message}
+          </Alert>
+        </Box>
+      </Paper>
+    );
   }
 
   if (profileError) {
-    return <Alert severity="error">{profileError.message}</Alert>;
+    return (
+      <Paper sx={streamManagerStyles.root}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+          <Alert severity="error" sx={{ maxWidth: 600 }}>
+            <Typography variant="h6" gutterBottom>
+              Failed to load profile
+            </Typography>
+            {profileError.message}
+          </Alert>
+        </Box>
+      </Paper>
+    );
   }
 
   if (!streamSeriesList || !profile) {
-    return <Alert severity="warning">Missing data</Alert>;
+    return (
+      <Paper sx={streamManagerStyles.root}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+          <Alert severity="warning" sx={{ maxWidth: 600 }}>
+            <Typography variant="h6" gutterBottom>
+              Missing data
+            </Typography>
+            Unable to load required data for the stream manager. Please try
+            refreshing the page.
+          </Alert>
+        </Box>
+      </Paper>
+    );
   }
 
   if (profile.twitch?.accessToken === undefined) {
     return (
-      <Alert severity="error">
-        <TwitchOAuthButton
-          tokens={{
-            accessToken: undefined,
-          }}
-        />
-        <br />
-        You must connect your Twitch account to manage your streams.
-      </Alert>
+      <Paper sx={streamManagerStyles.root}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+          <Alert severity="info" sx={{ maxWidth: 600 }}>
+            <Typography variant="h6" gutterBottom>
+              Twitch Connection Required
+            </Typography>
+            <Typography paragraph>
+              You must connect your Twitch account to manage your streams.
+            </Typography>
+            <Box sx={{ mt: 2 }}>
+              <TwitchOAuthButton
+                tokens={{
+                  accessToken: undefined,
+                }}
+              />
+            </Box>
+          </Alert>
+        </Box>
+      </Paper>
     );
   }
 
