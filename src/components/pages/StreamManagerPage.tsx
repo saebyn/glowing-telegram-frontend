@@ -1,3 +1,4 @@
+import TwitchOAuthButton from '@/components/atoms/TwitchOAuthButton';
 import AdManager from '@/components/molecules/AdManager';
 import StreamInfoEditor from '@/components/molecules/StreamInfoEditor';
 import Timers from '@/components/molecules/Timers';
@@ -18,7 +19,6 @@ import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
 import { LoadingIndicator, useGetList } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
-import TwitchOAuthButton from '../atoms/TwitchOAuthButton';
 
 const streamManagerStyles = {
   root: {
@@ -84,10 +84,10 @@ function StreamManagerPage() {
     return (
       <Alert severity="error">
         <TwitchOAuthButton
-                    tokens={{
-                      accessToken: profile.twitch?.accessToken,
-                    }}
-                  />
+          tokens={{
+            accessToken: undefined,
+          }}
+        />
         <br />
         You must connect your Twitch account to manage your streams.
       </Alert>
