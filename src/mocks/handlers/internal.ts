@@ -874,13 +874,13 @@ export const handlers = [
     const url = new URL(request.url);
     const filterParam = url.searchParams.get('filter');
 
-    // All available chat messages
+    // All available chat messages (timestamps in seconds)
     const allMessages = [
       {
         id: '1',
         user_id: 'user1',
         channel_id: '1',
-        timestamp: 120500,
+        timestamp: 120.5,
         username: 'viewer1',
         message: 'Great stream!',
         created_at: DateTime.now().toISO(),
@@ -890,7 +890,7 @@ export const handlers = [
         id: '2',
         user_id: 'user2',
         channel_id: '1',
-        timestamp: 245200,
+        timestamp: 245.2,
         username: 'viewer2',
         message: 'Can you explain that again?',
         created_at: DateTime.now().toISO(),
@@ -900,7 +900,7 @@ export const handlers = [
         id: '3',
         user_id: 'user3',
         channel_id: '1',
-        timestamp: 380700,
+        timestamp: 380.7,
         username: 'viewer3',
         message: 'This is awesome!',
         created_at: DateTime.now().toISO(),
@@ -910,7 +910,7 @@ export const handlers = [
         id: '4',
         user_id: 'user1',
         channel_id: '1',
-        timestamp: 540300,
+        timestamp: 540.3,
         username: 'viewer1',
         message: 'Thanks for the tutorial',
         created_at: DateTime.now().toISO(),
@@ -920,7 +920,7 @@ export const handlers = [
         id: '5',
         user_id: 'user4',
         channel_id: '1',
-        timestamp: 725800,
+        timestamp: 725.8,
         username: 'viewer4',
         message: 'What version are you using?',
         created_at: DateTime.now().toISO(),
@@ -930,7 +930,7 @@ export const handlers = [
         id: '6',
         user_id: 'user5',
         channel_id: '1',
-        timestamp: 890100,
+        timestamp: 890.1,
         username: 'viewer5',
         message: 'LOL that was funny',
         created_at: DateTime.now().toISO(),
@@ -940,7 +940,7 @@ export const handlers = [
         id: '7',
         user_id: 'user2',
         channel_id: '1',
-        timestamp: 1024300,
+        timestamp: 1024.3,
         username: 'viewer2',
         message: 'I learned so much today',
         created_at: DateTime.now().toISO(),

@@ -133,9 +133,10 @@ function VideoEditor() {
   );
 
   // Transform chat messages to match VideoMetadata ChatMessage format
+  // Backend provides timestamps in seconds, convert to milliseconds
   const transformedChatMessages: ChatMessage[] = (chatMessages ?? []).map(
     (msg) => ({
-      timestamp: msg.timestamp,
+      timestamp: Math.round(msg.timestamp * 1000),
       username: msg.username,
       message: msg.message,
     }),
