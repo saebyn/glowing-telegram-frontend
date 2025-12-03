@@ -10,7 +10,7 @@ import type {
   VideoMetadata,
 } from '@saebyn/glowing-telegram-video-editor';
 import { Suspense, lazy, useState } from 'react';
-import { LoadingIndicator, useGetList, useGetManyReference } from 'react-admin';
+import { LoadingIndicator, useGetManyReference } from 'react-admin';
 import { useGetOne } from 'react-admin';
 import { useParams } from 'react-router-dom';
 
@@ -60,10 +60,11 @@ function VideoEditor() {
     data: chatMessages,
     isPending: isChatMessagesPending,
     error: chatMessagesError,
-  } = useGetList<StreamChatMessage>(
+  } = useGetManyReference<StreamChatMessage>(
     'chat_messages',
     {
-      filter: { channel_id: id },
+      target: 'channel_id',
+      id,
       pagination: { page: 1, perPage: 1000 },
       sort: { field: 'timestamp', order: 'ASC' },
     },

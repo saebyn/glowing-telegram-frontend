@@ -870,104 +870,120 @@ export const handlers = [
     });
   }),
 
-  http.get('/api/records/chat_messages', ({ request }) => {
-    const url = new URL(request.url);
-    const filterParam = url.searchParams.get('filter');
+  http.get(
+    '/api/records/chat_messages/channel_id/:channelId',
+    ({ params, request }) => {
+      const { channelId } = params;
+      const url = new URL(request.url);
+      const filterParam = url.searchParams.get('filter');
 
-    // All available chat messages (timestamps in seconds)
-    const allMessages = [
-      {
-        id: '1',
-        user_id: 'user1',
-        channel_id: '1',
-        timestamp: 120.5,
-        username: 'viewer1',
-        message: 'Great stream!',
-        created_at: DateTime.now().toISO(),
-        updated_at: DateTime.now().toISO(),
-      },
-      {
-        id: '2',
-        user_id: 'user2',
-        channel_id: '1',
-        timestamp: 245.2,
-        username: 'viewer2',
-        message: 'Can you explain that again?',
-        created_at: DateTime.now().toISO(),
-        updated_at: DateTime.now().toISO(),
-      },
-      {
-        id: '3',
-        user_id: 'user3',
-        channel_id: '1',
-        timestamp: 380.7,
-        username: 'viewer3',
-        message: 'This is awesome!',
-        created_at: DateTime.now().toISO(),
-        updated_at: DateTime.now().toISO(),
-      },
-      {
-        id: '4',
-        user_id: 'user1',
-        channel_id: '1',
-        timestamp: 540.3,
-        username: 'viewer1',
-        message: 'Thanks for the tutorial',
-        created_at: DateTime.now().toISO(),
-        updated_at: DateTime.now().toISO(),
-      },
-      {
-        id: '5',
-        user_id: 'user4',
-        channel_id: '1',
-        timestamp: 725.8,
-        username: 'viewer4',
-        message: 'What version are you using?',
-        created_at: DateTime.now().toISO(),
-        updated_at: DateTime.now().toISO(),
-      },
-      {
-        id: '6',
-        user_id: 'user5',
-        channel_id: '1',
-        timestamp: 890.1,
-        username: 'viewer5',
-        message: 'LOL that was funny',
-        created_at: DateTime.now().toISO(),
-        updated_at: DateTime.now().toISO(),
-      },
-      {
-        id: '7',
-        user_id: 'user2',
-        channel_id: '1',
-        timestamp: 1024.3,
-        username: 'viewer2',
-        message: 'I learned so much today',
-        created_at: DateTime.now().toISO(),
-        updated_at: DateTime.now().toISO(),
-      },
-    ];
+      // All available chat messages (timestamps in seconds)
+      const allMessages = [
+        {
+          id: '1',
+          user_id: 'user1',
+          channel_id: '1',
+          timestamp: 120.5,
+          username: 'viewer1',
+          message: 'Great stream!',
+          created_at: DateTime.now().toISO(),
+          updated_at: DateTime.now().toISO(),
+        },
+        {
+          id: '2',
+          user_id: 'user2',
+          channel_id: '1',
+          timestamp: 245.2,
+          username: 'viewer2',
+          message: 'Can you explain that again?',
+          created_at: DateTime.now().toISO(),
+          updated_at: DateTime.now().toISO(),
+        },
+        {
+          id: '3',
+          user_id: 'user3',
+          channel_id: '1',
+          timestamp: 380.7,
+          username: 'viewer3',
+          message: 'This is awesome!',
+          created_at: DateTime.now().toISO(),
+          updated_at: DateTime.now().toISO(),
+        },
+        {
+          id: '4',
+          user_id: 'user1',
+          channel_id: '1',
+          timestamp: 540.3,
+          username: 'viewer1',
+          message: 'Thanks for the tutorial',
+          created_at: DateTime.now().toISO(),
+          updated_at: DateTime.now().toISO(),
+        },
+        {
+          id: '5',
+          user_id: 'user4',
+          channel_id: '1',
+          timestamp: 725.8,
+          username: 'viewer4',
+          message: 'What version are you using?',
+          created_at: DateTime.now().toISO(),
+          updated_at: DateTime.now().toISO(),
+        },
+        {
+          id: '6',
+          user_id: 'user5',
+          channel_id: '1',
+          timestamp: 890.1,
+          username: 'viewer5',
+          message: 'LOL that was funny',
+          created_at: DateTime.now().toISO(),
+          updated_at: DateTime.now().toISO(),
+        },
+        {
+          id: '7',
+          user_id: 'user2',
+          channel_id: '1',
+          timestamp: 1024.3,
+          username: 'viewer2',
+          message: 'I learned so much today',
+          created_at: DateTime.now().toISO(),
+          updated_at: DateTime.now().toISO(),
+        },
+      ];
 
-    // Filter messages if filter param is provided
-    let filteredMessages = allMessages;
-    if (filterParam) {
-      try {
-        const filter = JSON.parse(filterParam);
-        if (filter.channel_id) {
-          filteredMessages = allMessages.filter(
-            (msg) => msg.channel_id === filter.channel_id,
-          );
+      // Filter messages by channel_id from path parameter
+      let filteredMessages = allMessages.filter(
+        (msg) => msg.channel_id === channelId,
+      );
+
+      // Apply additional timestamp filters if provided
+      if (filterParam) {
+        try {
+          const filter = JSON.parse(filterParam);
+          if (filter.timestamp__gte) {
+            const gteTimestamp =
+              new Date(filter.timestamp__gte).getTime() / 1000;
+            filteredMessages = filteredMessages.filter(
+              (msg) => msg.timestamp >= gteTimestamp,
+            );
+          }
+          if (filter.timestamp__lt) {
+            const ltTimestamp = new Date(filter.timestamp__lt).getTime() / 1000;
+            filteredMessages = filteredMessages.filter(
+              (msg) => msg.timestamp < ltTimestamp,
+            );
+          }
+        } catch (e) {
+          console.error('Failed to parse filter:', e);
         }
-      } catch (e) {
-        console.error('Failed to parse filter:', e);
       }
-    }
 
-    return HttpResponse.json({
-      items: filteredMessages,
-      cursor: null,
-    });
-  }),
+      return HttpResponse.json({
+        items: filteredMessages,
+        cursor: null,
+      });
+    },
+  ),
 
   http.get('/api/records/projects', () => {
     return HttpResponse.json({
