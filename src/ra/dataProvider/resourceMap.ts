@@ -6,6 +6,7 @@ const resourceMap = {
   tasks: 'records/tasks',
   video_clips: 'records/video_clips',
   projects: 'records/projects',
+  chat_messages: 'records/chat_messages',
   streamIngest: 'stream',
 } as const;
 

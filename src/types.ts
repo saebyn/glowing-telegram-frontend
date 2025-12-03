@@ -51,3 +51,14 @@ interface FileEntry {
 export interface FindFilesResponse {
   entries: FileEntry[];
 }
+
+export interface StreamChatMessage {
+  id: string;
+  user_id?: string;
+  channel_id?: string;
+  timestamp: number;
+  username: string;
+  message: string;
+  created_at?: string;
+  updated_at?: string;
+}
