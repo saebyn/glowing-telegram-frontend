@@ -18,6 +18,7 @@ import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
 import { LoadingIndicator, useGetList } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
+import TwitchOAuthButton from '../atoms/TwitchOAuthButton';
 
 const streamManagerStyles = {
   root: {
@@ -59,6 +60,10 @@ function StreamManagerPage() {
     );
   }, [streamSeriesList]);
 
+  // TODO for all of these loading and error states,
+  // we should show a skeleton or something instead of just
+  // an alert, and improve the styling
+
   if (streamPlanIsLoading || profileIsLoading) {
     return <LoadingIndicator />;
   }
@@ -73,6 +78,20 @@ function StreamManagerPage() {
 
   if (!streamSeriesList || !profile) {
     return <Alert severity="warning">Missing data</Alert>;
+  }
+
+  if (profile.twitch?.accessToken === undefined) {
+    return (
+      <Alert severity="error">
+        <TwitchOAuthButton
+                    tokens={{
+                      accessToken: profile.twitch?.accessToken,
+                    }}
+                  />
+        <br />
+        You must connect your Twitch account to manage your streams.
+      </Alert>
+    );
   }
 
   const nextScheduledStream = findNextStream(
