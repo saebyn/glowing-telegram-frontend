@@ -116,7 +116,7 @@ Before committing changes, ALWAYS run:
 ### Adding New Components
 1. Create component in appropriate `/src/components/` subdirectory
 2. Add Storybook story if it's a reusable component
-3. Add tests if complex logic is involved
+3. Add tests for the component (use existing test patterns in the repository)
 4. Run `npm run format` before committing
 
 ### Working with React Admin Resources
