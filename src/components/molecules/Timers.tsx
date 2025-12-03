@@ -6,6 +6,10 @@ function Timers() {
   const timerManager = useTimerManager();
   const timers = useTimers(timerManager);
 
+  if (timers.length === 0) {
+    return <Typography>No timers available.</Typography>;
+  }
+
   return (
     <>
       {timers.map((timer) => (
