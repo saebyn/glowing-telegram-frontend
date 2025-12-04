@@ -40,7 +40,7 @@ const streamsFilter = [
         return date.toISO();
       }
     }}
-    label="Stream Date On/Before"
+    label="Until"
     key="stream_date__lte"
   />,
 
@@ -52,7 +52,7 @@ const streamsFilter = [
         return date.toISO();
       }
     }}
-    label="Stream Date On/After"
+    label="From"
     key="stream_date__gte"
   />,
 
@@ -127,6 +127,14 @@ interface CalendarViewProps {
 const CalendarView = ({ setHighlightedDate }: CalendarViewProps) => {
   const list = useListContext();
 
+  const handleDaySelect = (date: DateTime) => {
+    list.setFilters({
+      ...list.filterValues,
+      stream_date__gte: date.startOf('day').toUTC().toISO(),
+      stream_date__lte: date.endOf('day').toUTC().toISO(),
+    });
+  };
+
   const days: Record<string, number> = {};
 
   if (list.data) {
@@ -150,6 +158,7 @@ const CalendarView = ({ setHighlightedDate }: CalendarViewProps) => {
       slotProps={{
         day: {
           days,
+          onDaySelect: handleDaySelect,
           onDayHighlight: (date: DateTime | null) => {
             const key = date ? getDateKey(date) : null;
             setHighlightedDate(key);
