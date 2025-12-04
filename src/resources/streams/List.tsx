@@ -13,7 +13,7 @@ import {
   List,
   type ListProps,
   NullableBooleanInput,
-  RaRecord,
+  type RaRecord,
   ReferenceField,
   ReferenceInput,
   SearchInput,
@@ -101,7 +101,12 @@ const StreamDay = ({
       variant="dot"
       color="primary"
     >
-      <PickersDay {...props} day={day} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+      <PickersDay
+        {...props}
+        day={day}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      />
     </Badge>
   );
 };
@@ -152,9 +157,11 @@ const CalendarView = ({ setHighlightedDate }: CalendarViewProps) => {
     <DateCalendar
       sx={calendarStyle}
       showDaysOutsideCurrentMonth
-      slots={{
-        day: StreamDay,
-      } as any}
+      slots={
+        {
+          day: StreamDay,
+        } as any
+      }
       slotProps={{
         day: {
           days,
@@ -162,7 +169,7 @@ const CalendarView = ({ setHighlightedDate }: CalendarViewProps) => {
           onDayHighlight: (date: DateTime | null) => {
             const key = date ? getDateKey(date) : null;
             setHighlightedDate(key);
-          }
+          },
         } as any,
       }}
     />
@@ -175,18 +182,23 @@ function StreamList(props: ListProps) {
   const rowSx = (record: RaRecord) => {
     const date = DateTime.fromISO(record.stream_date);
     const key = getDateKey(date);
-    
-    const highlighted = highlightedDate && key && key.startsWith(highlightedDate);
+
+    const highlighted =
+      highlightedDate && key && key.startsWith(highlightedDate);
 
     if (highlighted) {
       return { backgroundColor: 'rgba(255, 235, 59, 0.3)' };
-    } else {
-      return {};
     }
+
+    return {};
   };
 
   return (
-    <List {...props} filters={streamsFilter} aside={<CalendarView setHighlightedDate={setHighlightedDate} />}>
+    <List
+      {...props}
+      filters={streamsFilter}
+      aside={<CalendarView setHighlightedDate={setHighlightedDate} />}
+    >
       <Datagrid rowClick={false} rowSx={rowSx}>
         <DateField source="stream_date" />
         <TextField source="title" />
