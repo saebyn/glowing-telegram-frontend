@@ -1,7 +1,9 @@
 import ExportOptionsDialog from '@/components/molecules/ExportOptionsDialog';
 import useBulkEpisodeCreate from '@/hooks/useBulkEpisodeCreate';
+import type { StreamChatMessage } from '@/types';
 import type { Stream, VideoClip } from '@saebyn/glowing-telegram-types';
 import type {
+  ChatMessage,
   VideoClip as InputVideoClip,
   Section,
   TranscriptSegment,
@@ -54,6 +56,23 @@ function VideoEditor() {
     },
   );
 
+  const {
+    data: chatMessages,
+    isPending: isChatMessagesPending,
+    error: chatMessagesError,
+  } = useGetManyReference<StreamChatMessage>(
+    'chat_messages',
+    {
+      target: 'channel_id',
+      id,
+      pagination: { page: 1, perPage: 1000 },
+      sort: { field: 'timestamp', order: 'ASC' },
+    },
+    {
+      enabled: !!id,
+    },
+  );
+
   const handleExport = (clips: InputVideoClip[]) => {
     setSelectedClips(clips);
     setExportDialogOpen(true);
@@ -75,6 +94,10 @@ function VideoEditor() {
     return <p>Error: {relatedVideoClipsError.message}</p>;
   }
 
+  if (chatMessagesError) {
+    return <p>Error: {chatMessagesError.message}</p>;
+  }
+
   if (bulkCreateEpisodesErrors.length > 0) {
     return (
       <p>Error: {bulkCreateEpisodesErrors.map((e) => e.message).join(', ')}</p>
@@ -84,6 +107,7 @@ function VideoEditor() {
   if (
     isStreamPending ||
     isRelatedVideoClipsPending ||
+    isChatMessagesPending ||
     isBulkCreateEpisodesLoading
   ) {
     return <LoadingIndicator />;
@@ -109,9 +133,19 @@ function VideoEditor() {
     0,
   );
 
+  // Transform chat messages to match VideoMetadata ChatMessage format
+  // Backend provides timestamps in seconds, convert to milliseconds
+  const transformedChatMessages: ChatMessage[] = (chatMessages ?? []).map(
+    (msg) => ({
+      timestamp: Math.round(msg.timestamp * 1000),
+      username: msg.username,
+      message: msg.message,
+    }),
+  );
+
   const content: VideoMetadata = {
     ...getVideoClipAnnotations(videoClips),
-    chat_history: [],
+    chat_history: transformedChatMessages,
     length,
 
     title: stream?.title ?? '',
