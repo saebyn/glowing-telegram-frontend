@@ -36,7 +36,6 @@ const streamsFilter = [
     parse={(value) => {
       if (value) {
         const date = DateTime.fromISO(value).endOf('day').toUTC();
-        console.log('Parsed date to ISO:', date.toISO());
         return date.toISO();
       }
     }}
