@@ -182,8 +182,7 @@ function StreamList(props: ListProps) {
     const date = DateTime.fromISO(record.stream_date);
     const key = getDateKey(date);
 
-    const highlighted =
-      highlightedDate && key.startsWith(highlightedDate);
+    const highlighted = highlightedDate && key.startsWith(highlightedDate);
 
     if (highlighted) {
       return { backgroundColor: 'rgba(255, 235, 59, 0.3)' };
