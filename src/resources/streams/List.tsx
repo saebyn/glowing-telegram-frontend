@@ -3,14 +3,18 @@ import Badge from '@mui/material/Badge';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 import { DateTime } from 'luxon';
+import { useState } from 'react';
 import {
   BooleanField,
   Datagrid,
   DateField,
   DateInput,
+  EditButton,
+  Identifier,
   List,
   type ListProps,
   NullableBooleanInput,
+  RaRecord,
   ReferenceField,
   ReferenceInput,
   SearchInput,
@@ -40,19 +44,36 @@ const streamsFilter = [
 ];
 
 function getDateKey(date: DateTime): string {
-  return `${date.year}-${(date.month + 1)
+  return `${date.year}-${date.month
     .toString()
     .padStart(2, '0')}-${date.day.toString().padStart(2, '0')}`;
 }
+
+type StreamDayProps = {
+  days: Record<string, number>;
+  day: DateTime;
+
+  onDayHighlight: (date: DateTime | null) => void;
+} & React.ComponentProps<typeof PickersDay>;
 
 const StreamDay = ({
   days,
   day,
 
+  onDayHighlight,
+
   ...props
-}: any) => {
+}: StreamDayProps) => {
   const dayStr = getDateKey(day);
   const count = days[dayStr] || 0;
+
+  const handleMouseEnter = () => {
+    onDayHighlight(day);
+  };
+
+  const handleMouseLeave = () => {
+    onDayHighlight(null);
+  };
 
   return (
     <Badge
@@ -62,7 +83,7 @@ const StreamDay = ({
       variant="dot"
       color="primary"
     >
-      <PickersDay {...props} day={day} />
+      <PickersDay {...props} day={day} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
     </Badge>
   );
 };
@@ -81,7 +102,11 @@ const calendarStyle = {
   },
 };
 
-const CalendarView = () => {
+interface CalendarViewProps {
+  setHighlightedDate: (date: string | null) => void;
+}
+
+const CalendarView = ({ setHighlightedDate }: CalendarViewProps) => {
   const list = useListContext();
 
   const days: Record<string, number> = {};
@@ -103,29 +128,51 @@ const CalendarView = () => {
       showDaysOutsideCurrentMonth
       slots={{
         day: StreamDay,
-      }}
+      } as any}
       slotProps={{
         day: {
           days,
+          onDayHighlight: (date: DateTime | null) => {
+            const key = date ? getDateKey(date) : null;
+            setHighlightedDate(key);
+          }
         } as any,
       }}
     />
   );
 };
 
-const StreamList = (props: ListProps) => (
-  <List {...props} filters={streamsFilter} aside={<CalendarView />}>
-    <Datagrid rowClick="edit">
-      <DateField source="stream_date" />
-      <TextField source="title" />
-      <ReferenceField source="series_id" reference="series">
-        <TextField source="title" />
-      </ReferenceField>
-      <BooleanField source="has_episodes" />
+function StreamList(props: ListProps) {
+  const [highlightedDate, setHighlightedDate] = useState<string | null>(null);
 
-      <EditorButton />
-    </Datagrid>
-  </List>
-);
+  const rowSx = (record: RaRecord) => {
+    const date = DateTime.fromISO(record.stream_date);
+    const key = getDateKey(date);
+    
+    const highlighted = highlightedDate && key && key.startsWith(highlightedDate);
+
+    if (highlighted) {
+      return { backgroundColor: 'rgba(255, 235, 59, 0.3)' };
+    } else {
+      return {};
+    }
+  };
+
+  return (
+    <List {...props} filters={streamsFilter} aside={<CalendarView setHighlightedDate={setHighlightedDate} />}>
+      <Datagrid rowClick={false} rowSx={rowSx}>
+        <DateField source="stream_date" />
+        <TextField source="title" />
+        <ReferenceField source="series_id" reference="series">
+          <TextField source="title" />
+        </ReferenceField>
+        <BooleanField source="has_episodes" />
+
+        <EditorButton />
+        <EditButton />
+      </Datagrid>
+    </List>
+  );
+}
 
 export default StreamList;
