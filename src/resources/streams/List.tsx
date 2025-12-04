@@ -10,7 +10,6 @@ import {
   DateField,
   DateInput,
   EditButton,
-  Identifier,
   List,
   type ListProps,
   NullableBooleanInput,
@@ -33,8 +32,27 @@ const streamsFilter = [
   />,
 
   <DateInput
+    source="stream_date__lte"
+    parse={(value) => {
+      if (value) {
+        const date = DateTime.fromISO(value).endOf('day').toUTC();
+        console.log('Parsed date to ISO:', date.toISO());
+        return date.toISO();
+      }
+    }}
+    label="Stream Date On/Before"
+    key="stream_date__lte"
+  />,
+
+  <DateInput
     source="stream_date__gte"
-    label="Stream Date After"
+    parse={(value) => {
+      if (value) {
+        const date = DateTime.fromISO(value).startOf('day').toUTC();
+        return date.toISO();
+      }
+    }}
+    label="Stream Date On/After"
     key="stream_date__gte"
   />,
 
