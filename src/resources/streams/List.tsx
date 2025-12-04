@@ -183,7 +183,7 @@ function StreamList(props: ListProps) {
     const key = getDateKey(date);
 
     const highlighted =
-      highlightedDate && key && key.startsWith(highlightedDate);
+      highlightedDate && key.startsWith(highlightedDate);
 
     if (highlighted) {
       return { backgroundColor: 'rgba(255, 235, 59, 0.3)' };
