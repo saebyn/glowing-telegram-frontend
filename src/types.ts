@@ -51,3 +51,30 @@ interface FileEntry {
 export interface FindFilesResponse {
   entries: FileEntry[];
 }
+
+// Widget Types
+export interface WidgetInstance {
+  id: string;
+  title: string;
+  user_id: string;
+  type: string;
+  access_token: string;
+  config: Record<string, unknown>;
+  state: Record<string, unknown>;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CountdownTimerConfig {
+  timerId: string;
+  text: string;
+  title: string;
+  duration: number;
+}
+
+export interface CountdownTimerState {
+  durationLeft: number;
+  enabled: boolean;
+  lastTickTimestamp: string;
+}

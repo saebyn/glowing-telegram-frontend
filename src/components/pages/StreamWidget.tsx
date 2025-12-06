@@ -1,9 +1,27 @@
+import { WebsocketProvider } from '@/hooks/useWebsocket';
+import { useWidgetSubscription } from '@/hooks/useWidgetSubscription';
+import { widgetRegistry } from '@/widgets';
 import CountdownTimerWidget from '@/widgets/CountdownTimerWidget';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
+
+const { VITE_WEBSOCKET_URL: WEBSOCKET_URL } = import.meta.env;
 
 function StreamWidget() {
-  const { widget, params } = useParams();
+  const { widget, params, widgetId } = useParams();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token');
 
+  // Support both old and new routing patterns
+  if (widgetId) {
+    // New pattern: /widgets/:widgetId?token=...
+    return (
+      <WebsocketProvider url={WEBSOCKET_URL} token={token || undefined}>
+        <WidgetRenderer widgetId={widgetId} />
+      </WebsocketProvider>
+    );
+  }
+
+  // Old pattern: /widgets/:widget/:params (fallback for backwards compatibility)
   const parsedParams = parseParams(params);
 
   if (!parsedParams) {
@@ -16,6 +34,41 @@ function StreamWidget() {
     default:
       return <p>Unknown widget: {widget}</p>;
   }
+}
+
+function WidgetRenderer({ widgetId }: { widgetId: string }) {
+  const { widget, loading, error } = useWidgetSubscription(widgetId);
+
+  if (loading) {
+    return (
+      <div className="screen-content">
+        <p>Loading widget...</p>
+      </div>
+    );
+  }
+
+  if (error || !widget) {
+    return (
+      <div className="screen-content">
+        <p>Error loading widget: {error || 'Widget not found'}</p>
+      </div>
+    );
+  }
+
+  // Get widget definition from registry
+  const widgetDef = widgetRegistry.get(widget.type);
+
+  if (!widgetDef) {
+    return (
+      <div className="screen-content">
+        <p>Unknown widget type: {widget.type}</p>
+      </div>
+    );
+  }
+
+  // Render widget using the component from the registry
+  const WidgetComponent = widgetDef.component;
+  return <WidgetComponent widgetId={widgetId} />;
 }
 
 function parseParams(params: string | undefined) {

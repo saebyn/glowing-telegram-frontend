@@ -42,8 +42,11 @@ const TasksDrawerButton = ({ onClick }: Props) => {
   useEffect(() => {
     if (!websocket) return;
 
-    const handle = websocket.subscribe((task) => {
-      dispatch(task);
+    const handle = websocket.subscribe((message) => {
+      // Only handle task messages
+      if (message.type === 'TASK_UPDATE') {
+        dispatch(message);
+      }
     });
 
     return () => {
