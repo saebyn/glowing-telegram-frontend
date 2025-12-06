@@ -7,18 +7,7 @@ import type {
 } from '@saebyn/glowing-telegram-types';
 import type { FC, ReactNode } from 'react';
 import { createContext, useContext, useEffect, useRef } from 'react';
-
-type Callback = (message: TaskStatusWebsocketMessage) => void;
-type SubscriptionHandle = number;
-
-const WebsocketContext = createContext<
-  | {
-      subscribe: (callback: Callback) => SubscriptionHandle;
-      unsubscribe: (id: SubscriptionHandle) => void;
-    }
-  | undefined
->(undefined);
-export const useWebsocket = () => useContext(WebsocketContext);
+import type { WidgetInstance } from '@/types';
 
 export interface TaskStatusWebsocketMessage {
   type: 'TASK_UPDATE';
@@ -26,10 +15,58 @@ export interface TaskStatusWebsocketMessage {
   old_status: TaskStatus;
 }
 
+export interface WidgetStateUpdateMessage {
+  type: 'WIDGET_STATE_UPDATE';
+  widgetId: string;
+  state: Record<string, unknown>;
+  timestamp: string;
+}
+
+export interface WidgetInitialStateMessage {
+  type: 'WIDGET_INITIAL_STATE';
+  widgetId: string;
+  widget: WidgetInstance;
+}
+
+export interface WidgetActionResponseMessage {
+  type: 'WIDGET_ACTION_RESPONSE';
+  widgetId: string;
+  action: string;
+  success: boolean;
+  error?: string;
+}
+
+export interface WidgetConfigUpdateMessage {
+  type: 'WIDGET_CONFIG_UPDATE';
+  widgetId: string;
+  config: Record<string, unknown>;
+}
+
+export type WebsocketMessage =
+  | TaskStatusWebsocketMessage
+  | WidgetStateUpdateMessage
+  | WidgetInitialStateMessage
+  | WidgetActionResponseMessage
+  | WidgetConfigUpdateMessage;
+
+type Callback = (message: WebsocketMessage) => void;
+type SubscriptionHandle = number;
+
+const WebsocketContext = createContext<
+  | {
+      subscribe: (callback: Callback) => SubscriptionHandle;
+      unsubscribe: (id: SubscriptionHandle) => void;
+      send: (message: object) => void;
+    }
+  | undefined
+>(undefined);
+export const useWebsocket = () => useContext(WebsocketContext);
+
 export const WebsocketProvider: FC<{
   children: ReactNode;
   url: string | null;
-}> = ({ url, children }) => {
+  token?: string;
+}> = ({ url, token, children }) => {
   // use useRef to keep the websocket instance between renders
   const websocket = useRef<WebSocket | undefined>(undefined);
 
@@ -52,6 +89,13 @@ export const WebsocketProvider: FC<{
     unsubscribe: (id: SubscriptionHandle) => {
       subscriptions.current.delete(id);
     },
+    send: (message: object) => {
+      if (websocket.current?.readyState === WebSocket.OPEN) {
+        websocket.current.send(JSON.stringify(message));
+      } else {
+        console.warn('⚠️ WebSocket not open, cannot send message');
+      }
+    },
   };
 
   useEffect(() => {
@@ -66,9 +110,12 @@ export const WebsocketProvider: FC<{
     }
 
     if (websocket.current === undefined) {
-      websocket.current = new WebSocket(url);
+      // Add token to URL if provided (for OBS mode)
+      const wsUrl = token ? `${url}?token=${token}` : url;
+
+      websocket.current = new WebSocket(wsUrl);
       websocket.current.addEventListener('open', function (event) {
-        console.log('🔗 Connected to tasks websocket', event);
+        console.log('🔗 Connected to websocket', event);
         this.send(JSON.stringify({ event: 'subscribe' }));
       });
 
@@ -82,7 +129,7 @@ export const WebsocketProvider: FC<{
       });
 
       websocket.current.addEventListener('close', (event) => {
-        console.log('❌ Disconnected from tasks websocket', event);
+        console.log('❌ Disconnected from websocket', event);
       });
 
       websocket.current.addEventListener('error', (event) => {
@@ -94,7 +141,7 @@ export const WebsocketProvider: FC<{
       console.log('🔌 Closing websocket connection');
       websocket.current?.close();
     };
-  }, [url]);
+  }, [url, token]);
 
   return (
     <WebsocketContext.Provider value={value}>

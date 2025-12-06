@@ -1,11 +1,10 @@
 import { useRef } from 'react';
 import useTextJumble from '@/hooks/useTextJumble';
-import { useTimerManager } from '@/hooks/useTimers';
+import { useWidgetSubscription } from '@/hooks/useWidgetSubscription';
+import type { CountdownTimerConfig, CountdownTimerState } from '@/types';
 
 interface CountdownTimerWidgetProps {
-  timerId: string;
-  text: string;
-  title: string;
+  widgetId: string;
 }
 
 /**
@@ -13,33 +12,37 @@ interface CountdownTimerWidgetProps {
  *
  * This component is used to display a countdown timer in an OBS browser source.
  *
- * It uses the `useTimerManager` hook to get the list of timers from the TimerManager.
- * It takes a `timerId` prop to determine which timer to display.
+ * It uses the `useWidgetSubscription` hook to subscribe to widget updates via WebSocket.
+ * The widget configuration and state are managed by the backend.
  */
-function CountdownTimerWidget({
-  timerId,
-  text,
-  title,
-}: CountdownTimerWidgetProps) {
+function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
   const titleRef = useRef<HTMLHeadingElement>(null);
 
   useTextJumble(titleRef);
 
-  const timerManager = useTimerManager();
-  const timer = timerManager.getTimers().find((t) => t.id === timerId);
+  // Subscribe to widget via WebSocket
+  const { widget, loading, error } = useWidgetSubscription(widgetId);
 
-  if (!timer) {
-    return null;
+  if (loading) {
+    return <div className="screen-content">Loading...</div>;
   }
 
-  const countdownTimeFormatted = new Date(timer.durationLeft * 1000)
+  if (error || !widget) {
+    return <div className="screen-content">Error loading widget</div>;
+  }
+
+  // Extract config and state
+  const config = widget.config as unknown as CountdownTimerConfig;
+  const state = widget.state as unknown as CountdownTimerState;
+
+  const countdownTimeFormatted = new Date(state.durationLeft * 1000)
     .toISOString()
     .substring(14, 14 + 5);
 
   return (
     <div className="screen-content">
-      <p>{text}</p>
-      <h1 ref={titleRef}>{title}</h1>
+      <p>{config.text}</p>
+      <h1 ref={titleRef}>{config.title}</h1>
 
       <p className="countdown">
         <span className="countdown-time">{countdownTimeFormatted}</span>
