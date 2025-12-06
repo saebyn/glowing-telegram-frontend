@@ -1,5 +1,6 @@
 import { WebsocketProvider } from '@/hooks/useWebsocket';
 import { useWidgetSubscription } from '@/hooks/useWidgetSubscription';
+import { widgetRegistry } from '@/widgets';
 import CountdownTimerWidget from '@/widgets/CountdownTimerWidget';
 import { useParams, useSearchParams } from 'react-router-dom';
 
@@ -54,17 +55,20 @@ function WidgetRenderer({ widgetId }: { widgetId: string }) {
     );
   }
 
-  // Render widget based on type
-  switch (widget.type) {
-    case 'countdown':
-      return <CountdownTimerWidget widgetId={widgetId} />;
-    default:
-      return (
-        <div className="screen-content">
-          <p>Unknown widget type: {widget.type}</p>
-        </div>
-      );
+  // Get widget definition from registry
+  const widgetDef = widgetRegistry.get(widget.type);
+
+  if (!widgetDef) {
+    return (
+      <div className="screen-content">
+        <p>Unknown widget type: {widget.type}</p>
+      </div>
+    );
   }
+
+  // Render widget using the component from the registry
+  const WidgetComponent = widgetDef.component;
+  return <WidgetComponent widgetId={widgetId} />;
 }
 
 function parseParams(params: string | undefined) {

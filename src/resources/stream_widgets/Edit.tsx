@@ -1,3 +1,4 @@
+import { widgetRegistry } from '@/widgets';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { Alert, Box, Typography } from '@mui/material';
@@ -118,12 +119,7 @@ const WidgetEdit = (props: EditProps) => (
       <TextInput source="title" validate={[required()]} fullWidth />
       <SelectInput
         source="type"
-        choices={[
-          { id: 'countdown', name: 'Countdown Timer' },
-          { id: 'now-playing', name: 'Now Playing' },
-          { id: 'follower-alert', name: 'Recent Follower' },
-          { id: 'goal-tracker', name: 'Goal Tracker' },
-        ]}
+        choices={widgetRegistry.getChoices()}
         validate={[required()]}
         disabled
       />
