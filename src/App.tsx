@@ -23,6 +23,7 @@ import dataProvider from '@/ra/dataProvider';
 import i18nProvider from '@/ra/i18nProvider';
 import store from '@/ra/store';
 import { darkTheme, lightTheme } from '@/ra/theme';
+import { registerWidgets } from '@/widgets';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { QueryClient } from '@tanstack/react-query';
@@ -30,6 +31,9 @@ import { QueryClient } from '@tanstack/react-query';
 const {
   VITE_QUERY_STALE_TIME: QUERY_STALE_TIME = 30 * 1000, // 30 seconds
 } = import.meta.env;
+
+// Register all widget types
+registerWidgets();
 
 function App() {
   const queryClient = new QueryClient({
