@@ -1,4 +1,3 @@
-import { widgetRegistry } from '@/widgets';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { Alert, Box, Typography } from '@mui/material';
@@ -17,6 +16,7 @@ import {
   Toolbar,
   useRecordContext,
 } from 'react-admin';
+import { widgetRegistry } from '@/widgets';
 
 const { VITE_APP_URL: APP_URL = window.location.origin } = import.meta.env;
 

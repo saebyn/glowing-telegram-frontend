@@ -1,4 +1,3 @@
-import { widgetRegistry } from '@/widgets';
 import {
   BooleanField,
   CreateButton,
@@ -14,6 +13,7 @@ import {
   TextField,
   TopToolbar,
 } from 'react-admin';
+import { widgetRegistry } from '@/widgets';
 
 const ListActions = (props: ListActionsProps) => (
   <TopToolbar {...props}>
