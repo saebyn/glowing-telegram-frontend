@@ -18,6 +18,7 @@ import { darkTheme, lightTheme } from '@/ra/theme';
 import episodes from '@/resources/episodes';
 import projects from '@/resources/projects';
 import streamPlans, { StreamPlansCalendar } from '@/resources/stream_plans';
+import stream_widgets from '@/resources/stream_widgets';
 import streams, { StreamVideoEditor } from '@/resources/streams';
 import twitch from '@/resources/twitch';
 import video_clips from '@/resources/video_clips';
@@ -75,6 +76,11 @@ function App() {
             <Resource name="projects" {...projects} />
             <Resource name="video_clips" {...video_clips} />
             <Resource
+              name="stream_widgets"
+              {...stream_widgets}
+              options={{ label: 'Stream Widgets' }}
+            />
+            <Resource
               name="twitch"
               {...twitch}
               options={{ label: 'Twitch Streams' }}
@@ -124,20 +130,18 @@ function App() {
                * Stream Widget
                *
                * This route is used to render widgets on the stream overlay.
-               * It takes a `widget` and `params` parameter.
                *
+               * New pattern (preferred):
+               * /widgets/:widgetId?token=xxx
+               * The widgetId is the unique identifier of the widget instance.
+               * The token parameter (optional) is used for OBS authentication.
+               *
+               * Old pattern (backwards compatibility):
+               * /widgets/:widget/:params
                * The `widget` parameter determines which widget to render.
                * The `params` parameter is a base64 encoded JSON string of the widget's props.
-               *
-               * Example:
-               * /widgets/countdown/eyJ0aW1lcklkIjoiMSIsInRleHQiOiJUaW1lciIsInRpdGxlIjoiVGltZXIgZGF0YSJ9
-               * would render a CountdownTimerWidget with the following props:
-               * {
-               *  "timerId": "1",
-               * "text": "Timer",
-               * "title": "Timer data"
-               * }
                */}
+              <Route path="/widgets/:widgetId" element={<StreamWidget />} />
               <Route
                 path="/widgets/:widget/:params"
                 element={<StreamWidget />}
