@@ -1,4 +1,3 @@
-import { widgetRegistry } from '@/widgets';
 import {
   BooleanInput,
   Create,
@@ -9,6 +8,7 @@ import {
   SimpleForm,
   TextInput,
 } from 'react-admin';
+import { widgetRegistry } from '@/widgets';
 
 const WidgetCreate = (props: CreateProps) => (
   <Create {...props}>

@@ -27,6 +27,7 @@ export function useWidgetSubscription(widgetId: string) {
           if (message.widgetId === widgetId) {
             setWidget(message.widget);
             setLoading(false);
+            setError(null); // Clear any previous errors
           }
           break;
 
@@ -57,8 +58,12 @@ export function useWidgetSubscription(widgetId: string) {
           break;
 
         case 'WIDGET_ACTION_RESPONSE':
-          if (message.widgetId === widgetId && !message.success) {
-            setError(message.error || 'Action failed');
+          if (message.widgetId === widgetId) {
+            if (message.success) {
+              setError(null); // Clear error on successful action
+            } else {
+              setError(message.error || 'Action failed');
+            }
           }
           break;
       }
@@ -71,6 +76,7 @@ export function useWidgetSubscription(widgetId: string) {
         widgetId,
       });
       websocket.unsubscribe(handleId);
+      setError(null); // Clear error on unmount
     };
   }, [websocket, widgetId]);
 

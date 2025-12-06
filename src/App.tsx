@@ -22,10 +22,14 @@ import stream_widgets from '@/resources/stream_widgets';
 import streams, { StreamVideoEditor } from '@/resources/streams';
 import twitch from '@/resources/twitch';
 import video_clips from '@/resources/video_clips';
+import { registerWidgets } from '@/widgets';
 
 const {
   VITE_QUERY_STALE_TIME: QUERY_STALE_TIME = 30 * 1000, // 30 seconds
 } = import.meta.env;
+
+// Register all widget types
+registerWidgets();
 
 function App() {
   const queryClient = new QueryClient({
