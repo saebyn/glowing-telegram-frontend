@@ -1,3 +1,4 @@
+import { widgetRegistry } from '@/widgets';
 import {
   BooleanField,
   CreateButton,
@@ -25,12 +26,7 @@ const widgetFilters = [
   <SearchInput source="title" alwaysOn key="title" />,
   <SelectInput
     source="type"
-    choices={[
-      { id: 'countdown', name: 'Countdown Timer' },
-      { id: 'now-playing', name: 'Now Playing' },
-      { id: 'follower-alert', name: 'Recent Follower' },
-      { id: 'goal-tracker', name: 'Goal Tracker' },
-    ]}
+    choices={widgetRegistry.getChoices()}
     key="type"
   />,
   <NullableBooleanInput source="active" key="active" />,

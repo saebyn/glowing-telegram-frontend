@@ -1,3 +1,4 @@
+import { widgetRegistry } from '@/widgets';
 import {
   BooleanInput,
   Create,
@@ -15,12 +16,7 @@ const WidgetCreate = (props: CreateProps) => (
       <TextInput source="title" validate={[required()]} fullWidth />
       <SelectInput
         source="type"
-        choices={[
-          { id: 'countdown', name: 'Countdown Timer' },
-          { id: 'now-playing', name: 'Now Playing' },
-          { id: 'follower-alert', name: 'Recent Follower' },
-          { id: 'goal-tracker', name: 'Goal Tracker' },
-        ]}
+        choices={widgetRegistry.getChoices()}
         validate={[required()]}
       />
       <BooleanInput source="active" defaultValue={true} />
