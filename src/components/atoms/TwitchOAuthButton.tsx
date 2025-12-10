@@ -12,6 +12,8 @@ const scopes = [
   'channel:manage:broadcast',
   'channel:edit:commercial',
   'channel:read:ads',
+  'user:read:chat',
+  'user:bot'
 ];
 
 function TwitchOAuthButton({ tokens }: TwitchOAuthButtonProps) {
