@@ -9,7 +9,7 @@ const profiles = new Map<string, Record<string, unknown>>([
       name: 'My Profile',
       description: 'This is my profile.',
       timezone: 'America/Los_Angeles',
-      twitch: {},
+      twitch: { accessToken: 'mock-twitch-token' },
       standardTags: [],
     },
   ],
@@ -947,11 +947,25 @@ export const handlers = [
     return new HttpResponse(null, { status: 204 });
   }),
 
+  // Twitch and YouTube auth token endpoints
+  http.get('/api/auth/twitch/token', () => {
+    return HttpResponse.json({
+      broadcaster_id: '12345678',
+      access_token: 'mock-twitch-access-token',
+    });
+  }),
+
+  http.get('/api/auth/youtube/token', () => {
+    return HttpResponse.json({
+      access_token: 'mock-youtube-access-token',
+    });
+  }),
+
   // EventSub Chat endpoints
   http.get('/api/eventsub/chat/status', () => {
     return HttpResponse.json({
-      subscribed: false,
-      subscription: null,
+      has_active_subscription: false,
+      subscriptions: [],
     });
   }),
 

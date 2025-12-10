@@ -38,8 +38,8 @@ const ProfilePage = () => {
 
   const [profileUpdate, setProfileUpdate] = useState<Partial<Profile>>({});
   const [eventSubChatStatus, setEventSubChatStatus] = useState<{
-    subscribed: boolean;
-    subscription?: EventSubSubscription;
+    has_active_subscription: boolean;
+    subscriptions: EventSubSubscription[];
   } | null>(null);
   const [isEventSubLoading, setIsEventSubLoading] = useState(false);
 
@@ -53,7 +53,10 @@ const ProfilePage = () => {
         } catch (error) {
           console.error('Failed to load EventSub chat status:', error);
           // Set default state if we can't load the status
-          setEventSubChatStatus({ subscribed: false });
+          setEventSubChatStatus({
+            has_active_subscription: false,
+            subscriptions: [],
+          });
         }
       }
     };
@@ -72,7 +75,10 @@ const ProfilePage = () => {
       console.log('Subscribe response:', response);
 
       // Update local state to reflect successful subscription
-      setEventSubChatStatus({ subscribed: true });
+      setEventSubChatStatus({
+        has_active_subscription: true,
+        subscriptions: response.subscription ? [response.subscription] : [],
+      });
 
       // Update profile state
       setProfileUpdate((profile) => ({
@@ -186,7 +192,7 @@ const ProfilePage = () => {
               )}
 
               {profile?.twitch?.accessToken &&
-                eventSubChatStatus?.subscribed && (
+                eventSubChatStatus?.has_active_subscription && (
                   <Button
                     variant="contained"
                     color="success"
@@ -201,7 +207,7 @@ const ProfilePage = () => {
                 )}
 
               {profile?.twitch?.accessToken &&
-                !eventSubChatStatus?.subscribed && (
+                !eventSubChatStatus?.has_active_subscription && (
                   <Button
                     variant="contained"
                     color="primary"

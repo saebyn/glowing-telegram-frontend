@@ -25,8 +25,8 @@ export interface EventSubSubscription {
 }
 
 export interface ChatSubscriptionStatusResponse {
-  subscribed: boolean;
-  subscription?: EventSubSubscription;
+  has_active_subscription: boolean;
+  subscriptions: EventSubSubscription[];
 }
 
 const { VITE_API_URL: baseApiUrl, VITE_MOCKS_ENABLED: MOCKS_ENABLED } =
@@ -187,7 +187,7 @@ export async function getEventSubChatStatus(): Promise<ChatSubscriptionStatusRes
   if (!res.ok) {
     if (res.status === 401) {
       // Handle 401 unauthorized - return default response
-      return { subscribed: false };
+      return { has_active_subscription: false, subscriptions: [] };
     }
     throw new Error('Failed to get EventSub chat status');
   }
