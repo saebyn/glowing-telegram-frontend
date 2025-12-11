@@ -7,6 +7,7 @@ const resourceMap = {
   video_clips: 'records/video_clips',
   projects: 'records/projects',
   streamIngest: 'stream',
+  stream_widgets: 'records/stream_widgets',
 } as const;
 
 export default resourceMap;
