@@ -20,10 +20,16 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { LoadingIndicator, useTranslate, useUpdate } from 'react-admin';
+import {
+  LoadingIndicator,
+  useNotify,
+  useTranslate,
+  useUpdate,
+} from 'react-admin';
 
 const ProfilePage = () => {
   const translate = useTranslate();
+  const notify = useNotify();
 
   const { profile, isPending, error } = useProfile();
   const [
@@ -87,6 +93,12 @@ const ProfilePage = () => {
       }));
     } catch (error) {
       console.error('Failed to enable EventSub chat subscription:', error);
+      notify('gt.profile.enableTwitchChatError', {
+        type: 'error',
+        messageArgs: {
+          _: 'Failed to enable chat integration. Please try again.',
+        },
+      });
     } finally {
       setIsEventSubLoading(false);
     }
