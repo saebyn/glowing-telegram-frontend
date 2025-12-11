@@ -15,8 +15,10 @@ import {
   TextInput,
   Toolbar,
   useRecordContext,
+  useUpdate,
 } from 'react-admin';
 import { widgetRegistry } from '@/widgets';
+import generateAccessToken from './generateAccessToken';
 
 const { VITE_APP_URL: APP_URL = window.location.origin } = import.meta.env;
 
@@ -80,15 +82,18 @@ function CopyWidgetUrlButton() {
 
 function RegenerateTokenButton() {
   const record = useRecordContext();
+  const [update, { isPending }] = useUpdate();
 
   if (!record) return null;
 
   const handleRegenerate = () => {
-    // This would typically call a backend endpoint to regenerate the token
-    // For now, we'll just show an alert
-    alert(
-      'Token regeneration would be implemented here. This requires a backend endpoint.',
-    );
+    const newToken = generateAccessToken();
+
+    update('stream_widgets', {
+      id: record.id,
+      data: { access_token: newToken },
+      previousData: record,
+    });
   };
 
   return (
@@ -97,10 +102,16 @@ function RegenerateTokenButton() {
         If your widget URL has been compromised, you can regenerate the access
         token. This will invalidate the old URL.
       </Typography>
+      {isPending && (
+        <Alert severity="info" sx={{ mb: 1 }}>
+          Regenerating access token...
+        </Alert>
+      )}
       <Button
         label="Regenerate Token"
         onClick={handleRegenerate}
         startIcon={<RefreshIcon />}
+        disabled={isPending}
         color="warning"
       />
     </Box>
@@ -126,6 +137,7 @@ const WidgetEdit = (props: EditProps) => (
       <BooleanInput source="active" />
 
       <CopyWidgetUrlButton />
+      <TextInput source="access_token" label="Access Token" readOnly={true} />
       <RegenerateTokenButton />
 
       {/* Countdown Timer Configuration */}
