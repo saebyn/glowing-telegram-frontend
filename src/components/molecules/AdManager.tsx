@@ -1,10 +1,3 @@
-import type { Profile } from '@/hooks/useProfile';
-import {
-  type GetAdScheduleResponse,
-  getAdSchedule,
-  snoozeNextAd,
-  startCommercial,
-} from '@/utilities/twitch';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -13,6 +6,13 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
+import type { Profile } from '@/hooks/useProfile';
+import {
+  type GetAdScheduleResponse,
+  getAdSchedule,
+  snoozeNextAd,
+  startCommercial,
+} from '@/utilities/twitch';
 
 interface AdManagerProps {
   profile: Profile;

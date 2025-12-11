@@ -1,23 +1,21 @@
-import { useState } from 'react';
-
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
+import Collapse from '@mui/material/Collapse';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import type { IconButtonProps } from '@mui/material/IconButton';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-
-import type { ChatMessage } from '@/types';
-import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import styled from '@mui/material/styles/styled';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { useState } from 'react';
+import type { ChatMessage } from '@/types';
 
 interface ChatDialogProps {
   open: boolean;

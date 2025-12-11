@@ -1,30 +1,26 @@
+import GlobalStyles from '@mui/material/GlobalStyles';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { QueryClient } from '@tanstack/react-query';
 import { Admin, Authenticated, CustomRoutes, Resource } from 'react-admin';
-
-import { Route, RouterProvider, createBrowserRouter } from 'react-router-dom';
-
+import { createBrowserRouter, Route, RouterProvider } from 'react-router-dom';
+import OAuthCallbackPage from '@/components/pages/OAuthCallbackPage';
+import ProfilePage from '@/components/pages/ProfilePage';
+import StreamManagerPage from '@/components/pages/StreamManagerPage';
+import StreamWidget from '@/components/pages/StreamWidget';
+import { TimerManagerProvider } from '@/hooks/useTimers';
+import authProvider from '@/ra/authProvider';
+import dataProvider from '@/ra/dataProvider';
+import i18nProvider from '@/ra/i18nProvider';
+import Layout from '@/ra/Layout';
+import store from '@/ra/store';
+import { darkTheme, lightTheme } from '@/ra/theme';
 import episodes from '@/resources/episodes';
 import projects from '@/resources/projects';
 import streamPlans, { StreamPlansCalendar } from '@/resources/stream_plans';
 import streams, { StreamVideoEditor } from '@/resources/streams';
 import twitch from '@/resources/twitch';
 import video_clips from '@/resources/video_clips';
-
-import GlobalStyles from '@mui/material/GlobalStyles';
-
-import OAuthCallbackPage from '@/components/pages/OAuthCallbackPage';
-import ProfilePage from '@/components/pages/ProfilePage';
-import StreamManagerPage from '@/components/pages/StreamManagerPage';
-import StreamWidget from '@/components/pages/StreamWidget';
-import { TimerManagerProvider } from '@/hooks/useTimers';
-import Layout from '@/ra/Layout';
-import authProvider from '@/ra/authProvider';
-import dataProvider from '@/ra/dataProvider';
-import i18nProvider from '@/ra/i18nProvider';
-import store from '@/ra/store';
-import { darkTheme, lightTheme } from '@/ra/theme';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
-import { QueryClient } from '@tanstack/react-query';
 
 const {
   VITE_QUERY_STALE_TIME: QUERY_STALE_TIME = 30 * 1000, // 30 seconds

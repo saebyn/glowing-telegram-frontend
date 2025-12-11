@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw';
+import { HttpResponse, http } from 'msw';
 
 export const handlers = [
   http.get('https://api.twitch.tv/helix/channels', () => {

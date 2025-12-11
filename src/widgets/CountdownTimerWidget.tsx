@@ -1,6 +1,6 @@
+import { useRef } from 'react';
 import useTextJumble from '@/hooks/useTextJumble';
 import { useTimerManager } from '@/hooks/useTimers';
-import { useRef } from 'react';
 
 interface CountdownTimerWidgetProps {
   timerId: string;

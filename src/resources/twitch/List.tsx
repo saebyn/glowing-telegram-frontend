@@ -1,4 +1,3 @@
-import ThumbnailField from '@/components/atoms/ThumbnailField';
 import ImportIcon from '@mui/icons-material/ImportExport';
 import type { Stream } from '@saebyn/glowing-telegram-types';
 import {
@@ -13,6 +12,7 @@ import {
   useRefresh,
   useUnselectAll,
 } from 'react-admin';
+import ThumbnailField from '@/components/atoms/ThumbnailField';
 
 const StreamPanel = () => (
   <SimpleShowLayout>

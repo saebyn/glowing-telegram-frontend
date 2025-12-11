@@ -1,5 +1,5 @@
-import TimezoneSelect from '@/components/atoms/TimezoneSelect';
 import { type InputProps, useInput } from 'react-admin';
+import TimezoneSelect from '@/components/atoms/TimezoneSelect';
 
 type TimezoneSelectInputProps = InputProps<string> & {
   label?: string;

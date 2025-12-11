@@ -1,4 +1,3 @@
-import { BulkExportButton } from '@/components/organisms/OTIOExporter/Exporter';
 import {
   BooleanField,
   CreateButton,
@@ -16,6 +15,7 @@ import {
   TextField,
   TopToolbar,
 } from 'react-admin';
+import { BulkExportButton } from '@/components/organisms/OTIOExporter/Exporter';
 import RenderEpisodesButton from '../../components/atoms/RenderEpisodesButton';
 import UploadEpisodeToYoutubeButton from './UploadEpisodeToYoutubeButton';
 

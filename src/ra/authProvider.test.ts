@@ -1,5 +1,5 @@
-import { userManager } from '@/utilities/auth';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { userManager } from '@/utilities/auth';
 import authProvider from './authProvider';
 
 // Mock the auth utility module

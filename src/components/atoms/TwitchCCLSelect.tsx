@@ -1,9 +1,3 @@
-import type { Profile } from '@/hooks/useProfile';
-import {
-  type ContentClassificationLabel,
-  type ContentClassificationLabelDefinition,
-  getContentClassificationLabels,
-} from '@/utilities/twitch';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import FormControl from '@mui/material/FormControl';
@@ -15,6 +9,12 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useEffect, useId, useState } from 'react';
 import { useI18nProvider } from 'react-admin';
+import type { Profile } from '@/hooks/useProfile';
+import {
+  type ContentClassificationLabel,
+  type ContentClassificationLabelDefinition,
+  getContentClassificationLabels,
+} from '@/utilities/twitch';
 
 interface TwitchCCLSelectProps {
   label: string;

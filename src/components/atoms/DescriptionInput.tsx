@@ -5,7 +5,7 @@
  * and is used in the Edit and Create views. It extends the
  * TextInput component from react-admin.
  */
-import { TextInput, maxLength } from 'react-admin';
+import { maxLength, TextInput } from 'react-admin';
 
 // Derive the Props type from the TextInput component
 type Props = React.ComponentProps<typeof TextInput>;

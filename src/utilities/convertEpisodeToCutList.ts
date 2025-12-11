@@ -1,10 +1,10 @@
-import { parseIntoSeconds } from '@/utilities/isoDuration';
 import type {
   CutList,
   Episode,
   Track,
   VideoClip,
 } from '@saebyn/glowing-telegram-types';
+import { parseIntoSeconds } from '@/utilities/isoDuration';
 
 type TrackTimeRange = {
   start: string;

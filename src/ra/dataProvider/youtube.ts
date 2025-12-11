@@ -1,9 +1,9 @@
+import type { DataProvider } from 'react-admin';
 import {
   fetchAccessToken,
   generateAuthorizeUri,
   uploadEpisodesToYoutube,
 } from '@/api';
-import type { DataProvider } from 'react-admin';
 
 const dataProvider = {
   async getOne() {

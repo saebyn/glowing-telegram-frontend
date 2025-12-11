@@ -34,19 +34,17 @@ const RenderEpisodesButton = () => {
   }
 
   return (
-    <>
-      <Button
-        label="Render"
-        onClick={() => updateMany()}
-        color={getStatusColor({
-          isSuccess,
-          isPending,
-          isLoading,
-          error,
-        })}
-        disabled={isPending || isLoading}
-      />
-    </>
+    <Button
+      label="Render"
+      onClick={() => updateMany()}
+      color={getStatusColor({
+        isSuccess,
+        isPending,
+        isLoading,
+        error,
+      })}
+      disabled={isPending || isLoading}
+    />
   );
 };
 

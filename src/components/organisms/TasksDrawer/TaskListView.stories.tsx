@@ -1,8 +1,7 @@
-import TaskListView from './TaskListView';
-
 import { action } from '@storybook/addon-actions';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
+import TaskListView from './TaskListView';
 
 const queryClient = new QueryClient();
 

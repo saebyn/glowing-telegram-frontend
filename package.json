@@ -20,7 +20,7 @@
 		"build-storybook": "storybook build"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
+		"@biomejs/biome": "^2.3.8",
 		"@mui/x-date-pickers": "^7",
 		"@saebyn/glowing-telegram-video-editor": ">=0.1.9",
 		"@saebyn/glowing-telegram-types": ">=0.8.0",

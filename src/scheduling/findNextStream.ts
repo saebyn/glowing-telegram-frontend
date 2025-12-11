@@ -1,8 +1,7 @@
 import type { Series } from '@saebyn/glowing-telegram-types';
 import type { DateTime } from 'luxon';
-import type { StreamEvent } from './types';
-
 import generateEventsForDay from './generateEventsForDay';
+import type { StreamEvent } from './types';
 
 /**
  * Find the next stream event after a given date and time.

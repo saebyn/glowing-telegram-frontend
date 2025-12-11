@@ -1,5 +1,5 @@
-import { parseIntoSeconds } from '@/utilities/isoDuration';
 import type { Episode, VideoClip } from '@saebyn/glowing-telegram-types';
+import { parseIntoSeconds } from '@/utilities/isoDuration';
 import { FPS } from './constants';
 import floatJsonSerializer, { Float } from './floatJson';
 import {

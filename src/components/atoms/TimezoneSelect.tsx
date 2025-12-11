@@ -1,10 +1,7 @@
-import Autocomplete from '@mui/material/Autocomplete';
-import { createFilterOptions } from '@mui/material/Autocomplete';
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-
-import { useEffect, useState } from 'react';
-
 import type { RawTimeZone } from '@vvo/tzdb';
+import { useEffect, useState } from 'react';
 
 interface TimezoneSelectProps {
   label?: string;

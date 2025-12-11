@@ -1,6 +1,6 @@
+import type { DataProvider, GetListParams } from 'react-admin';
 import { fetchAccessToken, generateAuthorizeUri } from '@/api';
 import { getVideos } from '@/utilities/twitch';
-import type { DataProvider, GetListParams } from 'react-admin';
 
 const twitchDataProvider = {
   cursorPage: 1,

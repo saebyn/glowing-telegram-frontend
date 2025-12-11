@@ -1,6 +1,6 @@
-import { useTimerManager, useTimers } from '@/hooks/useTimers';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { useTimerManager, useTimers } from '@/hooks/useTimers';
 
 function Timers() {
   const timerManager = useTimerManager();

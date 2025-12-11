@@ -1,5 +1,5 @@
-import CountdownTimerWidget from '@/widgets/CountdownTimerWidget';
 import { useParams } from 'react-router-dom';
+import CountdownTimerWidget from '@/widgets/CountdownTimerWidget';
 
 function StreamWidget() {
   const { widget, params } = useParams();
@@ -24,7 +24,7 @@ function parseParams(params: string | undefined) {
   }
   try {
     return JSON.parse(atob(params));
-  } catch (e) {
+  } catch (_e) {
     return null;
   }
 }

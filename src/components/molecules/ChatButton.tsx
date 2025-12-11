@@ -1,6 +1,6 @@
-import type { ChatMessage } from '@/types';
 import { type FC, useState } from 'react';
 import { Button, useDataProvider } from 'react-admin';
+import type { ChatMessage } from '@/types';
 import ChatDialog from './ChatDialog';
 
 interface ChatButtonProps {

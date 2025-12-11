@@ -72,7 +72,7 @@ export default function floatJsonSerializer(
 
     const serialized: string[] = [];
     for (const key in value) {
-      if (Object.prototype.hasOwnProperty.call(value, key)) {
+      if (Object.hasOwn(value, key)) {
         serialized.push(`"${key}": ${recur(value[key])}`);
       }
     }
