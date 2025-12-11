@@ -43,7 +43,6 @@ const RenderEpisodesButton = () => {
         isLoading,
         error,
       })}
-      disabled={isPending || isLoading}
     />
   );
 };
