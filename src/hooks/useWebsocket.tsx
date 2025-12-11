@@ -6,7 +6,7 @@ import type {
   Status as TaskStatus,
 } from '@saebyn/glowing-telegram-types';
 import type { FC, ReactNode } from 'react';
-import { createContext, useContext, useEffect, useRef } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef } from 'react';
 import type { WidgetInstance } from '@/types';
 
 export interface TaskStatusWebsocketMessage {
@@ -74,29 +74,37 @@ export const WebsocketProvider: FC<{
   // websocket messages
   const subscriptions = useRef<Map<SubscriptionHandle, Callback>>(new Map());
 
+  // Queue for messages sent before WebSocket is open
+  const messageQueue = useRef<object[]>([]);
+
   // provide subscribe and unsubscribe methods to the children
-  const value = {
-    subscribe: (callback: Callback) => {
-      let id = Math.random();
+  // Memoize to prevent unnecessary re-renders of consuming components
+  const value = useMemo(
+    () => ({
+      subscribe: (callback: Callback) => {
+        let id = Math.random();
 
-      while (subscriptions.current.has(id)) {
-        id = Math.random();
-      }
+        while (subscriptions.current.has(id)) {
+          id = Math.random();
+        }
 
-      subscriptions.current.set(id, callback);
-      return id;
-    },
-    unsubscribe: (id: SubscriptionHandle) => {
-      subscriptions.current.delete(id);
-    },
-    send: (message: object) => {
-      if (websocket.current?.readyState === WebSocket.OPEN) {
-        websocket.current.send(JSON.stringify(message));
-      } else {
-        console.warn('⚠️ WebSocket not open, cannot send message');
-      }
-    },
-  };
+        subscriptions.current.set(id, callback);
+        return id;
+      },
+      unsubscribe: (id: SubscriptionHandle) => {
+        subscriptions.current.delete(id);
+      },
+      send: (message: object) => {
+        if (websocket.current?.readyState === WebSocket.OPEN) {
+          websocket.current.send(JSON.stringify(message));
+        } else {
+          console.debug('📤 Queueing message until WebSocket opens');
+          messageQueue.current.push(message);
+        }
+      },
+    }),
+    [], // Empty deps - these functions use refs so they don't need to change
+  );
 
   useEffect(() => {
     if (websocket.current && websocket.current.readyState === WebSocket.OPEN) {
@@ -117,6 +125,17 @@ export const WebsocketProvider: FC<{
       websocket.current.addEventListener('open', function (event) {
         console.log('🔗 Connected to websocket', event);
         this.send(JSON.stringify({ event: 'subscribe' }));
+
+        // Send any queued messages
+        if (messageQueue.current.length > 0) {
+          console.log(
+            `📤 Sending ${messageQueue.current.length} queued messages`,
+          );
+          for (const message of messageQueue.current) {
+            this.send(JSON.stringify(message));
+          }
+          messageQueue.current = [];
+        }
       });
 
       websocket.current.addEventListener('message', (event) => {
