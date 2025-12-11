@@ -1,4 +1,4 @@
-import { Create, SimpleForm, TextInput, required } from 'react-admin';
+import { Create, required, SimpleForm, TextInput } from 'react-admin';
 
 function StreamPlansCreate() {
   return (

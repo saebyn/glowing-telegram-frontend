@@ -1,4 +1,3 @@
-import TaskView from '@/components/atoms/TaskView';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import List from '@mui/material/List';
@@ -10,6 +9,7 @@ import type { Task } from '@saebyn/glowing-telegram-types';
 import type { DateTime } from 'luxon';
 import { useRef } from 'react';
 import { LoadingIndicator } from 'react-admin';
+import TaskView from '@/components/atoms/TaskView';
 import Notifications from './Notifications';
 
 const containerStyles = {

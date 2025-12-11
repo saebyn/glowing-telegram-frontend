@@ -1,5 +1,3 @@
-import type { Profile } from '@/hooks/useProfile';
-import { type TwitchCategory, searchCategories } from '@/utilities/twitch';
 import Alert from '@mui/material/Alert';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -7,6 +5,8 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import { debounce } from '@mui/material/utils';
 import { useEffect, useMemo, useState } from 'react';
+import type { Profile } from '@/hooks/useProfile';
+import { searchCategories, type TwitchCategory } from '@/utilities/twitch';
 
 const FETCH_CATEGORIES_DEBOUNCE_TIME = 300;
 

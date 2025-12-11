@@ -1,6 +1,3 @@
-import type { Profile } from '@/hooks/useProfile';
-import type { StreamEvent } from '@/scheduling/types';
-import { templateStreamSeries } from '@/utilities/template';
 import Alert from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -8,6 +5,9 @@ import Typography from '@mui/material/Typography';
 import type { Series } from '@saebyn/glowing-telegram-types';
 import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
+import type { Profile } from '@/hooks/useProfile';
+import type { StreamEvent } from '@/scheduling/types';
+import { templateStreamSeries } from '@/utilities/template';
 
 const upcomingStreamTimeStyle = {
   time: {

@@ -1,6 +1,6 @@
-import { authenticatedFetch } from '@/api';
 import type { DataProvider, Identifier } from 'react-admin';
 import { HttpError } from 'react-admin';
+import { authenticatedFetch } from '@/api';
 import * as cursorPaginationCache from './cursorPaginationCache';
 import inMemoryListCache from './inMemoryListCache';
 import resourceMap, { validateResource } from './resourceMap';
@@ -256,7 +256,7 @@ async function fetchResourceData<T>(
       const json = JSON.parse(text);
       body = json;
       message = json.message;
-    } catch (e) {
+    } catch (_e) {
       body = text;
       message = response.statusText || `${response.status} error`;
     }

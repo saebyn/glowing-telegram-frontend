@@ -1,10 +1,3 @@
-import TwitchOAuthButton from '@/components/atoms/TwitchOAuthButton';
-import AdManager from '@/components/molecules/AdManager';
-import StreamInfoEditor from '@/components/molecules/StreamInfoEditor';
-import Timers from '@/components/molecules/Timers';
-import UpcomingStream from '@/components/molecules/UpcomingStream';
-import useProfile from '@/hooks/useProfile';
-import findNextStream from '@/scheduling/findNextStream';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -21,6 +14,13 @@ import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
 import { useGetList } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
+import TwitchOAuthButton from '@/components/atoms/TwitchOAuthButton';
+import AdManager from '@/components/molecules/AdManager';
+import StreamInfoEditor from '@/components/molecules/StreamInfoEditor';
+import Timers from '@/components/molecules/Timers';
+import UpcomingStream from '@/components/molecules/UpcomingStream';
+import useProfile from '@/hooks/useProfile';
+import findNextStream from '@/scheduling/findNextStream';
 
 const streamManagerStyles = {
   root: {

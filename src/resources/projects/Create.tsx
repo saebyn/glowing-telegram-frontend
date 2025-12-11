@@ -1,9 +1,9 @@
 import {
   Create,
   type CreateProps,
+  required,
   SimpleForm,
   TextInput,
-  required,
 } from 'react-admin';
 
 const ProjectCreate = (props: CreateProps) => (

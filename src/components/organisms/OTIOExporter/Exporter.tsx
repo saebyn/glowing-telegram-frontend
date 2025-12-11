@@ -1,4 +1,5 @@
 import DownloadIcon from '@mui/icons-material/Download';
+import type { Episode, VideoClip } from '@saebyn/glowing-telegram-types';
 import {
   Button,
   useDataProvider,
@@ -6,8 +7,6 @@ import {
   useListContext,
   useRecordContext,
 } from 'react-admin';
-
-import type { Episode, VideoClip } from '@saebyn/glowing-telegram-types';
 import exporter from './export';
 
 function promptDownload(episode: Episode, videoClips: VideoClip[]) {

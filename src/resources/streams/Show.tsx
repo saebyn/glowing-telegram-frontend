@@ -1,5 +1,3 @@
-import EpisodesListButton from '@/components/atoms/EpisodesListButton';
-import ThumbnailField from '@/components/atoms/ThumbnailField';
 import {
   Datagrid,
   DateField,
@@ -10,6 +8,8 @@ import {
   SimpleShowLayout,
   TextField,
 } from 'react-admin';
+import EpisodesListButton from '@/components/atoms/EpisodesListButton';
+import ThumbnailField from '@/components/atoms/ThumbnailField';
 
 const StreamShow = (props: ShowProps) => (
   <Show {...props}>

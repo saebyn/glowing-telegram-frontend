@@ -1,14 +1,14 @@
-import { useGetManyReference, useGetOne, useRecordContext } from 'react-admin';
-import { useFormContext } from 'react-hook-form';
-
-import ChatButton from '@/components/molecules/ChatButton';
-import { parseIntoSeconds } from '@/utilities/isoDuration';
 import type {
   Episode,
   Series,
   TranscriptSegment,
   VideoClip,
 } from '@saebyn/glowing-telegram-types';
+import { useGetManyReference, useGetOne, useRecordContext } from 'react-admin';
+import { useFormContext } from 'react-hook-form';
+import ChatButton from '@/components/molecules/ChatButton';
+import { parseIntoSeconds } from '@/utilities/isoDuration';
+
 const EpisodeDescriptionChatButton = () => {
   const { setValue } = useFormContext();
   const record = useRecordContext<Episode>();

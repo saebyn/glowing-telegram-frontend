@@ -1,6 +1,6 @@
-import { handleOAuthCallback } from '@/api';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { handleOAuthCallback } from '@/api';
 
 function TwitchCallbackPage() {
   const searchParams = new URLSearchParams(window.location.search);

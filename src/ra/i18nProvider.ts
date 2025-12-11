@@ -1,8 +1,7 @@
+import type { TranslationMessages } from 'ra-core';
 import polyglotI18nProvider from 'ra-i18n-polyglot';
 import en from 'ra-language-english';
 import { resolveBrowserLocale } from 'react-admin';
-
-import type { TranslationMessages } from 'ra-core';
 
 const translations: { [key: string]: TranslationMessages } = { en };
 

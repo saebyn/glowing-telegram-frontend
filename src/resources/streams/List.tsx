@@ -1,4 +1,3 @@
-import EditorButton from '@/components/atoms/EditorButton';
 import Badge from '@mui/material/Badge';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
@@ -21,6 +20,7 @@ import {
   TextField,
   useListContext,
 } from 'react-admin';
+import EditorButton from '@/components/atoms/EditorButton';
 
 const streamsFilter = [
   <SearchInput source="title" alwaysOn key="title" />,

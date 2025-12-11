@@ -1,9 +1,9 @@
-import { userManager } from '@/utilities/auth';
 import type {
   TwitchAuthRequest,
   TwitchCallbackRequest,
   YouTubeCallbackRequest,
 } from '@saebyn/glowing-telegram-types';
+import { userManager } from '@/utilities/auth';
 
 export interface SubscribeChatResponse {
   success: boolean;
@@ -99,7 +99,7 @@ export async function fetchAccessToken(
       id: data.broadcaster_id,
       accessToken: data.access_token,
     };
-  } catch (error) {
+  } catch (_error) {
     return {
       id: 'twitchToken',
       valid: false,

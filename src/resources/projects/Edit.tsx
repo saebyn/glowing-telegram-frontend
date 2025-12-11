@@ -1,9 +1,9 @@
 import {
   Edit,
   type EditProps,
+  required,
   SimpleForm,
   TextInput,
-  required,
 } from 'react-admin';
 
 const ProjectEdit = (props: EditProps) => (

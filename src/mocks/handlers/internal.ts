@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { http, HttpResponse } from 'msw';
+import { HttpResponse, http } from 'msw';
 
 const profiles = new Map<string, Record<string, unknown>>([
   [

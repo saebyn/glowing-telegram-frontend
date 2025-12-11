@@ -1,4 +1,4 @@
-import { type DataProvider, combineDataProviders } from 'react-admin';
+import { combineDataProviders, type DataProvider } from 'react-admin';
 
 import chatDataProvider from './aiChat';
 import renderDataProvider from './render';

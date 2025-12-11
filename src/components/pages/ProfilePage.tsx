@@ -1,13 +1,3 @@
-import {
-  type EventSubSubscription,
-  getEventSubChatStatus,
-  subscribeToEventSubChat,
-} from '@/api';
-import TagEditor from '@/components/atoms/TagEditor';
-import TimezoneSelect from '@/components/atoms/TimezoneSelect';
-import TwitchOAuthButton from '@/components/atoms/TwitchOAuthButton';
-import YouTubeOAuthButton from '@/components/atoms/YouTubeOAuthButton';
-import useProfile, { type Profile } from '@/hooks/useProfile';
 import CheckIcon from '@mui/icons-material/Check';
 import {
   Avatar,
@@ -26,6 +16,16 @@ import {
   useTranslate,
   useUpdate,
 } from 'react-admin';
+import {
+  type EventSubSubscription,
+  getEventSubChatStatus,
+  subscribeToEventSubChat,
+} from '@/api';
+import TagEditor from '@/components/atoms/TagEditor';
+import TimezoneSelect from '@/components/atoms/TimezoneSelect';
+import TwitchOAuthButton from '@/components/atoms/TwitchOAuthButton';
+import YouTubeOAuthButton from '@/components/atoms/YouTubeOAuthButton';
+import useProfile, { type Profile } from '@/hooks/useProfile';
 
 const ProfilePage = () => {
   const translate = useTranslate();

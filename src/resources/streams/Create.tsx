@@ -1,5 +1,3 @@
-import DescriptionInput from '@/components/atoms/DescriptionInput';
-import TitleInput from '@/components/atoms/TitleInput';
 import {
   Create,
   type CreateProps,
@@ -8,6 +6,8 @@ import {
   SimpleForm,
   TextInput,
 } from 'react-admin';
+import DescriptionInput from '@/components/atoms/DescriptionInput';
+import TitleInput from '@/components/atoms/TitleInput';
 
 const StreamCreate = (props: CreateProps) => (
   <Create {...props} title="Create a Stream" redirect="list">

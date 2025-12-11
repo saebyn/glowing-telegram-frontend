@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest';
-
 import type { Episode, VideoClip } from '@saebyn/glowing-telegram-types';
+import { describe, expect, it } from 'vitest';
 import exportOTIO, { generateChildren, OTIOError } from './export';
 import type { ConvertedEpisode, InternalTrack } from './types';
 

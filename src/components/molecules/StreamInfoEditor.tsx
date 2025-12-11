@@ -1,15 +1,3 @@
-import LanguageSelect from '@/components/atoms/LanguageSelect';
-import TagEditor from '@/components/atoms/TagEditor';
-import TwitchCCTAutocomplete from '@/components/atoms/TwitchCCLSelect';
-import TwitchCategoryAutocomplete from '@/components/atoms/TwitchCategoryAutocomplete';
-import type { Profile } from '@/hooks/useProfile';
-import type { StreamEvent } from '@/scheduling/types';
-import { templateStreamSeries } from '@/utilities/template';
-import {
-  type GetChannelInformationResponse,
-  getChannelInformation,
-  modifyChannelInformation,
-} from '@/utilities/twitch';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -21,9 +9,20 @@ import FormGroup from '@mui/material/FormGroup';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import type { Series } from '@saebyn/glowing-telegram-types';
-
 import { useEffect, useState } from 'react';
 import { useTranslate } from 'react-admin';
+import LanguageSelect from '@/components/atoms/LanguageSelect';
+import TagEditor from '@/components/atoms/TagEditor';
+import TwitchCategoryAutocomplete from '@/components/atoms/TwitchCategoryAutocomplete';
+import TwitchCCTAutocomplete from '@/components/atoms/TwitchCCLSelect';
+import type { Profile } from '@/hooks/useProfile';
+import type { StreamEvent } from '@/scheduling/types';
+import { templateStreamSeries } from '@/utilities/template';
+import {
+  type GetChannelInformationResponse,
+  getChannelInformation,
+  modifyChannelInformation,
+} from '@/utilities/twitch';
 
 interface StreamInfoEditorProps {
   nextScheduledStream: StreamEvent | Series | null;
