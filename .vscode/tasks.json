@@ -6,9 +6,7 @@
       "script": "lint:vscode",
       "problemMatcher": {
         "owner": "biome",
-        "fileLocation": [
-          "absolute"
-        ],
+        "fileLocation": "relative",
         "pattern": {
           "regexp": "^::(error|warning) title=(.+),file=(.+),line=(\\d+),endLine=(\\d+),col=(\\d+),endColumn=(\\d+)::(.+)$",
           "severity": 1,
