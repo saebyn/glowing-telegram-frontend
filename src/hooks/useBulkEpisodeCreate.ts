@@ -201,8 +201,10 @@ function createEpisodesFromClips(
 
   const titleTemplate =
     series.episode_title_template ||
+    // biome-ignore lint/suspicious/noTemplateCurlyInString: used for template replacement
     '${title} - Episode ${episode_order_index}';
   const descriptionTemplate =
+    // biome-ignore lint/suspicious/noTemplateCurlyInString: used for template replacement
     series.episode_description_template || '${stream_description}';
 
   const episodes: Partial<Episode>[] = clips

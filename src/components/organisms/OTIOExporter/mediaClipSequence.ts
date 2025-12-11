@@ -13,9 +13,7 @@ export function findMediaClipCursorStart(
   time: number,
 ): MediaClipCursor | null {
   const clip = clips.find((clip) => {
-    if (time >= clip.start && time < clip.end) {
-      return true;
-    }
+    return time >= clip.start && time < clip.end;
   });
 
   if (clip) {
@@ -37,9 +35,7 @@ export function findMediaClipCursorEnd(
     const startsAfter = time > clip.start;
     const endsBefore = time <= clip.end;
     const isLastClip = clips.indexOf(clip) === clips.length - 1;
-    if (startsAfter && (endsBefore || isLastClip)) {
-      return true;
-    }
+    return startsAfter && (endsBefore || isLastClip);
   });
 
   if (clip) {
