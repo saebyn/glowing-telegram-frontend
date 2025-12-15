@@ -102,10 +102,11 @@ export const WebsocketProvider: FC<{
   const messageQueue = useRef<object[]>([]);
 
   // Reconnection state
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const reconnectTimeoutRef = useRef<number | null>(null);
   const reconnectAttempts = useRef(0);
   const maxReconnectDelay = 30000; // 30 seconds
   const baseReconnectDelay = 1000; // 1 second
+  const maxReconnectAttempts = 10; // Cap at 10 attempts to prevent overflow
   const intentionalCloseRef = useRef(false);
 
   // provide subscribe and unsubscribe methods to the children
@@ -227,8 +228,13 @@ export const WebsocketProvider: FC<{
       }
 
       reconnectAttempts.current += 1;
+      // Cap attempts to prevent overflow in exponential calculation
+      const cappedAttempts = Math.min(
+        reconnectAttempts.current,
+        maxReconnectAttempts,
+      );
       const delay = Math.min(
-        baseReconnectDelay * 2 ** reconnectAttempts.current,
+        baseReconnectDelay * 2 ** cappedAttempts,
         maxReconnectDelay,
       );
 
@@ -240,7 +246,7 @@ export const WebsocketProvider: FC<{
       reconnectTimeoutRef.current = setTimeout(() => {
         reconnectTimeoutRef.current = null;
         connect();
-      }, delay);
+      }, delay) as unknown as number;
     };
 
     // Initialize connection
