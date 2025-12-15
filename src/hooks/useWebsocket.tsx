@@ -6,8 +6,17 @@ import type {
   Status as TaskStatus,
 } from '@saebyn/glowing-telegram-types';
 import type { FC, ReactNode } from 'react';
-import { createContext, useContext, useEffect, useMemo, useRef } from 'react';
+
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useGetIdentity } from 'react-admin';
+
 import type { WidgetInstance } from '@/types';
 
 export interface TaskStatusWebsocketMessage {
@@ -53,12 +62,20 @@ export type WebsocketMessage =
 type Callback = (message: WebsocketMessage) => void;
 type SubscriptionHandle = number;
 
+export type ConnectionStatus =
+  | 'connecting'
+  | 'connected'
+  | 'disconnected'
+  | 'reconnecting'
+  | 'error';
+
 const WebsocketContext = createContext<
   | {
       subscribe: (callback: Callback) => SubscriptionHandle;
       unsubscribe: (id: SubscriptionHandle) => void;
       send: (message: object) => void;
       isEmbedMode: boolean;
+      status: ConnectionStatus;
     }
   | undefined
 >(undefined);
@@ -69,6 +86,9 @@ export const WebsocketProvider: FC<{
   url: string | null;
   token?: string;
 }> = ({ url, token: embedToken, children }) => {
+  // Connection status state
+  const [status, setStatus] = useState<ConnectionStatus>('disconnected');
+
   // use useRef to keep the websocket instance between renders
   const websocket = useRef<WebSocket | undefined>(undefined);
 
@@ -80,6 +100,13 @@ export const WebsocketProvider: FC<{
 
   // Queue for messages sent before WebSocket is open
   const messageQueue = useRef<object[]>([]);
+
+  // Reconnection state
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const reconnectAttempts = useRef(0);
+  const maxReconnectDelay = 30000; // 30 seconds
+  const baseReconnectDelay = 1000; // 1 second
+  const intentionalCloseRef = useRef(false);
 
   // provide subscribe and unsubscribe methods to the children
   // Memoize to prevent unnecessary re-renders of consuming components
@@ -107,12 +134,14 @@ export const WebsocketProvider: FC<{
         }
       },
       isEmbedMode: !!embedToken,
+      status,
     }),
-    [embedToken], // Include embedToken so isEmbedMode updates if token changes
+    [embedToken, status],
   );
 
   useEffect(() => {
     const token = embedToken ?? identity?.idToken;
+    const wsUrl = `${url}?token=${token}`;
 
     if (websocket.current && websocket.current.readyState === WebSocket.OPEN) {
       console.log('🔗 Reusing existing websocket connection');
@@ -121,50 +150,115 @@ export const WebsocketProvider: FC<{
 
     if (!url) {
       console.debug('🚨 No websocket URL provided');
+      setStatus('disconnected');
       return;
     }
 
-    if (websocket.current === undefined) {
-      const wsUrl = `${url}?token=${token}`;
+    // Function to establish WebSocket connection
+    const connect = () => {
+      if (websocket.current?.readyState === WebSocket.OPEN) {
+        console.log('🔗 Reusing existing websocket connection');
+        return;
+      }
 
-      websocket.current = new WebSocket(wsUrl);
-      websocket.current.addEventListener('open', function (event) {
-        console.log('🔗 Connected to websocket', event);
-        this.send(JSON.stringify({ event: 'subscribe' }));
+      // Clear any existing connection
+      if (websocket.current) {
+        websocket.current.close();
+      }
 
-        // Send any queued messages
-        if (messageQueue.current.length > 0) {
-          console.log(
-            `📤 Sending ${messageQueue.current.length} queued messages`,
-          );
-          for (const message of messageQueue.current) {
-            this.send(JSON.stringify(message));
+      setStatus('connecting');
+
+      try {
+        websocket.current = new WebSocket(wsUrl);
+
+        websocket.current.addEventListener('open', function (event) {
+          console.log('🔗 Connected to websocket', event);
+          setStatus('connected');
+          reconnectAttempts.current = 0; // Reset reconnect attempts on success
+
+          this.send(JSON.stringify({ event: 'subscribe' }));
+
+          // Send any queued messages
+          if (messageQueue.current.length > 0) {
+            console.log(
+              `📤 Sending ${messageQueue.current.length} queued messages`,
+            );
+            for (const message of messageQueue.current) {
+              this.send(JSON.stringify(message));
+            }
+            messageQueue.current = [];
           }
-          messageQueue.current = [];
-        }
-      });
+        });
 
-      websocket.current.addEventListener('message', (event) => {
-        console.log('📩 Message from server', event.data);
-        const message = JSON.parse(event.data);
+        websocket.current.addEventListener('message', (event) => {
+          console.log('📩 Message from server', event.data);
+          const message = JSON.parse(event.data);
 
-        for (const callback of subscriptions.current.values()) {
-          callback(message);
-        }
-      });
+          for (const callback of subscriptions.current.values()) {
+            callback(message);
+          }
+        });
 
-      websocket.current.addEventListener('close', (event) => {
-        console.log('❌ Disconnected from websocket', event);
-      });
+        websocket.current.addEventListener('close', (event) => {
+          console.log('❌ Disconnected from websocket', event);
+          setStatus('disconnected');
 
-      websocket.current.addEventListener('error', (event) => {
-        console.error('⚠️ WebSocket error', event);
-      });
-    }
+          // Only attempt reconnection if close wasn't intentional
+          if (!intentionalCloseRef.current) {
+            attemptReconnect();
+          }
+        });
+
+        websocket.current.addEventListener('error', (event) => {
+          console.error('⚠️ WebSocket error', event);
+          setStatus('error');
+        });
+      } catch (error) {
+        console.error('Failed to create WebSocket connection:', error);
+        setStatus('error');
+        attemptReconnect();
+      }
+    };
+
+    // Function to attempt reconnection with exponential backoff
+    const attemptReconnect = () => {
+      if (reconnectTimeoutRef.current) {
+        return; // Already attempting reconnection
+      }
+
+      reconnectAttempts.current += 1;
+      const delay = Math.min(
+        baseReconnectDelay * 2 ** reconnectAttempts.current,
+        maxReconnectDelay,
+      );
+
+      console.log(
+        `🔄 Attempting reconnection in ${delay}ms (attempt ${reconnectAttempts.current})`,
+      );
+      setStatus('reconnecting');
+
+      reconnectTimeoutRef.current = setTimeout(() => {
+        reconnectTimeoutRef.current = null;
+        connect();
+      }, delay);
+    };
+
+    // Initialize connection
+    intentionalCloseRef.current = false;
+    connect();
 
     return () => {
       console.log('🔌 Closing websocket connection');
+      intentionalCloseRef.current = true;
+
+      // Clear any pending reconnect attempts
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
+      }
+
       websocket.current?.close();
+      websocket.current = undefined;
     };
   }, [url, embedToken, identity?.idToken]);
 
