@@ -213,6 +213,10 @@ export const WebsocketProvider: FC<{
         websocket.current.addEventListener('error', (event) => {
           console.error('⚠️ WebSocket error', event);
           setStatus('error');
+          // Trigger immediate reconnection on error for predictable behavior
+          if (!intentionalCloseRef.current) {
+            attemptReconnect();
+          }
         });
       } catch (error) {
         console.error('Failed to create WebSocket connection:', error);
@@ -262,6 +266,9 @@ export const WebsocketProvider: FC<{
         clearTimeout(reconnectTimeoutRef.current);
         reconnectTimeoutRef.current = null;
       }
+
+      // Reset reconnect attempts counter to prevent stale values on remount
+      reconnectAttempts.current = 0;
 
       websocket.current?.close();
       websocket.current = undefined;
