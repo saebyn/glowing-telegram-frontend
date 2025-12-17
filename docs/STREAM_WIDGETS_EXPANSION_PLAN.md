@@ -112,9 +112,9 @@ interface CountdownTimerConfig {
 }
 
 interface CountdownTimerState {
-  durationLeft: number;                 // Remaining time in seconds
+  duration_left: number;                 // Remaining time in seconds
   enabled: boolean;                     // Is timer running
-  lastTickTimestamp: string;            // ISO timestamp of last tick
+  last_tick_timestamp: string;            // ISO timestamp of last tick
 }
 ```
 
@@ -563,12 +563,12 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
     title: string;
   };
   
-  const { durationLeft } = widget.state as {
-    durationLeft: number;
+  const { duration_left, enabled } = widget.state as {
+    duration_left: number;
     enabled: boolean;
   };
 
-  const countdownTimeFormatted = new Date(durationLeft * 1000)
+  const countdownTimeFormatted = new Date(duration_left * 1000)
     .toISOString()
     .substring(14, 14 + 5);
 

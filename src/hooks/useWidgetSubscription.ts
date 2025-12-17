@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import type { WidgetInstance } from '@/types';
 import { useWebsocket } from './useWebsocket';
 
-export function useWidgetSubscription(widgetId: string) {
+export function useWidgetSubscription<
+  T extends WidgetInstance = WidgetInstance,
+>(widgetId: string) {
   const websocket = useWebsocket();
-  const [widget, setWidget] = useState<WidgetInstance | null>(null);
+  const [widget, setWidget] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,7 +27,7 @@ export function useWidgetSubscription(widgetId: string) {
       switch (message.type) {
         case 'WIDGET_INITIAL_STATE':
           if (message.widgetId === widgetId) {
-            setWidget(message.widget);
+            setWidget(message.widget as T);
             setLoading(false);
             setError(null); // Clear any previous errors
           }
@@ -96,6 +98,7 @@ export function useWidgetSubscription(widgetId: string) {
 
   return {
     widget,
+    setWidget,
     loading,
     error,
     executeAction,

@@ -1,10 +1,28 @@
-import { useRef } from 'react';
+import { DateTime, Duration } from 'luxon';
+import { useEffect, useRef } from 'react';
 import useTextJumble from '@/hooks/useTextJumble';
 import { useWidgetSubscription } from '@/hooks/useWidgetSubscription';
-import type { CountdownTimerConfig, CountdownTimerState } from '@/types';
+import type { CountdownTimerWidgetInstance } from '@/types';
 
 interface CountdownTimerWidgetProps {
   widgetId: string;
+}
+
+function calculateDurationLeft(widget: CountdownTimerWidgetInstance): Duration {
+  if (!widget.state.enabled) {
+    return Duration.fromObject({ seconds: widget.state.duration_left });
+  }
+
+  const lastTick = DateTime.fromISO(widget.state.last_tick_timestamp);
+  const now = DateTime.now();
+  const elapsedSeconds = now.diff(lastTick, 'seconds').seconds;
+
+  return Duration.fromObject({
+    seconds: Math.max(
+      0,
+      widget.state.duration_left - Math.floor(elapsedSeconds),
+    ),
+  });
 }
 
 /**
@@ -21,7 +39,33 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
   useTextJumble(titleRef);
 
   // Subscribe to widget via WebSocket
-  const { widget, loading, error } = useWidgetSubscription(widgetId);
+  const { widget, loading, error, setWidget } =
+    useWidgetSubscription<CountdownTimerWidgetInstance>(widgetId);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setWidget((prevWidget) => {
+        if (!prevWidget) return prevWidget;
+
+        if (prevWidget.state.enabled && prevWidget.state.duration_left > 0) {
+          const now = DateTime.now();
+          const newDurationLeft = calculateDurationLeft(prevWidget);
+
+          return {
+            ...prevWidget,
+            state: {
+              ...prevWidget.state,
+              duration_left: newDurationLeft.as('seconds'),
+              last_tick_timestamp: now.toISO(),
+            },
+          };
+        }
+        return prevWidget;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [setWidget]);
 
   if (loading) {
     return <div className="screen-content">Loading...</div>;
@@ -31,21 +75,15 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
     return <div className="screen-content">Error loading widget</div>;
   }
 
-  // Extract config and state
-  const config = widget.config as unknown as CountdownTimerConfig;
-  const state = widget.state as unknown as CountdownTimerState;
-
-  const countdownTimeFormatted = new Date(state.durationLeft * 1000)
-    .toISOString()
-    .substring(14, 14 + 5);
+  const durationRemaining = calculateDurationLeft(widget);
 
   return (
     <div className="screen-content">
-      <p>{config.text}</p>
-      <h1 ref={titleRef}>{config.title}</h1>
+      <p>{widget.config.text}</p>
+      <h1 ref={titleRef}>{widget.config.title}</h1>
 
       <p className="countdown">
-        <span className="countdown-time">{countdownTimeFormatted}</span>
+        <span className="countdown-time">{durationRemaining.toHuman()}</span>
       </p>
     </div>
   );
