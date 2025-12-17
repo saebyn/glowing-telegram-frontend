@@ -1,42 +1,41 @@
 import { CheckCircle, CloudOff, ErrorOutline, Sync } from '@mui/icons-material';
 import { Chip } from '@mui/material';
-import type { ReactElement } from 'react';
 import type { ConnectionStatus } from '@/hooks/useWebsocket';
 import { useWebsocket } from '@/hooks/useWebsocket';
 
-const statusConfig: Record<
-  ConnectionStatus,
-  {
-    label: string;
-    color: 'success' | 'error' | 'warning' | 'default';
-    icon: ReactElement;
+const getStatusConfig = (status: ConnectionStatus) => {
+  switch (status) {
+    case 'connected':
+      return {
+        label: 'Connected',
+        color: 'success' as const,
+        icon: <CheckCircle />,
+      };
+    case 'connecting':
+      return {
+        label: 'Connecting...',
+        color: 'default' as const,
+        icon: <Sync />,
+      };
+    case 'reconnecting':
+      return {
+        label: 'Reconnecting...',
+        color: 'warning' as const,
+        icon: <Sync />,
+      };
+    case 'disconnected':
+      return {
+        label: 'Disconnected',
+        color: 'error' as const,
+        icon: <CloudOff />,
+      };
+    case 'error':
+      return {
+        label: 'Error',
+        color: 'error' as const,
+        icon: <ErrorOutline />,
+      };
   }
-> = {
-  connected: {
-    label: 'Connected',
-    color: 'success',
-    icon: <CheckCircle />,
-  },
-  connecting: {
-    label: 'Connecting...',
-    color: 'default',
-    icon: <Sync />,
-  },
-  reconnecting: {
-    label: 'Reconnecting...',
-    color: 'warning',
-    icon: <Sync />,
-  },
-  disconnected: {
-    label: 'Disconnected',
-    color: 'error',
-    icon: <CloudOff />,
-  },
-  error: {
-    label: 'Error',
-    color: 'error',
-    icon: <ErrorOutline />,
-  },
 };
 
 export const WebSocketStatusIndicator = () => {
@@ -47,7 +46,7 @@ export const WebSocketStatusIndicator = () => {
     return null;
   }
 
-  const config = statusConfig[websocket.status];
+  const config = getStatusConfig(websocket.status);
 
   return (
     <Chip
