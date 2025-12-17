@@ -152,7 +152,7 @@ const WidgetEdit = (props: EditProps) => (
         Current State
       </Typography>
       <NumberInput
-        source="state.durationLeft"
+        source="state.duration_left"
         label="Duration Left (seconds)"
       />
       <BooleanInput source="state.enabled" label="Timer Enabled" />
