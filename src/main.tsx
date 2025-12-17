@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client';
 
 import '@saebyn/glowing-telegram-video-editor/styles.css';
+import './index.css';
 
 import App from '@/App.tsx';
 
