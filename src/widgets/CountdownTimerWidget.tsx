@@ -25,32 +25,43 @@ function calculateDurationLeft(widget: CountdownTimerWidgetInstance): Duration {
   });
 }
 
+// Audio configuration constants
+const BEEP_FREQUENCY = 800; // Hz
+const BEEP_INITIAL_VOLUME = 0.3;
+const BEEP_FINAL_VOLUME = 0.01;
+const BEEP_DURATION = 0.5; // seconds
+
 function playEndSound() {
-  // Create a simple beep sound using Web Audio API
-  const audioContext = new (
-    window.AudioContext || (window as any).webkitAudioContext
-  )();
-  const oscillator = audioContext.createOscillator();
-  const gainNode = audioContext.createGain();
+  try {
+    // Create a simple beep sound using Web Audio API
+    const audioContext = new (
+      window.AudioContext || (window as any).webkitAudioContext
+    )();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
 
-  oscillator.connect(gainNode);
-  gainNode.connect(audioContext.destination);
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
 
-  oscillator.frequency.value = 800; // Frequency in Hz
-  oscillator.type = 'sine';
+    oscillator.frequency.value = BEEP_FREQUENCY;
+    oscillator.type = 'sine';
 
-  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-  gainNode.gain.exponentialRampToValueAtTime(
-    0.01,
-    audioContext.currentTime + 0.5,
-  );
+    gainNode.gain.setValueAtTime(BEEP_INITIAL_VOLUME, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(
+      BEEP_FINAL_VOLUME,
+      audioContext.currentTime + BEEP_DURATION,
+    );
 
-  oscillator.start(audioContext.currentTime);
-  oscillator.stop(audioContext.currentTime + 0.5);
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + BEEP_DURATION);
 
-  // Vibrate if supported
-  if ('vibrate' in navigator) {
-    navigator.vibrate([200, 100, 200]);
+    // Vibrate if supported
+    if ('vibrate' in navigator) {
+      navigator.vibrate([200, 100, 200]);
+    }
+  } catch (error) {
+    // Silently fail if Web Audio API is not supported
+    console.debug('Web Audio API not supported:', error);
   }
 }
 
@@ -204,6 +215,7 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
               onClick={togglePause}
               className="mt-4 px-6 py-3 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50"
               type="button"
+              aria-label={isPaused ? 'Resume timer' : 'Pause timer'}
             >
               {isPaused ? '▶️ Resume' : '⏸️ Pause'}
             </button>
