@@ -65,7 +65,7 @@ describe('WebSocket Reconnection Logic', () => {
     );
     expect(delay5).toBe(30000);
 
-    // Tenth attempt: capped at max attempts, so 2^10 = 1024000ms, capped at 30000ms
+    // Tenth attempt: capped at max attempts, so 1000 * 2^10 = 1024000ms, capped at 30000ms
     const delay10 = Math.min(
       baseDelay * 2 ** Math.min(10, maxReconnectAttempts),
       maxDelay,
