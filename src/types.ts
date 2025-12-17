@@ -52,29 +52,40 @@ export interface FindFilesResponse {
   entries: FileEntry[];
 }
 
+type WidgetState = Record<string, unknown>;
+type WidgetConfig = Record<string, unknown>;
+
 // Widget Types
-export interface WidgetInstance {
+export interface WidgetInstance<
+  T extends WidgetState = WidgetState,
+  U extends WidgetConfig = WidgetConfig,
+> {
   id: string;
   title: string;
   user_id: string;
   type: string;
   access_token: string;
-  config: Record<string, unknown>;
-  state: Record<string, unknown>;
+  config: U;
+  state: T;
   active: boolean;
   created_at: string;
   updated_at: string;
 }
 
-export interface CountdownTimerConfig {
+export interface CountdownTimerConfig extends WidgetConfig {
   timerId: string;
   text: string;
   title: string;
   duration: number;
 }
 
-export interface CountdownTimerState {
-  durationLeft: number;
+export interface CountdownTimerState extends WidgetState {
+  duration_left: number;
   enabled: boolean;
-  lastTickTimestamp: string;
+  last_tick_timestamp: string;
 }
+
+export type CountdownTimerWidgetInstance = WidgetInstance<
+  CountdownTimerState,
+  CountdownTimerConfig
+>;

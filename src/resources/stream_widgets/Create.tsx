@@ -46,7 +46,7 @@ const WidgetCreate = (props: CreateProps) => {
 
         {/* Initial State */}
         <NumberInput
-          source="state.durationLeft"
+          source="state.duration_left"
           label="Duration Left (seconds)"
           helperText="Initial time remaining"
         />

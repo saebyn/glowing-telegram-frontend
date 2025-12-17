@@ -18,9 +18,9 @@ export const countdownTimerDefinition: WidgetDefinition = {
     duration: 300, // 5 minutes in seconds
   },
   defaultState: {
-    durationLeft: 300,
+    duration_left: 300,
     enabled: false,
-    lastTickTimestamp: new Date().toISOString(),
+    last_tick_timestamp: new Date().toISOString(),
   },
   actions: [
     {
