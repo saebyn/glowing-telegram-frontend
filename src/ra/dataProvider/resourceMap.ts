@@ -8,6 +8,7 @@ const resourceMap = {
   projects: 'records/projects',
   streamIngest: 'stream',
   stream_widgets: 'records/stream_widgets',
+  chat: 'records/chat_messages',
 } as const;
 
 export default resourceMap;
