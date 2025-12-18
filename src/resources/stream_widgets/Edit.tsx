@@ -1,6 +1,7 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { Alert, Box, Typography } from '@mui/material';
+import { DateTime } from 'luxon';
 import { useState } from 'react';
 import {
   BooleanInput,
@@ -124,40 +125,57 @@ const WidgetEditToolbar = (props: any) => (
   </Toolbar>
 );
 
-const WidgetEdit = (props: EditProps) => (
-  <Edit {...props}>
-    <SimpleForm toolbar={<WidgetEditToolbar />}>
-      <TextInput source="title" validate={[required()]} fullWidth />
-      <SelectInput
-        source="type"
-        choices={widgetRegistry.getChoices()}
-        validate={[required()]}
-        disabled
-      />
-      <BooleanInput source="active" />
+const WidgetEdit = (props: EditProps) => {
+  // Transform function to update last_tick_timestamp when duration_left changes
+  const transform = (data: any) => {
+    // If duration_left is being set, update last_tick_timestamp to current time
+    if (data.state?.duration_left !== undefined) {
+      return {
+        ...data,
+        state: {
+          ...data.state,
+          last_tick_timestamp: DateTime.now().toISO(),
+        },
+      };
+    }
+    return data;
+  };
 
-      <CopyWidgetUrlButton />
-      <TextInput source="access_token" label="Access Token" readOnly={true} />
-      <RegenerateTokenButton />
+  return (
+    <Edit {...props} transform={transform}>
+      <SimpleForm toolbar={<WidgetEditToolbar />}>
+        <TextInput source="title" validate={[required()]} fullWidth />
+        <SelectInput
+          source="type"
+          choices={widgetRegistry.getChoices()}
+          validate={[required()]}
+          disabled
+        />
+        <BooleanInput source="active" />
 
-      {/* Countdown Timer Configuration */}
-      <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
-        Configuration
-      </Typography>
-      <TextInput source="config.text" label="Timer Text" fullWidth />
-      <TextInput source="config.title" label="Timer Title" fullWidth />
-      <NumberInput source="config.duration" label="Duration (seconds)" />
+        <CopyWidgetUrlButton />
+        <TextInput source="access_token" label="Access Token" readOnly={true} />
+        <RegenerateTokenButton />
 
-      <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
-        Current State
-      </Typography>
-      <NumberInput
-        source="state.duration_left"
-        label="Duration Left (seconds)"
-      />
-      <BooleanInput source="state.enabled" label="Timer Enabled" />
-    </SimpleForm>
-  </Edit>
-);
+        {/* Countdown Timer Configuration */}
+        <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+          Configuration
+        </Typography>
+        <TextInput source="config.text" label="Timer Text" fullWidth />
+        <TextInput source="config.title" label="Timer Title" fullWidth />
+        <NumberInput source="config.duration" label="Duration (seconds)" />
+
+        <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+          Current State
+        </Typography>
+        <NumberInput
+          source="state.duration_left"
+          label="Duration Left (seconds)"
+        />
+        <BooleanInput source="state.enabled" label="Timer Enabled" />
+      </SimpleForm>
+    </Edit>
+  );
+};
 
 export default WidgetEdit;
