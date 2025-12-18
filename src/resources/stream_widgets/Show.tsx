@@ -1,7 +1,6 @@
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import {
   DateField,
-  FunctionField,
   Show,
   SimpleShowLayout,
   TextField,
@@ -10,10 +9,7 @@ import {
 import { WebsocketProvider } from '@/hooks/useWebsocket';
 import CountdownTimerWidget from '@/widgets/CountdownTimerWidget';
 
-const {
-  VITE_APP_URL: APP_URL = window.location.origin,
-  VITE_WEBSOCKET_URL: WEBSOCKET_URL,
-} = import.meta.env;
+const { VITE_WEBSOCKET_URL: WEBSOCKET_URL } = import.meta.env;
 
 function WidgetPreview() {
   const record = useRecordContext();
