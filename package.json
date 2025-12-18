@@ -19,10 +19,12 @@
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build"
 	},
+	"peerDependencies": {
+		"@mui/icons-material": "^6.4.7",
+		"@mui/material": "^6.0.0"
+	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.3.8",
-		"@mui/icons-material": "^6.4.7",
-		"@mui/material": "^6.0.0",
 		"@mui/x-date-pickers": "^7",
 		"@saebyn/glowing-telegram-types": ">=0.8.0",
 		"@saebyn/glowing-telegram-video-editor": ">=0.1.9",
