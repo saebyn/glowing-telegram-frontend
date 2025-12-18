@@ -15,6 +15,7 @@ import i18nProvider from '@/ra/i18nProvider';
 import Layout from '@/ra/Layout';
 import store from '@/ra/store';
 import { darkTheme, lightTheme } from '@/ra/theme';
+import chat from '@/resources/chat';
 import episodes from '@/resources/episodes';
 import projects from '@/resources/projects';
 import streamPlans, { StreamPlansCalendar } from '@/resources/stream_plans';
@@ -89,6 +90,7 @@ function App() {
               {...twitch}
               options={{ label: 'Twitch Streams' }}
             />
+            <Resource name="chat" {...chat} />
             <Resource name="profile" />
 
             <CustomRoutes>
