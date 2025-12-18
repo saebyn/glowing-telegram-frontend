@@ -2,7 +2,6 @@ import type { DataProvider, Identifier } from 'react-admin';
 import { HttpError } from 'react-admin';
 import { authenticatedFetch } from '@/api';
 import * as cursorPaginationCache from './cursorPaginationCache';
-import inMemoryListCache from './inMemoryListCache';
 import resourceMap, { validateResource } from './resourceMap';
 
 const { VITE_API_URL: baseApiUrl } = import.meta.env;
