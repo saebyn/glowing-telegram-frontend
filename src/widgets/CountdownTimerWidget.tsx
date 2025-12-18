@@ -89,13 +89,11 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
       setWidget((prevWidget) => {
         if (!prevWidget) return prevWidget;
 
-        if (
-          prevWidget.state.enabled &&
-          prevWidget.state.duration_left > 0 &&
-          !isPaused
-        ) {
+        if (prevWidget.state.enabled && prevWidget.state.duration_left > 0) {
           const now = DateTime.now();
-          const newDurationLeft = calculateDurationLeft(prevWidget);
+          const newDurationLeft = isPaused
+            ? Duration.fromObject({ seconds: prevWidget.state.duration_left })
+            : calculateDurationLeft(prevWidget);
           const newDurationLeftSeconds = newDurationLeft.as('seconds');
 
           // Check if timer just ended
@@ -137,7 +135,7 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-gray-900 to-gray-800">
         <div className="text-white text-2xl animate-pulse">Loading...</div>
       </div>
     );
@@ -145,7 +143,7 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
 
   if (error || !widget) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-red-900 to-red-800">
+      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-red-900 to-red-800">
         <div className="text-white text-2xl">Error loading widget</div>
       </div>
     );
@@ -199,7 +197,7 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
                     ? 'bg-red-500'
                     : isPaused
                       ? 'bg-yellow-500'
-                      : 'bg-gradient-to-r from-purple-500 to-blue-500'
+                      : 'bg-linear-to-r from-purple-500 to-blue-500'
                 }`}
                 style={{ width: `${Math.max(0, Math.min(100, progress))}%` }}
               />
