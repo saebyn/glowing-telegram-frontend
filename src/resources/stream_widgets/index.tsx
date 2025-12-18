@@ -1,11 +1,11 @@
-import { ShowGuesser } from 'react-admin';
 import Create from './Create';
 import Edit from './Edit';
 import List from './List';
+import Show from './Show';
 
 export default {
   list: List,
   edit: Edit,
-  show: ShowGuesser,
+  show: Show,
   create: Create,
 };
