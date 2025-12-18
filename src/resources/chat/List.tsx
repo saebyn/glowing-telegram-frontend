@@ -1,12 +1,9 @@
 import { DateTime } from 'luxon';
 import {
-  Datagrid,
   DateField,
   DateInput,
   InfiniteList,
-  List,
   SimpleList,
-  TextField,
   TextInput,
 } from 'react-admin';
 
