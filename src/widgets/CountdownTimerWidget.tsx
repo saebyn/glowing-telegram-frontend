@@ -1,5 +1,5 @@
 import { DateTime, Duration } from 'luxon';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import useTextJumble from '@/hooks/useTextJumble';
 import { useWidgetSubscription } from '@/hooks/useWidgetSubscription';
 import type { CountdownTimerWidgetInstance } from '@/types';
@@ -55,6 +55,14 @@ function playEndSound() {
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + BEEP_DURATION);
 
+    // Close AudioContext after beep completes to free up resources
+    setTimeout(
+      () => {
+        audioContext.close();
+      },
+      (BEEP_DURATION + 0.1) * 1000,
+    );
+
     // Vibrate if supported
     if ('vibrate' in navigator) {
       navigator.vibrate([200, 100, 200]);
@@ -75,13 +83,13 @@ function playEndSound() {
  */
 function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const [isPaused, setIsPaused] = useState(false);
   const hasPlayedEndSound = useRef(false);
+  const previousDuration = useRef<number | null>(null);
 
   useTextJumble(titleRef);
 
   // Subscribe to widget via WebSocket
-  const { widget, loading, error, setWidget } =
+  const { widget, loading, error, setWidget, executeAction } =
     useWidgetSubscription<CountdownTimerWidgetInstance>(widgetId);
 
   useEffect(() => {
@@ -91,9 +99,7 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
 
         if (prevWidget.state.enabled && prevWidget.state.duration_left > 0) {
           const now = DateTime.now();
-          const newDurationLeft = isPaused
-            ? Duration.fromObject({ seconds: prevWidget.state.duration_left })
-            : calculateDurationLeft(prevWidget);
+          const newDurationLeft = calculateDurationLeft(prevWidget);
           const newDurationLeftSeconds = newDurationLeft.as('seconds');
 
           // Check if timer just ended
@@ -120,17 +126,40 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [setWidget, isPaused]);
+  }, [setWidget]);
 
-  // Reset the end sound flag when timer is reset
+  // Reset the end sound flag when timer duration is reset (increases from a lower value)
   useEffect(() => {
-    if (widget && widget.state.duration_left > 0) {
-      hasPlayedEndSound.current = false;
+    const currentDuration = widget?.state.duration_left;
+    if (currentDuration !== undefined) {
+      if (
+        previousDuration.current !== null &&
+        currentDuration > previousDuration.current
+      ) {
+        // Duration increased, timer was reset
+        hasPlayedEndSound.current = false;
+      }
+      previousDuration.current = currentDuration;
     }
-  }, [widget]);
+  }, [widget?.state.duration_left]);
+
+  // Derive paused state from backend: timer is paused when disabled but time remaining
+  const isPaused = widget
+    ? !widget.state.enabled && widget.state.duration_left > 0
+    : false;
+
+  // Check if we're in widget auth mode (OBS) by checking URL params
+  const isWidgetAuthMode = new URLSearchParams(window.location.search).has(
+    'token',
+  );
 
   const togglePause = () => {
-    setIsPaused(!isPaused);
+    if (!widget) return;
+
+    // Send action to backend to toggle enabled state
+    executeAction('toggle_enabled', {
+      enabled: !widget.state.enabled,
+    });
   };
 
   if (loading) {
@@ -153,8 +182,11 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
   const originalDuration = Duration.fromObject({
     seconds: widget.config.duration,
   });
+  const originalDurationSeconds = originalDuration.as('seconds');
   const progress =
-    (durationRemaining.as('seconds') / originalDuration.as('seconds')) * 100;
+    originalDurationSeconds > 0
+      ? (durationRemaining.as('seconds') / originalDurationSeconds) * 100
+      : 0;
   const isTimerEnded = durationRemaining.as('seconds') <= 0;
 
   return (
@@ -208,25 +240,35 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
               Original Duration: {originalDuration.toFormat('hh:mm:ss')}
             </div>
 
-            {/* Pause/Resume Button */}
-            <button
-              onClick={togglePause}
-              className="mt-4 px-6 py-3 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50"
-              type="button"
-              aria-label={isPaused ? 'Resume timer' : 'Pause timer'}
-            >
-              {isPaused ? '▶️ Resume' : '⏸️ Pause'}
-            </button>
+            {/* Pause/Resume Button - Only visible in user session mode */}
+            {!isWidgetAuthMode && (
+              <button
+                onClick={togglePause}
+                className="mt-4 px-6 py-3 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50"
+                type="button"
+                aria-label={isPaused ? 'Resume timer' : 'Pause timer'}
+              >
+                {isPaused ? (
+                  <>
+                    <span aria-hidden="true">▶️</span> Resume
+                  </>
+                ) : (
+                  <>
+                    <span aria-hidden="true">⏸️</span> Pause
+                  </>
+                )}
+              </button>
+            )}
 
             {/* Status Text */}
             {isPaused && (
               <div className="text-yellow-400 font-semibold animate-pulse">
-                ⏸️ Timer Paused
+                <span aria-hidden="true">⏸️</span> Timer Paused
               </div>
             )}
             {isTimerEnded && (
               <div className="text-red-400 font-bold text-2xl animate-pulse">
-                ⏰ Time's Up!
+                <span aria-hidden="true">⏰</span> Time&apos;s Up!
               </div>
             )}
           </div>
