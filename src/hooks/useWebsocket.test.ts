@@ -1,35 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import type { ConnectionStatus } from './useWebsocket';
-
-describe('WebSocket Connection Status', () => {
-  it('should define all connection status types', () => {
-    const statuses: ConnectionStatus[] = [
-      'connecting',
-      'connected',
-      'disconnected',
-      'reconnecting',
-      'error',
-    ];
-
-    for (const status of statuses) {
-      expect(status).toBeDefined();
-    }
-  });
-
-  it('should have the correct status values', () => {
-    const connecting: ConnectionStatus = 'connecting';
-    const connected: ConnectionStatus = 'connected';
-    const disconnected: ConnectionStatus = 'disconnected';
-    const reconnecting: ConnectionStatus = 'reconnecting';
-    const error: ConnectionStatus = 'error';
-
-    expect(connecting).toBe('connecting');
-    expect(connected).toBe('connected');
-    expect(disconnected).toBe('disconnected');
-    expect(reconnecting).toBe('reconnecting');
-    expect(error).toBe('error');
-  });
-});
 
 describe('WebSocket Reconnection Logic', () => {
   const baseDelay = 1000;
@@ -86,28 +55,5 @@ describe('WebSocket Reconnection Logic', () => {
       maxDelay,
     );
     expect(delay20).toBe(30000);
-  });
-
-  it('should reset reconnection attempts on cleanup to prevent stale values', () => {
-    // This test documents the expected behavior: when the WebSocket
-    // provider unmounts, reconnect attempts counter should be reset to 0
-    let reconnectAttempts = 5;
-
-    // Simulate cleanup behavior
-    reconnectAttempts = 0;
-
-    expect(reconnectAttempts).toBe(0);
-  });
-});
-
-describe('WebSocket Error Handling', () => {
-  it('should trigger reconnection on error for predictable behavior', () => {
-    // This test documents the expected behavior: when an error occurs,
-    // the WebSocket should immediately attempt reconnection rather than
-    // waiting for the close event
-    const intentionalClose = false;
-    const shouldReconnect = !intentionalClose;
-
-    expect(shouldReconnect).toBe(true);
   });
 });
