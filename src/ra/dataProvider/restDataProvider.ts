@@ -33,27 +33,19 @@ const restDataProvider: DataProvider = {
       page,
     });
 
-    let cachedData = inMemoryListCache.get(fetchSignature);
-
-    if (cachedData === undefined) {
-      console.debug('Cache miss', fetchSignature);
-      const data: { items: any[]; cursor: string | null } =
-        await fetchResourceData(resource, undefined, 'GET', {
-          signal: params.signal,
-          params: {
-            cursor: cursorPaginationCache.getNext(fetchSignature, page),
-            perPage: params.pagination?.perPage,
-            filter: params.filter,
-          },
-        });
-      if (data.cursor) {
-        cursorPaginationCache.set(fetchSignature, page, data.cursor);
-      }
-      inMemoryListCache.set(fetchSignature, data);
-      cachedData = data;
+    const data: { items: any[]; cursor: string | null } =
+      await fetchResourceData(resource, undefined, 'GET', {
+        signal: params.signal,
+        params: {
+          cursor: cursorPaginationCache.getNext(fetchSignature, page),
+          perPage: params.pagination?.perPage,
+          filter: params.filter,
+        },
+      });
+    if (data.cursor) {
+      cursorPaginationCache.set(fetchSignature, page, data.cursor);
     }
-
-    const { items, cursor } = cachedData;
+    const { items, cursor } = data;
 
     // Sort items by params.sort.field and params.sort.order
     // Copy the array to avoid mutating the cache
