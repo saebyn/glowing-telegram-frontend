@@ -153,13 +153,24 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
     ? !widget.state.enabled && widget.state.duration_left > 0
     : false;
 
-  const togglePause = () => {
+  const handleStart = () => {
     if (!widget) return;
+    executeAction('start', {});
+  };
 
-    // Send action to backend to toggle enabled state
-    executeAction('toggle_enabled', {
-      enabled: !widget.state.enabled,
-    });
+  const handlePause = () => {
+    if (!widget) return;
+    executeAction('pause', {});
+  };
+
+  const handleResume = () => {
+    if (!widget) return;
+    executeAction('resume', {});
+  };
+
+  const handleReset = () => {
+    if (!widget) return;
+    executeAction('reset', {});
   };
 
   if (loading) {
@@ -240,24 +251,59 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
               Original Duration: {originalDuration.toFormat('hh:mm:ss')}
             </div>
 
-            {/* Pause/Resume Button - Only visible in user session mode (not OBS embed mode) */}
+            {/* Control Panel - Only visible in user session mode (not OBS embed mode) */}
             {!isEmbedMode && (
-              <button
-                onClick={togglePause}
-                className="mt-4 px-6 py-3 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50"
-                type="button"
-                aria-label={isPaused ? 'Resume timer' : 'Pause timer'}
-              >
-                {isPaused ? (
-                  <>
-                    <span aria-hidden="true">▶️</span> Resume
-                  </>
-                ) : (
-                  <>
+              <div className="mt-4 flex flex-wrap gap-3 justify-center">
+                {/* Start Button - Only show when timer is not running and is at initial duration */}
+                {!widget.state.enabled &&
+                  widget.state.duration_left === widget.config.duration && (
+                    <button
+                      onClick={handleStart}
+                      className="px-6 py-3 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
+                      type="button"
+                      aria-label="Start timer"
+                    >
+                      <span aria-hidden="true">▶️</span> Start
+                    </button>
+                  )}
+
+                {/* Pause Button - Only show when timer is running */}
+                {widget.state.enabled && (
+                  <button
+                    onClick={handlePause}
+                    className="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50"
+                    type="button"
+                    aria-label="Pause timer"
+                  >
                     <span aria-hidden="true">⏸️</span> Pause
-                  </>
+                  </button>
                 )}
-              </button>
+
+                {/* Resume Button - Only show when timer is paused */}
+                {isPaused && (
+                  <button
+                    onClick={handleResume}
+                    className="px-6 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
+                    type="button"
+                    aria-label="Resume timer"
+                  >
+                    <span aria-hidden="true">▶️</span> Resume
+                  </button>
+                )}
+
+                {/* Reset Button - Show when timer has started (enabled or paused but not at initial duration) */}
+                {(widget.state.enabled ||
+                  widget.state.duration_left !== widget.config.duration) && (
+                  <button
+                    onClick={handleReset}
+                    className="px-6 py-3 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
+                    type="button"
+                    aria-label="Reset timer"
+                  >
+                    <span aria-hidden="true">🔄</span> Reset
+                  </button>
+                )}
+              </div>
             )}
 
             {/* Status Text */}
