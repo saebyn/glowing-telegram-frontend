@@ -89,9 +89,9 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
 
   useTextJumble(titleRef);
 
-  // Get websocket context to check if we're in embed mode (OBS)
-  const websocketContext = useWebsocket();
-  const isEmbedMode = websocketContext?.isEmbedMode ?? false;
+  // Check if controls should be shown via query parameter
+  const showControls =
+    new URLSearchParams(window.location.search).get('controls') === 'true';
 
   // Subscribe to widget via WebSocket
   const { widget, loading, error, setWidget, executeAction } =
@@ -300,8 +300,8 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
               </div>
             )}
 
-            {/* Control Panel - Only visible in user session mode (not OBS embed mode) */}
-            {!isEmbedMode && (
+            {/* Control Panel - Only visible when controls parameter is true */}
+            {showControls && (
               <div className="mt-4 flex flex-wrap gap-3 justify-center">
                 {/* Start Button - Only show when timer is not running and is at initial duration */}
                 {!widget.state.enabled &&
