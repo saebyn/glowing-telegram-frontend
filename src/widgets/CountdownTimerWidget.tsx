@@ -200,56 +200,102 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
       : 0;
   const isTimerEnded = durationRemaining.as('seconds') <= 0;
 
+  // Appearance configuration with defaults
+  const showBackground = widget.config.showBackground ?? true;
+  const backgroundColor = widget.config.backgroundColor ?? undefined;
+  const textColor = widget.config.textColor ?? 'white';
+  const fontSize = widget.config.fontSize ?? 6; // rem units
+  const showProgressBar = widget.config.showProgressBar ?? true;
+  const showOriginalDuration = widget.config.showOriginalDuration ?? true;
+  const showText = widget.config.showText ?? true;
+  const showTitle = widget.config.showTitle ?? true;
+
+  // Build container styles
+  const containerClassName = showBackground
+    ? 'flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8 text-white'
+    : 'flex flex-col items-center justify-center min-h-screen p-8';
+
+  const containerStyle = backgroundColor ? { backgroundColor } : undefined;
+
+  const textStyle = { color: textColor };
+  const timerFontSize = `${fontSize}rem`;
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8 text-white">
+    <div className={containerClassName} style={containerStyle}>
       <div className="max-w-2xl w-full space-y-8">
         {/* Text and Title */}
-        <div className="text-center space-y-4">
-          <p className="text-xl md:text-2xl font-light text-purple-200">
-            {widget.config.text}
-          </p>
-          <h1
-            ref={titleRef}
-            className="text-4xl md:text-6xl font-bold text-white drop-shadow-lg"
-          >
-            {widget.config.title}
-          </h1>
-        </div>
+        {(showText || showTitle) && (
+          <div className="text-center space-y-4">
+            {showText && (
+              <p
+                className="text-xl md:text-2xl font-light"
+                style={showBackground ? undefined : textStyle}
+              >
+                {widget.config.text}
+              </p>
+            )}
+            {showTitle && (
+              <h1
+                ref={titleRef}
+                className="text-4xl md:text-6xl font-bold drop-shadow-lg"
+                style={showBackground ? undefined : textStyle}
+              >
+                {widget.config.title}
+              </h1>
+            )}
+          </div>
+        )}
 
         {/* Timer Display */}
         <div className="bg-black bg-opacity-40 backdrop-blur-lg rounded-3xl p-8 md:p-12 shadow-2xl border border-purple-500 border-opacity-30">
           <div className="text-center space-y-6">
             {/* Main Timer */}
             <div
-              className={`text-6xl md:text-8xl font-bold tabular-nums transition-colors duration-300 ${
+              className={`font-bold tabular-nums transition-colors duration-300 ${
                 isTimerEnded
                   ? 'text-red-400 animate-pulse'
                   : isPaused
                     ? 'text-yellow-400'
-                    : 'text-white'
+                    : ''
               }`}
+              style={{
+                fontSize: timerFontSize,
+                color:
+                  isTimerEnded || isPaused
+                    ? undefined
+                    : showBackground
+                      ? 'white'
+                      : textColor,
+              }}
             >
               {durationRemaining.toFormat('hh:mm:ss')}
             </div>
 
             {/* Progress Bar */}
-            <div className="relative w-full h-4 bg-gray-700 bg-opacity-50 rounded-full overflow-hidden">
-              <div
-                className={`absolute left-0 top-0 h-full transition-all duration-1000 ease-linear ${
-                  isTimerEnded
-                    ? 'bg-red-500'
-                    : isPaused
-                      ? 'bg-yellow-500'
-                      : 'bg-linear-to-r from-purple-500 to-blue-500'
-                }`}
-                style={{ width: `${Math.max(0, Math.min(100, progress))}%` }}
-              />
-            </div>
+            {showProgressBar && (
+              <div className="relative w-full h-4 bg-gray-700 bg-opacity-50 rounded-full overflow-hidden">
+                <div
+                  className={`absolute left-0 top-0 h-full transition-all duration-1000 ease-linear ${
+                    isTimerEnded
+                      ? 'bg-red-500'
+                      : isPaused
+                        ? 'bg-yellow-500'
+                        : 'bg-linear-to-r from-purple-500 to-blue-500'
+                  }`}
+                  style={{ width: `${Math.max(0, Math.min(100, progress))}%` }}
+                />
+              </div>
+            )}
 
             {/* Original Duration Display */}
-            <div className="text-sm md:text-base text-purple-300 font-medium">
-              Original Duration: {originalDuration.toFormat('hh:mm:ss')}
-            </div>
+            {showOriginalDuration && (
+              <div
+                className="text-sm md:text-base font-medium"
+                style={showBackground ? undefined : textStyle}
+              >
+                Original Duration: {originalDuration.toFormat('hh:mm:ss')}
+              </div>
+            )}
 
             {/* Control Panel - Only visible in user session mode (not OBS embed mode) */}
             {!isEmbedMode && (
