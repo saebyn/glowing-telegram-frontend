@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { WebsocketProvider } from '@/hooks/useWebsocket';
 import { useWidgetSubscription } from '@/hooks/useWidgetSubscription';
 import { widgetRegistry } from '@/widgets';
+import CountdownTimerSkeleton from '@/widgets/countdown-timer/CountdownTimerSkeleton';
 
 const { VITE_WEBSOCKET_URL: WEBSOCKET_URL } = import.meta.env;
 
@@ -15,10 +16,11 @@ function StreamWidget() {
   const { widget, params, widgetId } = useParams();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
+  const widgetType = searchParams.get('type'); // Get widget type from URL
 
   // Support both old and new routing patterns
   if (widgetId) {
-    // New pattern: /widgets/:widgetId?token=...
+    // New pattern: /widgets/:widgetId?token=...&type=...
     return (
       <WebsocketProvider url={WEBSOCKET_URL} token={token || undefined}>
         <Suspense
@@ -30,7 +32,10 @@ function StreamWidget() {
             </div>
           }
         >
-          <WidgetRenderer widgetId={widgetId} />
+          <WidgetRenderer
+            widgetId={widgetId}
+            widgetType={widgetType || undefined}
+          />
         </Suspense>
       </WebsocketProvider>
     );
@@ -65,10 +70,22 @@ function StreamWidget() {
   );
 }
 
-function WidgetRenderer({ widgetId }: { widgetId: string }) {
+function WidgetRenderer({
+  widgetId,
+  widgetType,
+}: {
+  widgetId: string;
+  widgetType?: string;
+}) {
   const { widget, loading, error } = useWidgetSubscription(widgetId);
 
   if (loading) {
+    // If we know the widget type from the URL, show the appropriate skeleton
+    if (widgetType === 'countdown_timer') {
+      return <CountdownTimerSkeleton />;
+    }
+
+    // Fallback skeleton for unknown widget types
     return (
       <div className="screen-content">
         <p>Loading widget...</p>

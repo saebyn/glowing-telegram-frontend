@@ -248,8 +248,11 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
     ? 'flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8 text-white'
     : 'flex flex-col items-center justify-center min-h-screen p-8';
 
-  const containerStyle =
-    showBackground && backgroundColor ? { backgroundColor } : undefined;
+  const containerStyle = showBackground
+    ? backgroundColor
+      ? { backgroundColor }
+      : undefined
+    : { backgroundColor: 'transparent' };
 
   const textStyle = { color: textColor };
   const timerFontSize = `${fontSize}rem`;

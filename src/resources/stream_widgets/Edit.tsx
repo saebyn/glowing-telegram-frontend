@@ -31,11 +31,11 @@ function CopyWidgetUrlButton() {
 
   if (!record) return null;
 
-  // OBS URL: token auth, no controls
-  const obsUrl = `${APP_URL}/widgets/${record.id}?token=${record.access_token}`;
+  // OBS URL: token auth, no controls, includes widget type for instant skeleton rendering
+  const obsUrl = `${APP_URL}/widgets/${record.id}?token=${record.access_token}&type=${record.type}`;
 
-  // Preview URL: token auth, with controls
-  const previewUrl = `${APP_URL}/widgets/${record.id}?token=${record.access_token}&controls=true`;
+  // Preview URL: token auth, with controls, includes widget type for instant skeleton rendering
+  const previewUrl = `${APP_URL}/widgets/${record.id}?token=${record.access_token}&type=${record.type}&controls=true`;
 
   const handleCopyOBS = () => {
     navigator.clipboard.writeText(obsUrl);
