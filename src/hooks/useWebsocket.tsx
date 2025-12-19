@@ -7,6 +7,7 @@ import type {
 } from '@saebyn/glowing-telegram-types';
 import type { FC, ReactNode } from 'react';
 import { createContext, useContext, useEffect, useMemo, useRef } from 'react';
+import { useGetIdentity } from 'react-admin';
 import type { WidgetInstance } from '@/types';
 
 export interface TaskStatusWebsocketMessage {
@@ -66,9 +67,11 @@ export const WebsocketProvider: FC<{
   children: ReactNode;
   url: string | null;
   token?: string;
-}> = ({ url, token, children }) => {
+}> = ({ url, token: embedToken, children }) => {
   // use useRef to keep the websocket instance between renders
   const websocket = useRef<WebSocket | undefined>(undefined);
+
+  const { identity } = useGetIdentity();
 
   // and then another for keeping track of subscriptions to
   // websocket messages
@@ -107,6 +110,8 @@ export const WebsocketProvider: FC<{
   );
 
   useEffect(() => {
+    const token = embedToken ?? identity?.idToken;
+
     if (websocket.current && websocket.current.readyState === WebSocket.OPEN) {
       console.log('🔗 Reusing existing websocket connection');
       return;
@@ -118,8 +123,7 @@ export const WebsocketProvider: FC<{
     }
 
     if (websocket.current === undefined) {
-      // Add token to URL if provided (for OBS mode)
-      const wsUrl = token ? `${url}?token=${token}` : url;
+      const wsUrl = `${url}?token=${token}`;
 
       websocket.current = new WebSocket(wsUrl);
       websocket.current.addEventListener('open', function (event) {
@@ -160,7 +164,7 @@ export const WebsocketProvider: FC<{
       console.log('🔌 Closing websocket connection');
       websocket.current?.close();
     };
-  }, [url, token]);
+  }, [url, embedToken, identity?.idToken]);
 
   return (
     <WebsocketContext.Provider value={value}>
