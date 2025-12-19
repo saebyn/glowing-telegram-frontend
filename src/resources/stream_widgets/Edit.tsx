@@ -119,6 +119,51 @@ function RegenerateTokenButton() {
   );
 }
 
+function ColorInput({
+  source,
+  label,
+  placeholder,
+}: {
+  source: string;
+  label: string;
+  placeholder?: string;
+}) {
+  return (
+    <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+      <TextInput
+        source={source}
+        label={label}
+        placeholder={placeholder}
+        fullWidth
+        InputProps={{
+          endAdornment: (
+            <Box
+              component="input"
+              type="color"
+              sx={{
+                width: 40,
+                height: 40,
+                border: 'none',
+                cursor: 'pointer',
+                borderRadius: 1,
+              }}
+              onChange={(e: any) => {
+                const input = document.querySelector(
+                  `input[name="${source}"]`,
+                ) as HTMLInputElement;
+                if (input) {
+                  input.value = e.target.value;
+                  input.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+              }}
+            />
+          ),
+        }}
+      />
+    </Box>
+  );
+}
+
 const WidgetEditToolbar = (props: any) => (
   <Toolbar {...props}>
     <SaveButton />
@@ -164,6 +209,52 @@ const WidgetEdit = (props: EditProps) => {
         <TextInput source="config.text" label="Timer Text" fullWidth />
         <TextInput source="config.title" label="Timer Title" fullWidth />
         <NumberInput source="config.duration" label="Duration (seconds)" />
+
+        <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+          Appearance (for OBS)
+        </Typography>
+        <BooleanInput
+          source="config.showBackground"
+          label="Show Background"
+          defaultValue={true}
+        />
+        <ColorInput
+          source="config.backgroundColor"
+          label="Background Color"
+          placeholder="transparent, #000000, rgba(0,0,0,0.5)"
+        />
+        <ColorInput
+          source="config.textColor"
+          label="Text Color"
+          placeholder="#ffffff, white"
+        />
+        <NumberInput
+          source="config.fontSize"
+          label="Timer Font Size (rem)"
+          step={0.5}
+          min={1}
+          max={20}
+        />
+        <BooleanInput
+          source="config.showText"
+          label="Show Text Line"
+          defaultValue={true}
+        />
+        <BooleanInput
+          source="config.showTitle"
+          label="Show Title"
+          defaultValue={true}
+        />
+        <BooleanInput
+          source="config.showProgressBar"
+          label="Show Progress Bar"
+          defaultValue={true}
+        />
+        <BooleanInput
+          source="config.showOriginalDuration"
+          label="Show Original Duration"
+          defaultValue={true}
+        />
 
         <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
           Current State

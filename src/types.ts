@@ -77,6 +77,15 @@ export interface CountdownTimerConfig extends WidgetConfig {
   text: string;
   title: string;
   duration: number;
+  // Appearance customization
+  showBackground?: boolean;
+  backgroundColor?: string;
+  textColor?: string;
+  fontSize?: number;
+  showProgressBar?: boolean;
+  showOriginalDuration?: boolean;
+  showText?: boolean;
+  showTitle?: boolean;
 }
 
 export interface CountdownTimerState extends WidgetState {
