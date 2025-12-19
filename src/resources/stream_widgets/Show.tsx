@@ -43,7 +43,7 @@ function WidgetPreview() {
           minHeight: 400,
         }}
       >
-        <WebsocketProvider url={WEBSOCKET_URL} token={record.access_token}>
+        <WebsocketProvider url={WEBSOCKET_URL}>
           <CountdownTimerWidget widgetId={String(record.id)} />
         </WebsocketProvider>
       </Card>
