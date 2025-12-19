@@ -1,4 +1,5 @@
 import { Box, Card, CardContent, Typography } from '@mui/material';
+import { lazy, Suspense } from 'react';
 import {
   DateField,
   Show,
@@ -7,9 +8,13 @@ import {
   useRecordContext,
 } from 'react-admin';
 import { WebsocketProvider } from '@/hooks/useWebsocket';
-import CountdownTimerWidget from '@/widgets/CountdownTimerWidget';
 
 const { VITE_WEBSOCKET_URL: WEBSOCKET_URL } = import.meta.env;
+
+// Lazy load widget for better code splitting
+const CountdownTimerWidget = lazy(
+  () => import('@/widgets/CountdownTimerWidget'),
+);
 
 function WidgetPreview() {
   const record = useRecordContext();
@@ -44,7 +49,23 @@ function WidgetPreview() {
         }}
       >
         <WebsocketProvider url={WEBSOCKET_URL}>
-          <CountdownTimerWidget widgetId={String(record.id)} />
+          <Suspense
+            fallback={
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: 400,
+                  color: 'white',
+                }}
+              >
+                <Typography>Loading preview...</Typography>
+              </Box>
+            }
+          >
+            <CountdownTimerWidget widgetId={String(record.id)} />
+          </Suspense>
         </WebsocketProvider>
       </Card>
     </Box>

@@ -1,10 +1,15 @@
+import { lazy, Suspense } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { WebsocketProvider } from '@/hooks/useWebsocket';
 import { useWidgetSubscription } from '@/hooks/useWidgetSubscription';
 import { widgetRegistry } from '@/widgets';
-import CountdownTimerWidget from '@/widgets/CountdownTimerWidget';
 
 const { VITE_WEBSOCKET_URL: WEBSOCKET_URL } = import.meta.env;
+
+// Lazy load widget components for better code splitting
+const CountdownTimerWidget = lazy(
+  () => import('@/widgets/CountdownTimerWidget'),
+);
 
 function StreamWidget() {
   const { widget, params, widgetId } = useParams();
@@ -16,7 +21,17 @@ function StreamWidget() {
     // New pattern: /widgets/:widgetId?token=...
     return (
       <WebsocketProvider url={WEBSOCKET_URL} token={token || undefined}>
-        <WidgetRenderer widgetId={widgetId} />
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center min-h-screen">
+              <div className="text-white text-2xl animate-pulse">
+                Loading widget...
+              </div>
+            </div>
+          }
+        >
+          <WidgetRenderer widgetId={widgetId} />
+        </Suspense>
       </WebsocketProvider>
     );
   }
@@ -28,12 +43,26 @@ function StreamWidget() {
     return <p>Invalid params</p>;
   }
 
-  switch (widget) {
-    case 'countdown':
-      return <CountdownTimerWidget {...parsedParams} />;
-    default:
-      return <p>Unknown widget: {widget}</p>;
-  }
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-white text-2xl animate-pulse">
+            Loading widget...
+          </div>
+        </div>
+      }
+    >
+      {(() => {
+        switch (widget) {
+          case 'countdown':
+            return <CountdownTimerWidget {...parsedParams} />;
+          default:
+            return <p>Unknown widget: {widget}</p>;
+        }
+      })()}
+    </Suspense>
+  );
 }
 
 function WidgetRenderer({ widgetId }: { widgetId: string }) {
