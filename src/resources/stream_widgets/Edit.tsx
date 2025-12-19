@@ -26,26 +26,78 @@ const { VITE_APP_URL: APP_URL = window.location.origin } = import.meta.env;
 
 function CopyWidgetUrlButton() {
   const record = useRecordContext();
-  const [copied, setCopied] = useState(false);
+  const [copiedOBS, setCopiedOBS] = useState(false);
+  const [copiedPreview, setCopiedPreview] = useState(false);
 
   if (!record) return null;
 
-  const widgetUrl = `${APP_URL}/widgets/${record.id}?token=${record.access_token}`;
+  // OBS URL: token auth, no controls
+  const obsUrl = `${APP_URL}/widgets/${record.id}?token=${record.access_token}`;
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(widgetUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  // Preview URL: token auth, with controls
+  const previewUrl = `${APP_URL}/widgets/${record.id}?token=${record.access_token}&controls=true`;
+
+  const handleCopyOBS = () => {
+    navigator.clipboard.writeText(obsUrl);
+    setCopiedOBS(true);
+    setTimeout(() => setCopiedOBS(false), 2000);
+  };
+
+  const handleCopyPreview = () => {
+    navigator.clipboard.writeText(previewUrl);
+    setCopiedPreview(true);
+    setTimeout(() => setCopiedPreview(false), 2000);
   };
 
   return (
     <Box sx={{ mt: 2, mb: 2 }}>
+      {/* OBS Browser Source URL */}
       <Typography variant="h6" gutterBottom>
         OBS Browser Source URL
       </Typography>
       <Alert severity="info" sx={{ mb: 1 }}>
-        Use this URL in OBS as a Browser Source to display the widget on your
-        stream
+        Use this URL in OBS as a Browser Source. No controls will be shown.
+      </Alert>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          p: 2,
+          bgcolor: 'background.paper',
+          border: 1,
+          borderColor: 'divider',
+          borderRadius: 1,
+          mb: 3,
+        }}
+      >
+        <input
+          type="text"
+          value={obsUrl}
+          readOnly
+          style={{
+            flex: 1,
+            padding: '8px',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            fontFamily: 'monospace',
+            fontSize: '0.875rem',
+          }}
+        />
+        <Button
+          label={copiedOBS ? 'Copied!' : 'Copy'}
+          onClick={handleCopyOBS}
+          startIcon={<ContentCopyIcon />}
+        />
+      </Box>
+
+      {/* Preview URL with Controls */}
+      <Typography variant="h6" gutterBottom>
+        Preview URL (with Controls)
+      </Typography>
+      <Alert severity="info" sx={{ mb: 1 }}>
+        Use this URL to preview and control the widget in a browser. Shows
+        start/pause/reset buttons.
       </Alert>
       <Box
         sx={{
@@ -61,7 +113,7 @@ function CopyWidgetUrlButton() {
       >
         <input
           type="text"
-          value={widgetUrl}
+          value={previewUrl}
           readOnly
           style={{
             flex: 1,
@@ -73,8 +125,8 @@ function CopyWidgetUrlButton() {
           }}
         />
         <Button
-          label={copied ? 'Copied!' : 'Copy'}
-          onClick={handleCopy}
+          label={copiedPreview ? 'Copied!' : 'Copy'}
+          onClick={handleCopyPreview}
           startIcon={<ContentCopyIcon />}
         />
       </Box>
