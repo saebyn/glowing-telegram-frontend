@@ -248,11 +248,16 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
     ? 'flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8 text-white'
     : 'flex flex-col items-center justify-center min-h-screen p-8';
 
-  const containerStyle = showBackground
-    ? backgroundColor
-      ? { backgroundColor }
-      : undefined
-    : { backgroundColor: 'transparent' };
+  // Determine background style based on showBackground and backgroundColor settings
+  let containerStyle: React.CSSProperties | undefined;
+  if (!showBackground) {
+    // When background is hidden, make it transparent for OBS chroma key
+    containerStyle = { backgroundColor: 'transparent' };
+  } else if (backgroundColor) {
+    // When background is shown with custom color
+    containerStyle = { backgroundColor };
+  }
+  // When showBackground is true but no custom color, gradient is used via className
 
   const textStyle = { color: textColor };
   const timerFontSize = `${fontSize}rem`;
