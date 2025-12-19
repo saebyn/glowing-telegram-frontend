@@ -1,6 +1,7 @@
 import { DateTime, Duration } from 'luxon';
 import { useEffect, useRef } from 'react';
 import useTextJumble from '@/hooks/useTextJumble';
+import { useWebsocket } from '@/hooks/useWebsocket';
 import { useWidgetSubscription } from '@/hooks/useWidgetSubscription';
 import type { CountdownTimerWidgetInstance } from '@/types';
 
@@ -88,6 +89,10 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
 
   useTextJumble(titleRef);
 
+  // Get websocket context to check if we're in embed mode (OBS)
+  const websocketContext = useWebsocket();
+  const isEmbedMode = websocketContext?.isEmbedMode ?? false;
+
   // Subscribe to widget via WebSocket
   const { widget, loading, error, setWidget, executeAction } =
     useWidgetSubscription<CountdownTimerWidgetInstance>(widgetId);
@@ -147,11 +152,6 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
   const isPaused = widget
     ? !widget.state.enabled && widget.state.duration_left > 0
     : false;
-
-  // Check if we're in widget auth mode (OBS) by checking URL params
-  const isWidgetAuthMode = new URLSearchParams(window.location.search).has(
-    'token',
-  );
 
   const togglePause = () => {
     if (!widget) return;
@@ -240,8 +240,8 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
               Original Duration: {originalDuration.toFormat('hh:mm:ss')}
             </div>
 
-            {/* Pause/Resume Button - Only visible in user session mode */}
-            {!isWidgetAuthMode && (
+            {/* Pause/Resume Button - Only visible in user session mode (not OBS embed mode) */}
+            {!isEmbedMode && (
               <button
                 onClick={togglePause}
                 className="mt-4 px-6 py-3 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50"

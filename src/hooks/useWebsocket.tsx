@@ -58,6 +58,7 @@ const WebsocketContext = createContext<
       subscribe: (callback: Callback) => SubscriptionHandle;
       unsubscribe: (id: SubscriptionHandle) => void;
       send: (message: object) => void;
+      isEmbedMode: boolean;
     }
   | undefined
 >(undefined);
@@ -105,8 +106,9 @@ export const WebsocketProvider: FC<{
           messageQueue.current.push(message);
         }
       },
+      isEmbedMode: !!embedToken,
     }),
-    [], // Empty deps - these functions use refs so they don't need to change
+    [embedToken], // Include embedToken so isEmbedMode updates if token changes
   );
 
   useEffect(() => {
