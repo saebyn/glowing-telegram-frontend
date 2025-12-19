@@ -15,6 +15,7 @@ import {
   SimpleForm,
   TextInput,
   Toolbar,
+  useInput,
   useRecordContext,
   useUpdate,
 } from 'react-admin';
@@ -128,36 +129,33 @@ function ColorInput({
   label: string;
   placeholder?: string;
 }) {
+  const { field } = useInput({ source });
+
   return (
-    <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 2 }}>
       <TextInput
         source={source}
         label={label}
         placeholder={placeholder}
         fullWidth
-        InputProps={{
-          endAdornment: (
-            <Box
-              component="input"
-              type="color"
-              sx={{
-                width: 40,
-                height: 40,
-                border: 'none',
-                cursor: 'pointer',
-                borderRadius: 1,
-              }}
-              onChange={(e: any) => {
-                const input = document.querySelector(
-                  `input[name="${source}"]`,
-                ) as HTMLInputElement;
-                if (input) {
-                  input.value = e.target.value;
-                  input.dispatchEvent(new Event('input', { bubbles: true }));
-                }
-              }}
-            />
-          ),
+      />
+      <Box
+        component="input"
+        type="color"
+        value={field.value || '#000000'}
+        onChange={(e: any) => {
+          field.onChange(e.target.value);
+        }}
+        sx={{
+          width: 60,
+          height: 56,
+          border: '1px solid rgba(0, 0, 0, 0.23)',
+          borderRadius: 1,
+          cursor: 'pointer',
+          padding: '4px',
+          '&:hover': {
+            borderColor: 'rgba(0, 0, 0, 0.87)',
+          },
         }}
       />
     </Box>
