@@ -174,8 +174,40 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-gray-900 to-gray-800">
-        <div className="text-white text-2xl animate-pulse">Loading...</div>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8 text-white">
+        <div className="max-w-2xl w-full space-y-8">
+          {/* Text and Title Skeleton */}
+          <div className="text-center space-y-4">
+            {/* Text skeleton */}
+            <div className="flex justify-center">
+              <div className="h-7 bg-white bg-opacity-20 rounded-lg w-3/4 animate-pulse" />
+            </div>
+            {/* Title skeleton */}
+            <div className="flex justify-center">
+              <div className="h-16 bg-white bg-opacity-30 rounded-lg w-5/6 animate-pulse" />
+            </div>
+          </div>
+
+          {/* Timer Display Skeleton */}
+          <div className="bg-black bg-opacity-40 backdrop-blur-lg rounded-3xl p-8 md:p-12 shadow-2xl border border-purple-500 border-opacity-30">
+            <div className="text-center space-y-6">
+              {/* Main Timer Skeleton */}
+              <div className="flex justify-center">
+                <div className="h-24 bg-white bg-opacity-30 rounded-lg w-4/5 animate-pulse" />
+              </div>
+
+              {/* Progress Bar Skeleton */}
+              <div className="relative w-full h-4 bg-gray-700 bg-opacity-50 rounded-full overflow-hidden">
+                <div className="absolute left-0 top-0 h-full w-2/3 bg-white bg-opacity-20 animate-pulse" />
+              </div>
+
+              {/* Original Duration Skeleton */}
+              <div className="flex justify-center">
+                <div className="h-6 bg-white bg-opacity-20 rounded-lg w-1/2 animate-pulse" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
