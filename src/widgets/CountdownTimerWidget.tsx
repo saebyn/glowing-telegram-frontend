@@ -211,11 +211,14 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
   const showTitle = widget.config.showTitle ?? true;
 
   // Build container styles
-  const containerClassName = showBackground
+  // If backgroundColor is set, use it; otherwise use gradient if showBackground is true
+  const useGradient = showBackground && !backgroundColor;
+  const containerClassName = useGradient
     ? 'flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8 text-white'
     : 'flex flex-col items-center justify-center min-h-screen p-8';
 
-  const containerStyle = backgroundColor ? { backgroundColor } : undefined;
+  const containerStyle =
+    showBackground && backgroundColor ? { backgroundColor } : undefined;
 
   const textStyle = { color: textColor };
   const timerFontSize = `${fontSize}rem`;
