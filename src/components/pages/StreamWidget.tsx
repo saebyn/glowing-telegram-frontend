@@ -81,7 +81,7 @@ function WidgetRenderer({
 
   if (loading) {
     // If we know the widget type from the URL, show the appropriate skeleton
-    if (widgetType === 'countdown_timer') {
+    if (widgetType === 'countdown') {
       return <CountdownTimerSkeleton />;
     }
 
