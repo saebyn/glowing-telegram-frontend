@@ -1,7 +1,6 @@
 import { DateTime, Duration } from 'luxon';
 import { useEffect, useRef } from 'react';
 import useTextJumble from '@/hooks/useTextJumble';
-import { useWebsocket } from '@/hooks/useWebsocket';
 import { useWidgetSubscription } from '@/hooks/useWidgetSubscription';
 import type { CountdownTimerWidgetInstance } from '@/types';
 
