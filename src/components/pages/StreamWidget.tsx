@@ -4,6 +4,7 @@ import { WebsocketProvider } from '@/hooks/useWebsocket';
 import { useWidgetSubscription } from '@/hooks/useWidgetSubscription';
 import { widgetRegistry } from '@/widgets';
 import CountdownTimerSkeleton from '@/widgets/countdown-timer/CountdownTimerSkeleton';
+import GenericWidgetSkeleton from '@/widgets/GenericWidgetSkeleton';
 
 const { VITE_WEBSOCKET_URL: WEBSOCKET_URL } = import.meta.env;
 
@@ -86,11 +87,7 @@ function WidgetRenderer({
     }
 
     // Fallback skeleton for unknown widget types
-    return (
-      <div className="screen-content">
-        <p>Loading widget...</p>
-      </div>
-    );
+    return <GenericWidgetSkeleton />;
   }
 
   if (error || !widget) {
