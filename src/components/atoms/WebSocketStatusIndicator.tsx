@@ -55,6 +55,9 @@ export const WebSocketStatusIndicator = () => {
       color={config.color}
       size="small"
       variant="outlined"
+      role="status"
+      aria-live="polite"
+      aria-label={`WebSocket connection status: ${config.label}`}
       sx={{
         marginRight: 1,
         '& .MuiChip-icon': {

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import type { ReactNode } from 'react';
-import { useMemo } from 'react';
+import { useEffect } from 'react';
 import { WebsocketProvider } from '@/hooks/useWebsocket';
 import { MockWebSocket } from '@/mocks/MockWebSocket';
 import { WebSocketStatusIndicator } from './WebSocketStatusIndicator';
@@ -25,7 +25,7 @@ const MockWebsocketWrapper = ({
   connectionState: 'connected' | 'connecting' | 'disconnected' | 'error';
 }) => {
   // Override global WebSocket temporarily
-  useMemo(() => {
+  useEffect(() => {
     const originalWebSocket = global.WebSocket;
     // @ts-expect-error - Mocking WebSocket for testing
     global.WebSocket = class extends MockWebSocket {
