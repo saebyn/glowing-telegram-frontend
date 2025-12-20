@@ -143,6 +143,13 @@ export const WebsocketProvider: FC<{
 
   useEffect(() => {
     const token = embedToken ?? identity?.idToken;
+
+    if (!token) {
+      console.debug('🚨 No token available for websocket connection');
+      setStatus('disconnected');
+      return;
+    }
+
     const wsUrl = `${url}?token=${token}`;
 
     if (websocket.current && websocket.current.readyState === WebSocket.OPEN) {
