@@ -174,7 +174,7 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8 text-white">
+      <div className="flex flex-col items-center justify-center min-h-screen p-8 text-white">
         <div className="max-w-2xl w-full space-y-8">
           {/* Text and Title Skeleton */}
           <div className="text-center space-y-4">
