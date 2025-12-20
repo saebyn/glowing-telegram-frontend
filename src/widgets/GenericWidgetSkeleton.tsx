@@ -6,7 +6,7 @@
  */
 function GenericWidgetSkeleton() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-transparent p-8">
       <div className="max-w-2xl w-full">
         {/* Main Content Box */}
         <div className="bg-black bg-opacity-40 backdrop-blur-lg rounded-3xl p-8 md:p-12 shadow-2xl border border-purple-500 border-opacity-30">
