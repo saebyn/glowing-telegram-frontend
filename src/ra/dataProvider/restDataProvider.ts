@@ -29,18 +29,31 @@ const restDataProvider: DataProvider = {
       resource,
       perPage: params.pagination?.perPage,
       filter: params.filter,
-      page,
     });
+
+    const lastCursor = cursorPaginationCache.getNext(fetchSignature, page);
+
+    if (page > 1 && !lastCursor) {
+      // No cursor available for this page, return empty data
+      return {
+        data: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: page > 1,
+        },
+      };
+    }
 
     const data: { items: any[]; cursor: string | null } =
       await fetchResourceData(resource, undefined, 'GET', {
         signal: params.signal,
         params: {
-          cursor: cursorPaginationCache.getNext(fetchSignature, page),
+          cursor: lastCursor,
           perPage: params.pagination?.perPage,
           filter: params.filter,
         },
       });
+
     if (data.cursor) {
       cursorPaginationCache.set(fetchSignature, page, data.cursor);
     }
