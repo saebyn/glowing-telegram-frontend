@@ -108,6 +108,7 @@ export const WebsocketProvider: FC<{
   const baseReconnectDelay = 1000; // 1 second
   const maxReconnectAttempts = 10; // Cap at 10 attempts to prevent overflow
   const intentionalCloseRef = useRef(false);
+  const errorTriggeredReconnectRef = useRef(false); // Prevent double reconnection from error+close
 
   // provide subscribe and unsubscribe methods to the children
   // Memoize to prevent unnecessary re-renders of consuming components
@@ -176,6 +177,7 @@ export const WebsocketProvider: FC<{
           console.log('🔗 Connected to websocket', event);
           setStatus('connected');
           reconnectAttempts.current = 0; // Reset reconnect attempts on success
+          errorTriggeredReconnectRef.current = false; // Reset error flag on successful connection
 
           this.send(JSON.stringify({ event: 'subscribe' }));
 
@@ -204,17 +206,24 @@ export const WebsocketProvider: FC<{
           console.log('❌ Disconnected from websocket', event);
           setStatus('disconnected');
 
-          // Only attempt reconnection if close wasn't intentional
-          if (!intentionalCloseRef.current) {
+          // Only attempt reconnection if close wasn't intentional and not already triggered by error
+          if (
+            !intentionalCloseRef.current &&
+            !errorTriggeredReconnectRef.current
+          ) {
             attemptReconnect();
           }
+          // Reset the error flag for next connection attempt
+          errorTriggeredReconnectRef.current = false;
         });
 
         websocket.current.addEventListener('error', (event) => {
           console.error('⚠️ WebSocket error', event);
           setStatus('error');
           // Trigger immediate reconnection on error for predictable behavior
+          // Set flag to prevent double reconnection when close event fires
           if (!intentionalCloseRef.current) {
+            errorTriggeredReconnectRef.current = true;
             attemptReconnect();
           }
         });
@@ -255,6 +264,7 @@ export const WebsocketProvider: FC<{
 
     // Initialize connection
     intentionalCloseRef.current = false;
+    errorTriggeredReconnectRef.current = false;
     connect();
 
     return () => {
@@ -269,6 +279,7 @@ export const WebsocketProvider: FC<{
 
       // Reset reconnect attempts counter to prevent stale values on remount
       reconnectAttempts.current = 0;
+      errorTriggeredReconnectRef.current = false;
 
       websocket.current?.close();
       websocket.current = undefined;
