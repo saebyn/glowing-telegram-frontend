@@ -12,12 +12,13 @@ import Typography from '@mui/material/Typography';
 import type { Series } from '@saebyn/glowing-telegram-types';
 import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
-import { Loading, useGetList } from 'react-admin';
+import { useGetList } from 'react-admin';
 import { useNavigate } from 'react-router-dom';
 import TwitchOAuthButton from '@/components/atoms/TwitchOAuthButton';
 import AdManager from '@/components/molecules/AdManager';
 import StreamInfoEditor from '@/components/molecules/StreamInfoEditor';
 import UpcomingStream from '@/components/molecules/UpcomingStream';
+import StreamWidgetDashboard from '@/components/organisms/StreamWidgetDashboard';
 import useProfile from '@/hooks/useProfile';
 import findNextStream from '@/scheduling/findNextStream';
 
@@ -164,6 +165,17 @@ function StreamManagerPage() {
         </Grid>
 
         <Grid size={2} border={1} padding={2}>
+          <AdManager profile={profile} />
+        </Grid>
+
+        <Grid size={4} border={1} padding={2}>
+          <StreamInfoEditor
+            nextScheduledStream={selectedStreamPlan}
+            profile={profile}
+          />
+        </Grid>
+
+        <Grid size={2} border={1} padding={2}>
           <UpcomingStream
             nextScheduledStream={selectedStreamPlan}
             profile={profile}
@@ -185,15 +197,8 @@ function StreamManagerPage() {
           </FormControl>
         </Grid>
 
-        <Grid size={4} border={1} padding={2}>
-          <StreamInfoEditor
-            nextScheduledStream={selectedStreamPlan}
-            profile={profile}
-          />
-        </Grid>
-
-        <Grid size={2} border={1} padding={2}>
-          <AdManager profile={profile} />
+        <Grid size={12}>
+          <StreamWidgetDashboard />
         </Grid>
       </Grid>
     </Paper>

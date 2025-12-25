@@ -37,6 +37,7 @@ const WidgetList = (props: ListProps) => (
     <Datagrid rowClick="edit">
       <TextField source="title" />
       <TextField source="type" />
+      <BooleanField source="showOnDashboard" />
       <BooleanField source="active" />
       <DateField source="created_at" showTime />
       <DateField source="updated_at" showTime />
