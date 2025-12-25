@@ -27,7 +27,6 @@ const { VITE_APP_URL: APP_URL = window.location.origin } = import.meta.env;
 function CopyWidgetUrlButton() {
   const record = useRecordContext();
   const [copiedOBS, setCopiedOBS] = useState(false);
-  const [copiedPreview, setCopiedPreview] = useState(false);
 
   if (!record) return null;
 
