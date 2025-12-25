@@ -157,13 +157,13 @@ function StreamManagerPage() {
           <iframe
             id="twitch-chat-embed"
             title="Twitch Chat Embed"
-            src="https://www.twitch.tv/embed/saebyn/chat?parent=localhost"
+            src={`https://www.twitch.tv/embed/saebyn/chat?parent=${import.meta.env.VITE_SITE_DOMAIN}`}
             height="100%"
             width="100%"
           ></iframe>
         </Grid>
 
-        <Grid size={3} border={1} padding={2}>
+        <Grid size={2} border={1} padding={2}>
           <UpcomingStream
             nextScheduledStream={selectedStreamPlan}
             profile={profile}
@@ -213,7 +213,7 @@ function LoadingSkeleton() {
         <Grid size={2}>
           <Skeleton variant="rectangular" width="100%" height={400} />
         </Grid>
-        <Grid size={3}>
+        <Grid size={2}>
           <Paper elevation={1} sx={{ p: 2, height: '400px' }}>
             <Skeleton variant="rectangular" width="100%" height="60%" />
             <Skeleton variant="text" width="80%" height={40} sx={{ mt: 2 }} />
