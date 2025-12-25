@@ -34,19 +34,10 @@ function CopyWidgetUrlButton() {
   // OBS URL: token auth, no controls, includes widget type for instant skeleton rendering
   const obsUrl = `${APP_URL}/widgets/${record.id}?token=${record.access_token}&type=${record.type}`;
 
-  // Preview URL: token auth, with controls, includes widget type for instant skeleton rendering
-  const previewUrl = `${APP_URL}/widgets/${record.id}?token=${record.access_token}&type=${record.type}&controls=true`;
-
   const handleCopyOBS = () => {
     navigator.clipboard.writeText(obsUrl);
     setCopiedOBS(true);
     setTimeout(() => setCopiedOBS(false), 2000);
-  };
-
-  const handleCopyPreview = () => {
-    navigator.clipboard.writeText(previewUrl);
-    setCopiedPreview(true);
-    setTimeout(() => setCopiedPreview(false), 2000);
   };
 
   return (
@@ -87,46 +78,6 @@ function CopyWidgetUrlButton() {
         <Button
           label={copiedOBS ? 'Copied!' : 'Copy'}
           onClick={handleCopyOBS}
-          startIcon={<ContentCopyIcon />}
-        />
-      </Box>
-
-      {/* Preview URL with Controls */}
-      <Typography variant="h6" gutterBottom>
-        Preview URL (with Controls)
-      </Typography>
-      <Alert severity="info" sx={{ mb: 1 }}>
-        Use this URL to preview and control the widget in a browser. Shows
-        start/pause/reset buttons.
-      </Alert>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1,
-          p: 2,
-          bgcolor: 'background.paper',
-          border: 1,
-          borderColor: 'divider',
-          borderRadius: 1,
-        }}
-      >
-        <input
-          type="text"
-          value={previewUrl}
-          readOnly
-          style={{
-            flex: 1,
-            padding: '8px',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-            fontFamily: 'monospace',
-            fontSize: '0.875rem',
-          }}
-        />
-        <Button
-          label={copiedPreview ? 'Copied!' : 'Copy'}
-          onClick={handleCopyPreview}
           startIcon={<ContentCopyIcon />}
         />
       </Box>
@@ -245,6 +196,10 @@ const WidgetEdit = (props: EditProps) => {
           choices={widgetRegistry.getChoices()}
           validate={[required()]}
           disabled
+        />
+        <BooleanInput
+          source="showOnDashboard"
+          helperText="Show this widget on the stream manager dashboard."
         />
         <BooleanInput source="active" />
 

@@ -6,6 +6,8 @@ import type { CountdownTimerWidgetInstance } from '@/types';
 
 interface CountdownTimerWidgetProps {
   widgetId: string;
+
+  showControls?: boolean;
 }
 
 function calculateDurationLeft(widget: CountdownTimerWidgetInstance): Duration {
@@ -81,16 +83,15 @@ function playEndSound() {
  * It uses the `useWidgetSubscription` hook to subscribe to widget updates via WebSocket.
  * The widget configuration and state are managed by the backend.
  */
-function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
+function CountdownTimerWidget({
+  widgetId,
+  showControls,
+}: CountdownTimerWidgetProps) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const hasPlayedEndSound = useRef(false);
   const previousDuration = useRef<number | null>(null);
 
   useTextJumble(titleRef);
-
-  // Check if controls should be shown via query parameter
-  const showControls =
-    new URLSearchParams(window.location.search).get('controls') === 'true';
 
   // Subscribe to widget via WebSocket
   const { widget, loading, error, setWidget, executeAction } =
@@ -245,8 +246,8 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
   // If backgroundColor is set, use it; otherwise use gradient if showBackground is true
   const useGradient = showBackground && !backgroundColor;
   const containerClassName = useGradient
-    ? 'flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8 text-white'
-    : 'flex flex-col items-center justify-center min-h-screen p-8';
+    ? 'h-full  bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8 text-white'
+    : 'h-full  p-8';
 
   // Determine background style based on showBackground and backgroundColor settings
   let containerStyle: React.CSSProperties | undefined;
@@ -264,11 +265,11 @@ function CountdownTimerWidget({ widgetId }: CountdownTimerWidgetProps) {
 
   return (
     <div className={containerClassName} style={containerStyle}>
-      <div className="max-w-2xl w-full space-y-8">
+      <div className="w-full space-y-8">
         {/* Text and Title */}
-        {(showText || showTitle) && (
+        {(showText || showTitle || showControls) && (
           <div className="text-center space-y-4">
-            {showText && (
+            {(showControls || showText) && (
               <p
                 className="text-xl md:text-2xl font-light"
                 style={showBackground ? undefined : textStyle}

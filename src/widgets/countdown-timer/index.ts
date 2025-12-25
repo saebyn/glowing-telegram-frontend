@@ -4,6 +4,7 @@
 
 import CountdownTimerWidget from '../CountdownTimerWidget';
 import type { WidgetDefinition } from '../registry';
+import CountdownTimerSkeleton from './CountdownTimerSkeleton';
 
 export const countdownTimerDefinition: WidgetDefinition = {
   type: 'countdown',
@@ -11,6 +12,7 @@ export const countdownTimerDefinition: WidgetDefinition = {
   description:
     'Display a countdown timer on your stream. Perfect for breaks, giveaways, or timed events.',
   component: CountdownTimerWidget,
+  loadingComponent: CountdownTimerSkeleton,
   defaultConfig: {
     timerId: '',
     text: 'Get ready!',

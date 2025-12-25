@@ -9,6 +9,7 @@
  */
 
 import type { ComponentType } from 'react';
+import GenericWidgetSkeleton from '@/widgets/GenericWidgetSkeleton';
 
 export interface WidgetProps {
   widgetId: string;
@@ -26,6 +27,7 @@ export interface WidgetDefinition {
   name: string;
   description: string;
   component: ComponentType<WidgetProps>;
+  loadingComponent?: ComponentType;
   configSchema?: unknown; // JSONSchema - use unknown for now until we add JSON Schema types
   defaultConfig: Record<string, unknown>;
   defaultState: Record<string, unknown>;
@@ -52,6 +54,20 @@ class WidgetRegistry {
    */
   get(type: string): WidgetDefinition | undefined {
     return this.widgets.get(type);
+  }
+
+  /**
+   * Get a widget loading component by type
+   */
+  getLoadingComponent(type: string | null): ComponentType {
+    if (!type) {
+      return GenericWidgetSkeleton;
+    }
+    const widget = this.widgets.get(type);
+    if (widget?.loadingComponent) {
+      return widget.loadingComponent;
+    }
+    return GenericWidgetSkeleton;
   }
 
   /**
