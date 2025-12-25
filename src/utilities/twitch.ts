@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import { DateTime, Duration } from 'luxon';
 
 const { VITE_TWITCH_CLIENT_ID: clientId } = import.meta.env;
 
@@ -282,8 +282,9 @@ export interface GetAdScheduleResponse {
   snooze_count: number;
   /**
    * The time when when the broadcaster will gain an additional snooze.
+   * null if the broadcaster has the maximum number of snoozes.
    */
-  snooze_refresh_at: DateTime;
+  snooze_refresh_at: DateTime | null;
   /**
    * The time when the next ad break is scheduled to run. Empty if the channel
    * has no ad scheduled or is not live.
@@ -298,10 +299,9 @@ export interface GetAdScheduleResponse {
    */
   last_ad_at: DateTime | null;
   /**
-   * The amount of pre-roll free time remaining for the channel in seconds.
-   * 0 if they are currently not pre-roll free.
+   * The amount of pre-roll free time remaining for the channel.
    */
-  preroll_free_time: number;
+  preroll_free_time: Duration;
 }
 
 export async function getAdSchedule(
@@ -326,8 +326,13 @@ export async function getAdSchedule(
     return {
       snooze_count: Number(data.snooze_count),
       duration: Number(data.duration),
-      preroll_free_time: Number(data.preroll_free_time),
-      snooze_refresh_at: DateTime.fromSeconds(data.snooze_refresh_at),
+      preroll_free_time: Duration.fromObject({
+        seconds: Number(data.preroll_free_time),
+      }),
+      snooze_refresh_at:
+        data.snooze_refresh_at === 0
+          ? null
+          : DateTime.fromSeconds(data.snooze_refresh_at),
       next_ad_at: data.next_ad_at
         ? DateTime.fromSeconds(data.next_ad_at)
         : null,

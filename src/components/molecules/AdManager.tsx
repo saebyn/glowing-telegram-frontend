@@ -39,6 +39,41 @@ function AdManager({ profile }: AdManagerProps) {
       .then((data) => setAdSchedule(data))
       .catch((e) => setError(e));
 
+    const adScheduleFetcherInterval = setInterval(
+      () => {
+        if (!profile.twitch?.accessToken || !profile.twitch?.broadcasterId) {
+          return;
+        }
+
+        getAdSchedule(
+          profile.twitch.broadcasterId,
+          profile.twitch.accessToken,
+          { signal: abortController.signal },
+        )
+          .then((data) => setAdSchedule(data))
+          .catch((e) => setError(e));
+      },
+      5 * 60 * 1000,
+    ); // refresh every 5 minutes
+
+    const timePassageInterval = setInterval(() => {
+      setAdSchedule((prev) => {
+        if (!prev) {
+          return null;
+        }
+
+        return {
+          ...prev,
+          preroll_free_time: prev?.preroll_free_time.minus({ seconds: 1 }),
+        };
+      });
+    }, 1000); // update every second
+
+    abortController.signal.addEventListener('abort', () => {
+      clearInterval(adScheduleFetcherInterval);
+      clearInterval(timePassageInterval);
+    });
+
     return () => abortController.abort();
   }, [profile.twitch?.accessToken, profile.twitch?.broadcasterId]);
 
@@ -82,29 +117,41 @@ function AdManager({ profile }: AdManagerProps) {
     }
   };
 
-  if (error) {
-    return <Alert severity="error">{error.message}</Alert>;
-  }
-
   if (!adSchedule) {
     return <CircularProgress />;
   }
 
+  const now = DateTime.now();
+  const nextAdIn = adSchedule.next_ad_at
+    ? adSchedule.next_ad_at.diff(now, ['minutes', 'seconds'])
+    : null;
+
   return (
     <Box>
       <Typography variant="h6">Ad Manager</Typography>
+      {error && <Alert severity="error">{error.message}</Alert>}
       <Typography>
-        Time until next ad: {adSchedule.next_ad_at?.toRelative() || 'N/A'}
+        Time until next ad:{' '}
+        {nextAdIn?.toHuman({
+          maximumFractionDigits: 0,
+          listStyle: 'long',
+          unitDisplay: 'short',
+        }) || 'N/A'}
       </Typography>
       <Typography>
         Number of snoozes available: {adSchedule.snooze_count}
       </Typography>
       <Typography>
         Snooze refresh at:{' '}
-        {adSchedule.snooze_refresh_at.toLocaleString(DateTime.DATETIME_MED)}
+        {adSchedule.snooze_refresh_at?.toLocaleString(DateTime.DATETIME_MED) ||
+          'N/A'}
       </Typography>
       <Typography>
-        Pre-roll free time remaining: {adSchedule.preroll_free_time} seconds
+        Pre-roll free time remaining:{' '}
+        {adSchedule.preroll_free_time.rescale().toHuman({
+          listStyle: 'long',
+          unitDisplay: 'short',
+        })}
       </Typography>
       <Button
         variant="contained"
