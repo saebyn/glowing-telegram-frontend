@@ -1,6 +1,7 @@
 import { Grid2 } from '@mui/material';
 import { Suspense } from 'react';
 import { useGetList } from 'react-admin';
+import { ErrorBoundary } from 'react-error-boundary';
 import WidgetRenderer from '@/components/molecules/WidgetRenderer';
 import { WebsocketProvider } from '@/hooks/useWebsocket';
 
@@ -30,25 +31,29 @@ function StreamWidgetDashboard() {
     <WebsocketProvider url={WEBSOCKET_URL}>
       <Suspense
         fallback={
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="text-white text-2xl animate-pulse">
-              Loading widget...
-            </div>
+          <div className="text-white text-2xl animate-pulse">
+            Loading widget...
           </div>
         }
       >
         <Grid2 container spacing={2}>
           {streamWidgets?.map((widget) => (
             <Grid2 size={3} key={widget.id}>
-              <WidgetRenderer
-                widgetId={widget.id}
-                widgetType={widget.type}
-                showControls={true}
-              />
+              <ErrorBoundary fallback={<div>Error loading widget.</div>}>
+                <WidgetRenderer
+                  widgetId={widget.id}
+                  widgetType={widget.type}
+                  showControls={true}
+                />
+              </ErrorBoundary>
             </Grid2>
           ))}
         </Grid2>
-        <button type="button" onClick={() => refetch()}>
+        <button
+          type="button"
+          onClick={() => refetch()}
+          className="mt-4 p-2 bg-blue-600 text-white rounded"
+        >
           Refresh
         </button>
       </Suspense>
