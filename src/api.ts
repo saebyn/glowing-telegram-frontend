@@ -98,6 +98,7 @@ export async function fetchAccessToken(
       valid: true,
       id: data.broadcaster_id,
       accessToken: data.access_token,
+      login: data.login,
     };
   } catch (_error) {
     return {
