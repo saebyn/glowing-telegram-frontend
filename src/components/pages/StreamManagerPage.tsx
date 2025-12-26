@@ -155,13 +155,19 @@ function StreamManagerPage() {
       </Typography>
       <Grid container spacing={2}>
         <Grid size={2}>
-          <iframe
-            id="twitch-chat-embed"
-            title="Twitch Chat Embed"
-            src={`https://www.twitch.tv/embed/saebyn/chat?parent=${import.meta.env.VITE_SITE_DOMAIN}`}
-            height="100%"
-            width="100%"
-          ></iframe>
+          {profile.twitch?.login ? (
+            <iframe
+              id="twitch-chat-embed"
+              title="Twitch Chat Embed"
+              src={`https://www.twitch.tv/embed/${profile.twitch.login}/chat?parent=${import.meta.env.VITE_SITE_DOMAIN}`}
+              height="100%"
+              width="100%"
+            />
+          ) : (
+            <Alert severity="warning">
+              Twitch login not available. Cannot load chat embed.
+            </Alert>
+          )}
         </Grid>
 
         <Grid size={2} border={1} padding={2}>
