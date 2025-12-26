@@ -84,7 +84,7 @@ export async function authenticatedFetch(
 export async function fetchAccessToken(
   provider: 'twitch' | 'youtube',
 ): Promise<
-  | { id: string; valid: true; accessToken: string }
+  | { id: string; valid: true; accessToken: string; login: string }
   | { id: string; valid: false }
 > {
   const url = new URL(`auth/${provider}/token`, baseApiUrl);
