@@ -5,30 +5,6 @@ const { VITE_TWITCH_CLIENT_ID: clientId } = import.meta.env;
 export const COMMERCIAL_MAX_LENGTH = 180;
 export const COMMERCIAL_MIN_LENGTH = 30;
 
-interface ValidateAccessTokenResponse {
-  client_id: string;
-  login: string;
-  scopes: string[];
-  user_id: string;
-}
-
-export async function validateAccessToken(
-  accessToken: string,
-  options: { signal?: AbortSignal } = {},
-): Promise<ValidateAccessTokenResponse> {
-  const response = await fetch('https://id.twitch.tv/oauth2/validate', {
-    headers: {
-      Authorization: `OAuth ${accessToken}`,
-    },
-    signal: options.signal,
-  });
-  if (response.ok) {
-    return response.json();
-  }
-
-  throw new Error('Invalid access token');
-}
-
 export interface ContentClassificationLabel {
   id: string;
   is_enabled: boolean;

@@ -12,6 +12,7 @@ export interface Profile {
   twitch?: {
     accessToken: string;
     broadcasterId: string;
+    login: string;
   };
   youtube?: {
     accessToken: string;
@@ -125,6 +126,7 @@ function useProfile(): Return {
       twitch: twitchToken.valid && {
         accessToken: twitchToken.accessToken,
         broadcasterId: twitchToken.id,
+        login: twitchToken.login,
       },
       youtube: youtubeToken.valid && {
         accessToken: youtubeToken.accessToken,
