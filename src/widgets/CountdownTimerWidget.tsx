@@ -211,8 +211,8 @@ function CountdownTimerWidget({
   // If backgroundColor is set, use it; otherwise use gradient if showBackground is true
   const useGradient = showBackground && !backgroundColor;
   const containerClassName = useGradient
-    ? 'h-full  bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8 text-white'
-    : 'h-full  p-8';
+    ? 'bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8 text-white'
+    : 'p-8';
 
   // Determine background style based on showBackground and backgroundColor settings
   let containerStyle: React.CSSProperties | undefined;
