@@ -2,6 +2,9 @@ import { DateTime, Duration } from 'luxon';
 
 const { VITE_TWITCH_CLIENT_ID: clientId } = import.meta.env;
 
+export const COMMERCIAL_MAX_LENGTH = 180;
+export const COMMERCIAL_MIN_LENGTH = 30;
+
 interface ValidateAccessTokenResponse {
   client_id: string;
   login: string;
