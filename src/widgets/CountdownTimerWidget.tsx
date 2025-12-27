@@ -239,7 +239,7 @@ function CountdownTimerWidget({
 
   const textStyle = { color: textColor };
   // Use clamp() to scale font size responsively based on viewport width
-  // Minimum: 2rem, Preferred: fontSize as vw units, Maximum: fontSize*1rem
+  // Minimum: 2rem, Preferred: fontSize as vw units, Maximum: fontSize rem
   // This ensures the text scales down on smaller screens while respecting the configured size on larger screens
   const timerFontSize = `clamp(2rem, ${fontSize * 5}vw, ${fontSize}rem)`;
 
