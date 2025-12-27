@@ -224,6 +224,7 @@ export async function startCommercial(
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Client-Id': clientId,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         broadcaster_id: broadcasterId,
