@@ -238,7 +238,10 @@ function CountdownTimerWidget({
   // When showBackground is true but no custom color, gradient is used via className
 
   const textStyle = { color: textColor };
-  const timerFontSize = `${fontSize}rem`;
+  // Use clamp() to scale font size responsively based on viewport width
+  // Minimum: 2rem, Preferred: fontSize as vw units, Maximum: fontSize*1rem
+  // This ensures the text scales down on smaller screens while respecting the configured size on larger screens
+  const timerFontSize = `clamp(2rem, ${fontSize * 5}vw, ${fontSize}rem)`;
 
   return (
     <div className={containerClassName} style={containerStyle}>
