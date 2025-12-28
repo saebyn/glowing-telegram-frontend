@@ -86,6 +86,9 @@ export interface CountdownTimerConfig extends WidgetConfig {
   showOriginalDuration?: boolean;
   showText?: boolean;
   showTitle?: boolean;
+  // Size configuration
+  width?: number; // Widget width in pixels
+  height?: number; // Widget height in pixels
 }
 
 export interface CountdownTimerState extends WidgetState {

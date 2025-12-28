@@ -1,12 +1,29 @@
+interface CountdownTimerSkeletonProps {
+  width?: number; // Widget width in pixels
+  height?: number; // Widget height in pixels
+}
+
 /**
  * CountdownTimerSkeleton
  *
  * Loading skeleton for the countdown timer widget.
  * Shows an animated placeholder while the widget data is being loaded.
  */
-function CountdownTimerSkeleton() {
+function CountdownTimerSkeleton({
+  width,
+  height,
+}: CountdownTimerSkeletonProps = {}) {
+  const containerStyle: React.CSSProperties = {};
+  if (width) {
+    containerStyle.width = `${width}px`;
+  }
+  if (height) {
+    containerStyle.height = `${height}px`;
+    containerStyle.overflow = 'hidden';
+  }
+
   return (
-    <div className="p-8">
+    <div className="p-8" style={containerStyle}>
       <div className="max-w-2xl w-full space-y-8">
         {/* Text and Title Skeleton */}
         <div className="text-center space-y-4">

@@ -217,6 +217,20 @@ const WidgetEdit = (props: EditProps) => {
         <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
           Appearance (for OBS)
         </Typography>
+        <NumberInput
+          source="config.width"
+          label="Widget Width (pixels)"
+          helperText="Optional: Set a fixed width for consistent sizing across states"
+          min={100}
+          max={3840}
+        />
+        <NumberInput
+          source="config.height"
+          label="Widget Height (pixels)"
+          helperText="Optional: Set a fixed height for consistent sizing across states"
+          min={100}
+          max={2160}
+        />
         <BooleanInput
           source="config.showBackground"
           label="Show Background"
