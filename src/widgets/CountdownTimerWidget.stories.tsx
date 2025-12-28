@@ -111,3 +111,36 @@ export const Paused: Story = {
     ],
   },
 };
+
+export const WithFixedSize: Story = {
+  args: {
+    widgetId: 'test-countdown-widget-fixed',
+  },
+  parameters: {
+    mockData: [
+      {
+        url: '/widgets/test-countdown-widget-fixed',
+        method: 'GET',
+        status: 200,
+        response: {
+          id: 'test-countdown-widget-fixed',
+          type: 'countdown',
+          config: {
+            timerId: 'timer-fixed',
+            text: 'Fixed size widget for OBS',
+            title: 'Consistent Size',
+            duration: 600,
+            width: 800,
+            height: 600,
+            showBackground: true,
+          },
+          state: {
+            duration_left: 300,
+            enabled: true,
+            last_tick_timestamp: DateTime.now().toISO(),
+          },
+        },
+      },
+    ],
+  },
+};
