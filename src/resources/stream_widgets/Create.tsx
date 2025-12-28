@@ -43,6 +43,20 @@ const WidgetCreate = (props: CreateProps) => {
           helperText="For countdown timer widgets"
           defaultValue={300}
         />
+        <NumberInput
+          source="config.width"
+          label="Widget Width (pixels)"
+          helperText="Optional: Set a fixed width for consistent sizing across states"
+          min={100}
+          max={3840}
+        />
+        <NumberInput
+          source="config.height"
+          label="Widget Height (pixels)"
+          helperText="Optional: Set a fixed height for consistent sizing across states"
+          min={100}
+          max={2160}
+        />
 
         {/* Initial State */}
         <NumberInput

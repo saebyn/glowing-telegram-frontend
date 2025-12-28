@@ -206,6 +206,8 @@ function CountdownTimerWidget({
   const showOriginalDuration = widget.config.showOriginalDuration ?? true;
   const showText = widget.config.showText ?? true;
   const showTitle = widget.config.showTitle ?? true;
+  const width = widget.config.width; // Widget width in pixels
+  const height = widget.config.height; // Widget height in pixels
 
   // Build container styles
   // If backgroundColor is set, use it; otherwise use gradient if showBackground is true
@@ -215,13 +217,21 @@ function CountdownTimerWidget({
     : 'p-8';
 
   // Determine background style based on showBackground and backgroundColor settings
-  let containerStyle: React.CSSProperties | undefined;
+  const containerStyle: React.CSSProperties = {};
   if (!showBackground) {
     // When background is hidden, make it transparent for OBS chroma key
-    containerStyle = { backgroundColor: 'transparent' };
+    containerStyle.backgroundColor = 'transparent';
   } else if (backgroundColor) {
     // When background is shown with custom color
-    containerStyle = { backgroundColor };
+    containerStyle.backgroundColor = backgroundColor;
+  }
+  // Apply width and height if configured
+  if (width) {
+    containerStyle.width = `${width}px`;
+  }
+  if (height) {
+    containerStyle.height = `${height}px`;
+    containerStyle.overflow = 'hidden'; // Prevent content from exceeding set height
   }
   // When showBackground is true but no custom color, gradient is used via className
 
