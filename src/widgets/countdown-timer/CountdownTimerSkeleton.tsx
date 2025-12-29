@@ -19,6 +19,8 @@ function CountdownTimerSkeleton({
   }
   if (height) {
     containerStyle.height = `${height}px`;
+  }
+  if (width || height) {
     containerStyle.overflow = 'hidden';
   }
 
