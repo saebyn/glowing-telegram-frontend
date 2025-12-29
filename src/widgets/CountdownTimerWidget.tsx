@@ -293,6 +293,7 @@ function CountdownTimerWidget({
                   isTimerEnded ? 'animate-pulse' : ''
                 }`}
                 preserveAspectRatio="xMidYMid meet"
+                viewBox="0 0 100 20"
               >
                 <title>Countdown Timer</title>
                 <text
