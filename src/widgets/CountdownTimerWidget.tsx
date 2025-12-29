@@ -170,7 +170,7 @@ function CountdownTimerWidget({
         console.debug('Could not get bbox:', e);
       }
     }
-  }, [widget?.state.duration_left]);
+  }, [widget]);
 
   const handleStart = () => {
     if (!widget) return;
@@ -294,6 +294,7 @@ function CountdownTimerWidget({
                 }`}
                 preserveAspectRatio="xMidYMid meet"
               >
+                <title>Countdown Timer</title>
                 <text
                   ref={timerTextRef}
                   x="50%"
