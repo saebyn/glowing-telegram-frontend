@@ -231,7 +231,9 @@ function CountdownTimerWidget({
   }
   if (height) {
     containerStyle.height = `${height}px`;
-    containerStyle.overflow = 'hidden'; // Prevent content from exceeding set height
+  }
+  if (width || height) {
+    containerStyle.overflow = 'hidden'; // Prevent content from exceeding configured dimensions
   }
   // When showBackground is true but no custom color, gradient is used via className
 
