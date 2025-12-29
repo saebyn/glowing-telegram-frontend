@@ -91,6 +91,7 @@ function CountdownTimerWidget({
   const titleRef = useRef<HTMLHeadingElement>(null);
   const hasPlayedEndSound = useRef(false);
   const previousDuration = useRef<number | null>(null);
+  const timerSvgRef = useRef<SVGSVGElement>(null);
 
   useTextJumble(titleRef);
 
@@ -154,6 +155,25 @@ function CountdownTimerWidget({
     ? !widget.state.enabled && widget.state.duration_left > 0
     : false;
 
+  // Update SVG viewBox to fit text content whenever the timer text changes
+  useEffect(() => {
+    if (timerSvgRef.current && widget) {
+      const textElement = timerSvgRef.current.querySelector('text');
+      if (textElement) {
+        try {
+          const bbox = textElement.getBBox();
+          timerSvgRef.current.setAttribute(
+            'viewBox',
+            `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`,
+          );
+        } catch (e) {
+          // getBBox can fail if element is not rendered yet
+          console.debug('Could not get bbox:', e);
+        }
+      }
+    }
+  }, [widget?.state.duration_left, timerSvgRef]);
+
   const handleStart = () => {
     if (!widget) return;
     executeAction('start', {});
@@ -201,7 +221,6 @@ function CountdownTimerWidget({
   const showBackground = widget.config.showBackground ?? true;
   const backgroundColor = widget.config.backgroundColor ?? undefined;
   const textColor = widget.config.textColor ?? 'white';
-  const fontSize = widget.config.fontSize ?? 6; // rem units
   const showProgressBar = widget.config.showProgressBar ?? true;
   const showOriginalDuration = widget.config.showOriginalDuration ?? true;
   const showText = widget.config.showText ?? true;
@@ -238,10 +257,6 @@ function CountdownTimerWidget({
   // When showBackground is true but no custom color, gradient is used via className
 
   const textStyle = { color: textColor };
-  // Use clamp() to scale font size responsively based on viewport width
-  // Minimum: 2rem, Preferred: fontSize as vw units, Maximum: fontSize rem
-  // This ensures the text scales down on smaller screens while respecting the configured size on larger screens
-  const timerFontSize = `clamp(2rem, ${fontSize * 5}vw, ${fontSize}rem)`;
 
   return (
     <div className={containerClassName} style={containerStyle}>
@@ -273,25 +288,34 @@ function CountdownTimerWidget({
         <div className="bg-black bg-opacity-40 backdrop-blur-lg rounded-3xl p-8 md:p-12 shadow-2xl border border-purple-500 border-opacity-30">
           <div className="text-center space-y-6">
             {/* Main Timer */}
-            <div
-              className={`font-bold tabular-nums transition-colors duration-300 ${
-                isTimerEnded
-                  ? 'text-red-400 animate-pulse'
-                  : isPaused
-                    ? 'text-yellow-400'
-                    : ''
-              }`}
-              style={{
-                fontSize: timerFontSize,
-                color:
-                  isTimerEnded || isPaused
-                    ? undefined
-                    : showBackground
-                      ? 'white'
-                      : textColor,
-              }}
-            >
-              {durationRemaining.toFormat('hh:mm:ss')}
+            <div className="w-full">
+              <svg
+                ref={timerSvgRef}
+                className={`w-full h-auto transition-colors duration-300 ${
+                  isTimerEnded ? 'animate-pulse' : ''
+                }`}
+                preserveAspectRatio="xMidYMid meet"
+              >
+                <text
+                  x="50%"
+                  y="50%"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  className="font-bold tabular-nums"
+                  style={{
+                    fontSize: '1em',
+                    fill: isTimerEnded
+                      ? '#fca5a5'
+                      : isPaused
+                        ? '#fbbf24'
+                        : showBackground
+                          ? 'white'
+                          : textColor,
+                  }}
+                >
+                  {durationRemaining.toFormat('hh:mm:ss')}
+                </text>
+              </svg>
             </div>
 
             {/* Progress Bar */}
