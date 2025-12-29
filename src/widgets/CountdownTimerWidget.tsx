@@ -92,6 +92,7 @@ function CountdownTimerWidget({
   const hasPlayedEndSound = useRef(false);
   const previousDuration = useRef<number | null>(null);
   const timerSvgRef = useRef<SVGSVGElement>(null);
+  const timerTextRef = useRef<SVGTextElement>(null);
 
   useTextJumble(titleRef);
 
@@ -157,22 +158,19 @@ function CountdownTimerWidget({
 
   // Update SVG viewBox to fit text content whenever the timer text changes
   useEffect(() => {
-    if (timerSvgRef.current && widget) {
-      const textElement = timerSvgRef.current.querySelector('text');
-      if (textElement) {
-        try {
-          const bbox = textElement.getBBox();
-          timerSvgRef.current.setAttribute(
-            'viewBox',
-            `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`,
-          );
-        } catch (e) {
-          // getBBox can fail if element is not rendered yet
-          console.debug('Could not get bbox:', e);
-        }
+    if (timerSvgRef.current && timerTextRef.current && widget) {
+      try {
+        const bbox = timerTextRef.current.getBBox();
+        timerSvgRef.current.setAttribute(
+          'viewBox',
+          `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`,
+        );
+      } catch (e) {
+        // getBBox can fail if element is not rendered yet
+        console.debug('Could not get bbox:', e);
       }
     }
-  }, [widget?.state.duration_left, timerSvgRef]);
+  }, [widget?.state.duration_left]);
 
   const handleStart = () => {
     if (!widget) return;
@@ -297,6 +295,7 @@ function CountdownTimerWidget({
                 preserveAspectRatio="xMidYMid meet"
               >
                 <text
+                  ref={timerTextRef}
                   x="50%"
                   y="50%"
                   textAnchor="middle"
