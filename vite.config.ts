@@ -9,5 +9,6 @@ export default defineConfig({
     alias: {
       '@': '/src',
     },
+    conditions: ['node', 'import', 'module', 'browser', 'default'],
   },
 });
