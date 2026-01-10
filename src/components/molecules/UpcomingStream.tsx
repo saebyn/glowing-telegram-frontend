@@ -115,7 +115,7 @@ function UpcomingStream({ nextScheduledStream, profile }: UpcomingStreamProps) {
         <Grid item xs={12}>
           {nextScheduledStream.prep_notes ? (
             <Typography
-              // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: prep notes are sanitized by the backend
               dangerouslySetInnerHTML={{
                 __html: nextScheduledStream.prep_notes,
               }}

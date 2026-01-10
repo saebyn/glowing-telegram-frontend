@@ -24,10 +24,10 @@
 		"@mui/material": "^6.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.3.8",
+		"@biomejs/biome": "^2.3.11",
 		"@mui/x-date-pickers": "^7",
-		"@saebyn/glowing-telegram-types": ">=0.8.0",
-		"@saebyn/glowing-telegram-video-editor": ">=0.1.9",
+		"@saebyn/glowing-telegram-types": ">=0.10.20",
+		"@saebyn/glowing-telegram-video-editor": ">=0.2.0",
 		"@storybook/addon-essentials": "8",
 		"@storybook/addon-interactions": "8",
 		"@storybook/addon-links": "8",
