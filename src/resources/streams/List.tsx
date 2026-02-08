@@ -22,6 +22,7 @@ import {
 } from 'react-admin';
 import EditorButton from '@/components/atoms/EditorButton';
 import IngestionStatusField from '@/components/atoms/IngestionStatusField';
+import StorageStatusField from '@/components/atoms/StorageStatusField';
 
 const streamsFilter = [
   <SearchInput source="title" alwaysOn key="title" />,
@@ -206,6 +207,7 @@ function StreamList(props: ListProps) {
         </ReferenceField>
         <BooleanField source="has_episodes" />
         <IngestionStatusField label="Videos" />
+        <StorageStatusField label="Storage" />
 
         <EditorButton />
         <EditButton />
