@@ -59,7 +59,9 @@ function getInitialSummaryTemplate(record: Stream): string {
 
   const date = DateTime.fromISO(record.stream_date).toLocaleString();
   // convert duration to human readable format from seconds
-  const duration = Duration.fromObject({ seconds: record.duration }).toHuman();
+  const duration = Duration.fromObject({ seconds: record.duration }).toFormat(
+    "hh 'hours,' mm 'minutes,' ss 'seconds'",
+  );
 
   return `
   The stream on ${date} was streamed on ${record.stream_platform}.
@@ -135,59 +137,64 @@ const BulkIngestStreamsButton = () => {
   };
 
   const handleProceed = async () => {
-    setLoading(true);
-
     if (data === undefined) {
       return;
     }
 
-    const selectedRecords = data.filter((record) =>
-      selectedIds.includes(record.id),
-    );
+    setLoading(true);
 
-    // Process each stream sequentially
-    for (const record of selectedRecords) {
-      // Update status to processing
-      setStreams((prev) =>
-        prev.map((s) =>
-          s.id === record.id ? { ...s, status: 'processing' } : s,
-        ),
+    try {
+      const selectedRecords = data.filter((record) =>
+        selectedIds.includes(record.id),
       );
 
-      try {
-        await dataProvider.create('streamIngest', {
-          data: {
-            streamId: record.id,
-            initialPrompt: getInitialPromptTemplate(record),
-            initialSummary: getInitialSummaryTemplate(record),
-          },
-        });
-
-        // Update status to success
+      // Process each stream sequentially
+      for (const record of selectedRecords) {
+        // Update status to processing
         setStreams((prev) =>
           prev.map((s) =>
-            s.id === record.id ? { ...s, status: 'success' } : s,
+            s.id === record.id ? { ...s, status: 'processing' } : s,
           ),
         );
-      } catch (err: unknown) {
-        let message = 'Unknown error';
-        if (err instanceof Error) {
-          message = err.message;
+
+        try {
+          await dataProvider.create('streamIngest', {
+            data: {
+              streamId: record.id,
+              initialPrompt: getInitialPromptTemplate(record),
+              initialSummary: getInitialSummaryTemplate(record),
+            },
+          });
+
+          // Update status to success
+          setStreams((prev) =>
+            prev.map((s) =>
+              s.id === record.id ? { ...s, status: 'success' } : s,
+            ),
+          );
+        } catch (err: unknown) {
+          let message = 'Unknown error';
+          if (err instanceof Error) {
+            message = err.message;
+          }
+
+          // Update status to error
+          setStreams((prev) =>
+            prev.map((s) =>
+              s.id === record.id
+                ? { ...s, status: 'error', error: message }
+                : s,
+            ),
+          );
         }
-
-        // Update status to error
-        setStreams((prev) =>
-          prev.map((s) =>
-            s.id === record.id ? { ...s, status: 'error', error: message } : s,
-          ),
-        );
       }
-    }
 
-    setLoading(false);
-    notify('Bulk ingestion completed', { type: 'info' });
-    unselectAll();
-    refresh();
+      notify('Bulk ingestion completed', { type: 'info' });
+      unselectAll();
+      refresh();
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -240,20 +247,28 @@ const BulkIngestStreamsButton = () => {
           </Table>
         </DialogContent>
         <DialogActions>
-          {!loading && (
+          {!loading && streams.every((s) => s.status === 'pending') && (
+            <>
+              <Button
+                onClick={handleClose}
+                label={translate('ra.action.cancel', { _: 'Cancel' })}
+              >
+                <CloseIcon />
+              </Button>
+              <Button
+                onClick={handleProceed}
+                label={translate('ra.action.send', { _: 'Proceed' })}
+              >
+                <SendIcon />
+              </Button>
+            </>
+          )}
+          {!loading && !streams.every((s) => s.status === 'pending') && (
             <Button
               onClick={handleClose}
-              label={translate('ra.action.cancel', { _: 'Cancel' })}
+              label={translate('ra.action.close', { _: 'Close' })}
             >
               <CloseIcon />
-            </Button>
-          )}
-          {!loading && streams.every((s) => s.status === 'pending') && (
-            <Button
-              onClick={handleProceed}
-              label={translate('ra.action.send', { _: 'Proceed' })}
-            >
-              <SendIcon />
             </Button>
           )}
         </DialogActions>
