@@ -98,12 +98,13 @@ const restDataProvider: DataProvider = {
     });
 
     // For stream_s3_status, the record doesn't have an id field, so we add it
-    if (resource === 'stream_s3_status') {
-      (record as any).id = params.id;
-    }
+    const recordWithId =
+      resource === 'stream_s3_status'
+        ? { ...(record as Record<string, unknown>), id: params.id }
+        : record;
 
     return {
-      data: cleanRecord(resource)(record as any) as any,
+      data: cleanRecord(resource)(recordWithId as any) as any,
     };
   },
   getMany: async (resource, params) => {
@@ -213,7 +214,7 @@ function getResourceUrl(
   }
 
   // Special handling for stream_s3_status to append /s3-status
-  if (resource === 'stream_s3_status') {
+  if (resource === 'stream_s3_status' && recordId) {
     url.pathname += '/s3-status';
   }
 
