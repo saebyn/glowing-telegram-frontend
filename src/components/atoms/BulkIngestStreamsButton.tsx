@@ -25,7 +25,6 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import type { Stream } from '@saebyn/glowing-telegram-types';
-import { DateTime, Duration } from 'luxon';
 import { useState } from 'react';
 import {
   Button,
@@ -37,41 +36,20 @@ import {
   useTranslate,
   useUnselectAll,
 } from 'react-admin';
+import {
+  applyTemplate,
+  DEFAULT_PROMPT_TEMPLATE,
+  DEFAULT_SUMMARY_TEMPLATE,
+} from '@/constants/ingestTemplates';
 
 // This is the initial prompt template that will be used for each stream
 function getInitialPromptTemplate(record: Stream): string {
-  if (!record.stream_date) {
-    return 'No stream date available.';
-  }
-
-  const date = DateTime.fromISO(record.stream_date).toLocaleString();
-
-  return `
-  Welcome to the start of the stream titled "${record.title}" on ${date}. This text will be used as initial context for the transcription process.
-  `;
+  return applyTemplate(DEFAULT_PROMPT_TEMPLATE, record);
 }
 
 // This is the initial summary template that will be used for each stream
 function getInitialSummaryTemplate(record: Stream): string {
-  if (!record.stream_date) {
-    return 'No stream date available.';
-  }
-
-  const date = DateTime.fromISO(record.stream_date).toLocaleString();
-  // convert duration to human readable format from seconds
-  const duration = Duration.fromObject({ seconds: record.duration }).toFormat(
-    "hh 'hours,' mm 'minutes,' ss 'seconds'",
-  );
-
-  return `
-  The stream on ${date} was streamed on ${record.stream_platform}.
-  It has a duration of ${duration}. The description is as follows:
-  ${record.description}
-
-  It was titled "${record.title}".
-
-  This information relates to the stream and will be used as initial context for the summarization process, which summarizes the transcription of the stream.
-  `;
+  return applyTemplate(DEFAULT_SUMMARY_TEMPLATE, record);
 }
 
 interface StreamIngestStatus {
