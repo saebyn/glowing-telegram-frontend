@@ -16,11 +16,11 @@ interface S3Status {
   retrieval_cost_usd: number | null;
   retrieval_time_hours: number | null;
   retrieval_tier: string | null;
-  compute_cost_usd: number;
+  compute_cost_usd: number | null;
 }
 
 function formatBytes(bytes: number): string {
-  if (bytes === 0) return '0 B';
+  if (bytes <= 0) return '0 B';
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -35,38 +35,49 @@ interface StorageChipProps {
   status: S3Status;
 }
 
+function getChipLabel(
+  storageClass: S3Status['storage_class'],
+  sizeBytes: number,
+): string {
+  const storageClassLabels = {
+    STANDARD: '☁️ STANDARD',
+    GLACIER: '❄️ GLACIER',
+    DEEP_ARCHIVE: '❄️ DEEP ARCHIVE',
+    MISSING: '⛔️ MISSING',
+  };
+  const label = storageClassLabels[storageClass];
+  return `${label} (${formatBytes(sizeBytes)})`;
+}
+
 function StorageChip({ status }: StorageChipProps) {
   const storageClassConfig = {
     STANDARD: {
       icon: <CloudIcon />,
       color: 'success' as const,
-      label: '☁️ STANDARD',
     },
     GLACIER: {
       icon: <AcUnitIcon />,
       color: 'warning' as const,
-      label: '❄️ GLACIER',
     },
     DEEP_ARCHIVE: {
       icon: <AcUnitIcon />,
       color: 'info' as const,
-      label: '❄️ DEEP ARCHIVE',
     },
     MISSING: {
       icon: <BlockIcon />,
       color: 'error' as const,
-      label: '⛔️ MISSING',
     },
   };
 
   const config = storageClassConfig[status.storage_class];
+  const label = getChipLabel(status.storage_class, status.size_bytes);
 
   // For STANDARD storage, show simple chip without tooltip
   if (status.storage_class === 'STANDARD') {
     return (
       <Chip
         icon={config.icon}
-        label={`${config.label} (${formatBytes(status.size_bytes)})`}
+        label={label}
         color={config.color}
         size="small"
       />
@@ -74,10 +85,17 @@ function StorageChip({ status }: StorageChipProps) {
   }
 
   // For non-STANDARD storage, show chip with detailed tooltip
+  const storageClassLabels = {
+    STANDARD: '☁️ STANDARD',
+    GLACIER: '❄️ GLACIER',
+    DEEP_ARCHIVE: '❄️ DEEP ARCHIVE',
+    MISSING: '⛔️ MISSING',
+  };
+
   const tooltipContent = (
     <Box sx={{ p: 1 }}>
       <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>
-        {config.label}
+        {storageClassLabels[status.storage_class]}
       </Typography>
       <Typography variant="body2" sx={{ mb: 0.5 }}>
         Size: {formatBytes(status.size_bytes)}
@@ -93,9 +111,11 @@ function StorageChip({ status }: StorageChipProps) {
           {status.retrieval_tier})
         </Typography>
       )}
-      <Typography variant="body2" sx={{ mb: 0.5 }}>
-        Compute Cost: {formatCost(status.compute_cost_usd)}
-      </Typography>
+      {status.compute_cost_usd !== null && (
+        <Typography variant="body2" sx={{ mb: 0.5 }}>
+          Compute Cost: {formatCost(status.compute_cost_usd)}
+        </Typography>
+      )}
       {status.retrieval_cost_usd !== null && (
         <Typography
           variant="body2"
@@ -111,7 +131,7 @@ function StorageChip({ status }: StorageChipProps) {
     <Tooltip title={tooltipContent} arrow>
       <Chip
         icon={config.icon}
-        label={`${config.label} (${formatBytes(status.size_bytes)})`}
+        label={label}
         color={config.color}
         size="small"
       />
