@@ -2,7 +2,7 @@ const resourceMap = {
   series: 'records/series',
   profile: 'records/profiles',
   streams: 'records/streams',
-  stream_s3_status: 'records/stream_s3_status',
+  stream_s3_status: 'ingestion/streams',
   episodes: 'records/episodes',
   tasks: 'records/tasks',
   video_clips: 'records/video_clips',

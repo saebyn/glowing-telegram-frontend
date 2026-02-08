@@ -204,42 +204,42 @@ export const handlers = [
   }),
 
   // Mock S3 status endpoints for streams
-  http.get('/api/records/stream_s3_status/1', () => {
+  http.get('/api/ingestion/streams/1/s3-status', () => {
     return HttpResponse.json({
-      id: 1,
-      stream_id: 1,
+      exists: true,
       storage_class: 'STANDARD',
       size_bytes: 1024 * 1024 * 1024 * 2.5, // 2.5 GB
-      retrieval_cost_usd: null,
-      retrieval_time_hours: null,
+      retrieval_required: false,
+      estimated_retrieval_cost_usd: null,
+      estimated_retrieval_time_hours: null,
       retrieval_tier: null,
-      compute_cost_usd: 0.12,
+      estimated_compute_cost_usd: 0.12,
     });
   }),
 
-  http.get('/api/records/stream_s3_status/2', () => {
+  http.get('/api/ingestion/streams/2/s3-status', () => {
     return HttpResponse.json({
-      id: 2,
-      stream_id: 2,
+      exists: true,
       storage_class: 'GLACIER',
       size_bytes: 1024 * 1024 * 1024 * 5.2, // 5.2 GB
-      retrieval_cost_usd: 0.35,
-      retrieval_time_hours: 12,
+      retrieval_required: true,
+      estimated_retrieval_cost_usd: 0.35,
+      estimated_retrieval_time_hours: 12,
       retrieval_tier: 'standard',
-      compute_cost_usd: 0.25,
+      estimated_compute_cost_usd: 0.25,
     });
   }),
 
-  http.get('/api/records/stream_s3_status/3', () => {
+  http.get('/api/ingestion/streams/3/s3-status', () => {
     return HttpResponse.json({
-      id: 3,
-      stream_id: 3,
+      exists: true,
       storage_class: 'DEEP_ARCHIVE',
       size_bytes: 1024 * 1024 * 1024 * 8.7, // 8.7 GB
-      retrieval_cost_usd: 1.25,
-      retrieval_time_hours: 48,
+      retrieval_required: true,
+      estimated_retrieval_cost_usd: 1.25,
+      estimated_retrieval_time_hours: 48,
       retrieval_tier: 'bulk',
-      compute_cost_usd: 0.42,
+      estimated_compute_cost_usd: 0.42,
     });
   }),
 
