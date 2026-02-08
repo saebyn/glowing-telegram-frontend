@@ -203,6 +203,55 @@ export const handlers = [
     });
   }),
 
+  // Mock S3 status endpoints for streams
+  http.get('/api/ingestion/streams/1/s3-status', () => {
+    return HttpResponse.json({
+      exists: true,
+      storage_class: 'STANDARD',
+      size_bytes: 1024 * 1024 * 1024 * 2.5, // 2.5 GB
+      retrieval_required: false,
+      estimated_retrieval_cost_usd: null,
+      estimated_retrieval_time_hours: null,
+      estimated_compute_cost_usd: 0.12,
+    });
+  }),
+
+  http.get('/api/ingestion/streams/2/s3-status', () => {
+    return HttpResponse.json({
+      exists: true,
+      storage_class: 'GLACIER',
+      size_bytes: 1024 * 1024 * 1024 * 5.2, // 5.2 GB
+      retrieval_required: true,
+      estimated_retrieval_cost_usd: {
+        bulk: 0.26,
+        standard: 0.52,
+      },
+      estimated_retrieval_time_hours: {
+        bulk: 12,
+        standard: 5,
+      },
+      estimated_compute_cost_usd: 0.25,
+    });
+  }),
+
+  http.get('/api/ingestion/streams/3/s3-status', () => {
+    return HttpResponse.json({
+      exists: true,
+      storage_class: 'DEEP_ARCHIVE',
+      size_bytes: 1024 * 1024 * 1024 * 8.7, // 8.7 GB
+      retrieval_required: true,
+      estimated_retrieval_cost_usd: {
+        bulk: 0.87,
+        standard: 8.7,
+      },
+      estimated_retrieval_time_hours: {
+        bulk: 48,
+        standard: 12,
+      },
+      estimated_compute_cost_usd: 0.42,
+    });
+  }),
+
   http.get('/api/records/episodes', () => {
     return HttpResponse.json({
       items: [
