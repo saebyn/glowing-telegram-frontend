@@ -41,15 +41,16 @@ import {
   DEFAULT_PROMPT_TEMPLATE,
   DEFAULT_SUMMARY_TEMPLATE,
 } from '@/constants/ingestTemplates';
+import useProfile from '@/hooks/useProfile';
 
 // This is the initial prompt template that will be used for each stream
-function getInitialPromptTemplate(record: Stream): string {
-  return applyTemplate(DEFAULT_PROMPT_TEMPLATE, record);
+function getInitialPromptTemplate(record: Stream, template?: string): string {
+  return applyTemplate(template || DEFAULT_PROMPT_TEMPLATE, record);
 }
 
 // This is the initial summary template that will be used for each stream
-function getInitialSummaryTemplate(record: Stream): string {
-  return applyTemplate(DEFAULT_SUMMARY_TEMPLATE, record);
+function getInitialSummaryTemplate(record: Stream, template?: string): string {
+  return applyTemplate(template || DEFAULT_SUMMARY_TEMPLATE, record);
 }
 
 interface StreamIngestStatus {
@@ -66,6 +67,7 @@ const BulkIngestStreamsButton = () => {
   const refresh = useRefresh();
   const unselectAll = useUnselectAll('streams');
   const { selectedIds, data } = useListContext<Stream>();
+  const { profile } = useProfile();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [streams, setStreams] = useState<StreamIngestStatus[]>([]);
@@ -139,8 +141,14 @@ const BulkIngestStreamsButton = () => {
           await dataProvider.create('streamIngest', {
             data: {
               streamId: record.id,
-              initialPrompt: getInitialPromptTemplate(record),
-              initialSummary: getInitialSummaryTemplate(record),
+              initialPrompt: getInitialPromptTemplate(
+                record,
+                profile?.promptTemplate,
+              ),
+              initialSummary: getInitialSummaryTemplate(
+                record,
+                profile?.summaryTemplate,
+              ),
             },
           });
 
