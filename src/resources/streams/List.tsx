@@ -20,6 +20,7 @@ import {
   TextField,
   useListContext,
 } from 'react-admin';
+import BulkIngestStreamsButton from '@/components/atoms/BulkIngestStreamsButton';
 import EditorButton from '@/components/atoms/EditorButton';
 import IngestionStatusField from '@/components/atoms/IngestionStatusField';
 import StorageStatusField from '@/components/atoms/StorageStatusField';
@@ -193,13 +194,23 @@ function StreamList(props: ListProps) {
     return {};
   };
 
+  const BulkActionButtons = () => (
+    <>
+      <BulkIngestStreamsButton />
+    </>
+  );
+
   return (
     <List
       {...props}
       filters={streamsFilter}
       aside={<CalendarView setHighlightedDate={setHighlightedDate} />}
     >
-      <Datagrid rowClick={false} rowSx={rowSx}>
+      <Datagrid
+        rowClick={false}
+        rowSx={rowSx}
+        bulkActionButtons={<BulkActionButtons />}
+      >
         <DateField source="stream_date" />
         <TextField source="title" />
         <ReferenceField source="series_id" reference="series">
