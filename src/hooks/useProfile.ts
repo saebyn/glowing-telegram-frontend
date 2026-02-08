@@ -9,6 +9,8 @@ export interface Profile {
   timezone: string;
   standardTags: string[];
   twitchChatEnabled?: boolean;
+  promptTemplate?: string;
+  summaryTemplate?: string;
   twitch?: {
     accessToken: string;
     broadcasterId: string;

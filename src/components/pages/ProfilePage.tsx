@@ -7,6 +7,7 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  TextField,
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -183,6 +184,70 @@ const ProfilePage = () => {
                 }));
               }}
             />
+
+            <Box sx={{ mt: 3 }}>
+              <Typography variant="subtitle2" gutterBottom>
+                {translate('gt.profile.ingestTemplates', {
+                  _: 'Ingest Templates',
+                })}
+              </Typography>
+              <Typography
+                variant="caption"
+                display="block"
+                color="text.secondary"
+                sx={{ mb: 2 }}
+              >
+                {translate('gt.profile.ingestTemplatesDescription', {
+                  _: 'Customize the templates used when ingesting stream videos. Available variables: {title}, {date}, {platform}, {duration}, {description}',
+                })}
+              </Typography>
+
+              <TextField
+                label={translate('gt.profile.promptTemplate', {
+                  _: 'Prompt Template',
+                })}
+                value={
+                  profileUpdate.promptTemplate ?? profile.promptTemplate ?? ''
+                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setProfileUpdate((profile) => ({
+                    ...profile,
+                    promptTemplate: e.target.value,
+                  }));
+                }}
+                fullWidth
+                multiline
+                rows={4}
+                placeholder={translate('gt.profile.promptTemplatePlaceholder', {
+                  _: 'Leave empty to use default template',
+                })}
+                sx={{ mb: 2 }}
+              />
+
+              <TextField
+                label={translate('gt.profile.summaryTemplate', {
+                  _: 'Summary Template',
+                })}
+                value={
+                  profileUpdate.summaryTemplate ?? profile.summaryTemplate ?? ''
+                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setProfileUpdate((profile) => ({
+                    ...profile,
+                    summaryTemplate: e.target.value,
+                  }));
+                }}
+                fullWidth
+                multiline
+                rows={6}
+                placeholder={translate(
+                  'gt.profile.summaryTemplatePlaceholder',
+                  {
+                    _: 'Leave empty to use default template',
+                  },
+                )}
+              />
+            </Box>
 
             <Box sx={{ mt: 2 }}>
               <Typography variant="subtitle2" gutterBottom>

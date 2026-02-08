@@ -48,51 +48,61 @@ import {
   useRecordContext,
   useTranslate,
 } from 'react-admin';
+import useProfile from '@/hooks/useProfile';
 
-// This is the initial prompt template that will be shown to the user when they
-// open the dialog. This template will be populated with data from the stream
-// record.
-function getInitialPromptTemplate(record: Stream): string {
+// Default templates - used if the user hasn't customized them in their profile
+const DEFAULT_PROMPT_TEMPLATE = `
+Welcome to the start of the stream titled "{title}" on {date}. This text will be used as initial context for the transcription process.
+`;
+
+const DEFAULT_SUMMARY_TEMPLATE = `
+The stream on {date} was streamed on {platform}.
+It has a duration of {duration}. The description is as follows:
+{description}
+
+It was titled "{title}".
+
+This information relates to the stream and will be used as initial context for the summarization process, which summarizes the transcription of the stream.
+`;
+
+// Function to apply template variables to a template string
+function applyTemplate(template: string, record: Stream): string {
   if (!record.stream_date) {
     return 'No stream date available.';
   }
 
   const date = DateTime.fromISO(record.stream_date).toLocaleString();
+  const duration = Duration.fromObject({ seconds: record.duration }).toFormat(
+    "hh 'hours,' mm 'minutes,' ss 'seconds'",
+  );
 
-  return `
-  Welcome to the start of the stream titled "${record.title}" on ${date}. This text will be used as initial context for the transcription process.
-  `;
+  return template
+    .replace(/{title}/g, record.title || '')
+    .replace(/{date}/g, date)
+    .replace(/{platform}/g, record.stream_platform || '')
+    .replace(/{duration}/g, duration)
+    .replace(/{description}/g, record.description || '');
+}
+
+// This is the initial prompt template that will be shown to the user when they
+// open the dialog. This template will be populated with data from the stream
+// record.
+function getInitialPromptTemplate(record: Stream, template?: string): string {
+  return applyTemplate(template || DEFAULT_PROMPT_TEMPLATE, record);
 }
 
 // This is the initial summary template that will be shown to the user when they
 // open the dialog. This template will be populated with data from the stream
 // record.
-function getInitialSummaryTemplate(record: Stream): string {
-  if (!record.stream_date) {
-    return 'No stream date available.';
-  }
-
-  const date = DateTime.fromISO(record.stream_date).toLocaleString();
-  // convert duration to human readable format from seconds
-  const duration = Duration.fromObject({ seconds: record.duration }).toFormat(
-    "hh 'hours,' mm 'minutes,' ss 'seconds'",
-  );
-
-  return `
-  The stream on ${date} was streamed on ${record.stream_platform}.
-  It has a duration of ${duration}. The description is as follows:
-  ${record.description}
-
-  It was titled "${record.title}".
-
-  This information relates to the stream and will be used as initial context for the summarization process, which summarizes the transcription of the stream.
-  `;
+function getInitialSummaryTemplate(record: Stream, template?: string): string {
+  return applyTemplate(template || DEFAULT_SUMMARY_TEMPLATE, record);
 }
 
 const IngestStreamVideosButton = () => {
   const translate = useTranslate();
   const record = useRecordContext<Stream>();
   const dataProvider = useDataProvider();
+  const { profile } = useProfile();
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -102,10 +112,14 @@ const IngestStreamVideosButton = () => {
 
   useEffect(() => {
     if (record) {
-      setInitialPrompt(getInitialPromptTemplate(record));
-      setInitialSummary(getInitialSummaryTemplate(record));
+      setInitialPrompt(
+        getInitialPromptTemplate(record, profile?.promptTemplate),
+      );
+      setInitialSummary(
+        getInitialSummaryTemplate(record, profile?.summaryTemplate),
+      );
     }
-  }, [record]);
+  }, [record, profile]);
 
   const handleOpen = () => {
     setOpen(true);
