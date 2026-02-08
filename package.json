@@ -24,7 +24,7 @@
 		"@mui/material": "^6.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.3.11",
+		"@biomejs/biome": "^2.3.14",
 		"@mui/x-date-pickers": "^7",
 		"@saebyn/glowing-telegram-types": ">=0.10.20",
 		"@saebyn/glowing-telegram-video-editor": ">=0.2.0",
