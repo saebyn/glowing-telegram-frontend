@@ -146,7 +146,14 @@ function StorageChip({ status }: StorageChipProps) {
               Retrieval Options:
             </Typography>
             {Object.entries(status.estimated_retrieval_cost_usd)
-              .sort((a, b) => a[0].localeCompare(b[0]))
+              .sort((a, b) => {
+                // Sort by retrieval time (fastest first) for better UX
+                const timeA =
+                  status.estimated_retrieval_time_hours?.[a[0]] ?? Infinity;
+                const timeB =
+                  status.estimated_retrieval_time_hours?.[b[0]] ?? Infinity;
+                return timeA - timeB;
+              })
               .map(([tier, cost]) => {
                 const time = status.estimated_retrieval_time_hours?.[tier];
                 return (
