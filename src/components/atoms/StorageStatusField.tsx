@@ -3,7 +3,7 @@ import BlockIcon from '@mui/icons-material/Block';
 import CloudIcon from '@mui/icons-material/Cloud';
 import { Box, Chip, Tooltip, Typography } from '@mui/material';
 import type React from 'react';
-import { FunctionField, useGetOne } from 'react-admin';
+import { FunctionField, type Identifier, useGetOne } from 'react-admin';
 
 interface StorageStatusFieldProps {
   label?: string;
@@ -23,7 +23,8 @@ function formatBytes(bytes: number): string {
   if (bytes <= 0) return '0 B';
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const rawIndex = Math.floor(Math.log(bytes) / Math.log(k));
+  const i = Math.min(Math.max(rawIndex, 0), sizes.length - 1);
   return `${(bytes / k ** i).toFixed(2)} ${sizes[i]}`;
 }
 
@@ -57,7 +58,10 @@ function getChipLabel(
     MISSING: '⛔️ MISSING',
   };
   const label = storageClassLabels[storageClass] || `☁️ ${storageClass}`;
-  const size = sizeBytes ? formatBytes(sizeBytes) : 'Unknown size';
+  const size =
+    sizeBytes !== null && sizeBytes !== undefined
+      ? formatBytes(sizeBytes)
+      : 'Unknown size';
   return `${label} (${size})`;
 }
 
@@ -131,7 +135,7 @@ function StorageChip({ status }: StorageChipProps) {
       <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>
         {storageClassLabels[storageClass] || storageClass}
       </Typography>
-      {status.size_bytes && (
+      {status.size_bytes !== null && status.size_bytes !== undefined && (
         <Typography variant="body2" sx={{ mb: 0.5 }}>
           Size: {formatBytes(status.size_bytes)}
         </Typography>
@@ -219,7 +223,7 @@ export default function StorageStatusField({ label }: StorageStatusFieldProps) {
 }
 
 interface StorageStatusFieldContentProps {
-  streamId: number;
+  streamId: Identifier;
 }
 
 function StorageStatusFieldContent({
@@ -242,14 +246,23 @@ function StorageStatusFieldContent({
     );
   }
 
-  if (error || !data) {
+  if (error) {
+    const errorMessage =
+      typeof error === 'string'
+        ? error
+        : (error as { message?: string })?.message ||
+          'Error loading storage status';
+
     return (
-      <Chip
-        icon={<BlockIcon />}
-        label="⛔️ MISSING"
-        color="error"
-        size="small"
-      />
+      <Tooltip title={errorMessage}>
+        <Chip icon={<BlockIcon />} label="Error" color="error" size="small" />
+      </Tooltip>
+    );
+  }
+
+  if (!data) {
+    return (
+      <Chip label="Unknown" size="small" variant="outlined" color="default" />
     );
   }
 
