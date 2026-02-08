@@ -119,7 +119,7 @@ const IngestStreamVideosButton = () => {
         getInitialSummaryTemplate(record, profile?.summaryTemplate),
       );
     }
-  }, [record, profile]);
+  }, [record, profile?.promptTemplate, profile?.summaryTemplate]);
 
   const handleOpen = () => {
     setOpen(true);
