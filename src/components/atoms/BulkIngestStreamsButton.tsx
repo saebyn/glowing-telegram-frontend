@@ -59,9 +59,7 @@ function getInitialSummaryTemplate(record: Stream): string {
 
   const date = DateTime.fromISO(record.stream_date).toLocaleString();
   // convert duration to human readable format from seconds
-  const duration = Duration.fromObject({ seconds: record.duration }).toFormat(
-    "hh 'hours,' mm 'minutes,' ss 'seconds'",
-  );
+  const duration = Duration.fromObject({ seconds: record.duration }).toHuman();
 
   return `
   The stream on ${date} was streamed on ${record.stream_platform}.
@@ -233,8 +231,8 @@ const BulkIngestStreamsButton = () => {
                         <LoadingIndicator /> Processing...
                       </>
                     )}
-                    {stream.status === 'success' && '✓ Success'}
-                    {stream.status === 'error' && <>✗ Error: {stream.error}</>}
+                    {stream.status === 'success' && 'Success'}
+                    {stream.status === 'error' && <>Error: {stream.error}</>}
                   </TableCell>
                 </TableRow>
               ))}
@@ -246,15 +244,6 @@ const BulkIngestStreamsButton = () => {
             <Button
               onClick={handleClose}
               label={translate('ra.action.cancel', { _: 'Cancel' })}
-            >
-              <CloseIcon />
-            </Button>
-          )}
-          {loading && (
-            <Button
-              onClick={handleClose}
-              label={translate('ra.action.close', { _: 'Close' })}
-              disabled
             >
               <CloseIcon />
             </Button>
