@@ -2,6 +2,7 @@ import AcUnitIcon from '@mui/icons-material/AcUnit';
 import BlockIcon from '@mui/icons-material/Block';
 import CloudIcon from '@mui/icons-material/Cloud';
 import { Box, Chip, Tooltip, Typography } from '@mui/material';
+import type React from 'react';
 import { FunctionField, useGetOne } from 'react-admin';
 
 interface StorageStatusFieldProps {
@@ -9,14 +10,14 @@ interface StorageStatusFieldProps {
 }
 
 interface S3Status {
-  id: number;
-  stream_id: number;
-  storage_class: 'STANDARD' | 'GLACIER' | 'DEEP_ARCHIVE' | 'MISSING';
-  size_bytes: number;
-  retrieval_cost_usd: number | null;
-  retrieval_time_hours: number | null;
-  retrieval_tier: string | null;
-  compute_cost_usd: number | null;
+  exists: boolean;
+  storage_class?: string | null;
+  size_bytes?: number | null;
+  retrieval_required: boolean;
+  estimated_retrieval_cost_usd?: number | null;
+  estimated_retrieval_time_hours?: number | null;
+  retrieval_tier?: string | null;
+  estimated_compute_cost_usd?: number | null;
 }
 
 function formatBytes(bytes: number): string {
@@ -35,45 +36,77 @@ interface StorageChipProps {
   status: S3Status;
 }
 
+function getStorageClass(status: S3Status): string {
+  // If stream doesn't exist in S3, return MISSING
+  if (!status.exists) {
+    return 'MISSING';
+  }
+  // Use the storage class from the API, or default to STANDARD
+  return status.storage_class?.toUpperCase() || 'STANDARD';
+}
+
 function getChipLabel(
-  storageClass: S3Status['storage_class'],
-  sizeBytes: number,
+  storageClass: string,
+  sizeBytes: number | null | undefined,
 ): string {
-  const storageClassLabels = {
+  const storageClassLabels: Record<string, string> = {
     STANDARD: '☁️ STANDARD',
     GLACIER: '❄️ GLACIER',
     DEEP_ARCHIVE: '❄️ DEEP ARCHIVE',
+    GLACIER_IR: '❄️ GLACIER IR',
+    INTELLIGENT_TIERING: '☁️ INTELLIGENT',
     MISSING: '⛔️ MISSING',
   };
-  const label = storageClassLabels[storageClass];
-  return `${label} (${formatBytes(sizeBytes)})`;
+  const label = storageClassLabels[storageClass] || `☁️ ${storageClass}`;
+  const size = sizeBytes ? formatBytes(sizeBytes) : 'Unknown size';
+  return `${label} (${size})`;
 }
 
 function StorageChip({ status }: StorageChipProps) {
-  const storageClassConfig = {
+  const storageClass = getStorageClass(status);
+
+  const storageClassConfig: Record<
+    string,
+    {
+      icon: React.ReactElement;
+      color: 'success' | 'warning' | 'info' | 'error' | 'default';
+    }
+  > = {
     STANDARD: {
       icon: <CloudIcon />,
-      color: 'success' as const,
+      color: 'success',
     },
     GLACIER: {
       icon: <AcUnitIcon />,
-      color: 'warning' as const,
+      color: 'warning',
+    },
+    GLACIER_IR: {
+      icon: <AcUnitIcon />,
+      color: 'warning',
     },
     DEEP_ARCHIVE: {
       icon: <AcUnitIcon />,
-      color: 'info' as const,
+      color: 'info',
+    },
+    INTELLIGENT_TIERING: {
+      icon: <CloudIcon />,
+      color: 'default',
     },
     MISSING: {
       icon: <BlockIcon />,
-      color: 'error' as const,
+      color: 'error',
     },
   };
 
-  const config = storageClassConfig[status.storage_class];
-  const label = getChipLabel(status.storage_class, status.size_bytes);
+  const config = storageClassConfig[storageClass] || {
+    icon: <CloudIcon />,
+    color: 'default' as const,
+  };
 
-  // For STANDARD storage, show simple chip without tooltip
-  if (status.storage_class === 'STANDARD') {
+  const label = getChipLabel(storageClass, status.size_bytes);
+
+  // For STANDARD storage or when no retrieval is required, show simple chip without tooltip
+  if (!status.retrieval_required) {
     return (
       <Chip
         icon={config.icon}
@@ -84,39 +117,46 @@ function StorageChip({ status }: StorageChipProps) {
     );
   }
 
-  // For non-STANDARD storage, show chip with detailed tooltip
-  const storageClassLabels = {
+  // For storage requiring retrieval, show chip with detailed tooltip
+  const storageClassLabels: Record<string, string> = {
     STANDARD: '☁️ STANDARD',
     GLACIER: '❄️ GLACIER',
     DEEP_ARCHIVE: '❄️ DEEP ARCHIVE',
+    GLACIER_IR: '❄️ GLACIER IR',
+    INTELLIGENT_TIERING: '☁️ INTELLIGENT',
     MISSING: '⛔️ MISSING',
   };
 
   const tooltipContent = (
     <Box sx={{ p: 1 }}>
       <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>
-        {storageClassLabels[status.storage_class]}
+        {storageClassLabels[storageClass] || storageClass}
       </Typography>
-      <Typography variant="body2" sx={{ mb: 0.5 }}>
-        Size: {formatBytes(status.size_bytes)}
-      </Typography>
-      {status.retrieval_cost_usd !== null && (
+      {status.size_bytes && (
         <Typography variant="body2" sx={{ mb: 0.5 }}>
-          Retrieval Cost: {formatCost(status.retrieval_cost_usd)}
+          Size: {formatBytes(status.size_bytes)}
         </Typography>
       )}
-      {status.retrieval_time_hours !== null && (
-        <Typography variant="body2" sx={{ mb: 0.5 }}>
-          Retrieval Time: ~{status.retrieval_time_hours}h (
-          {status.retrieval_tier})
-        </Typography>
-      )}
-      {status.compute_cost_usd !== null && (
-        <Typography variant="body2" sx={{ mb: 0.5 }}>
-          Compute Cost: {formatCost(status.compute_cost_usd)}
-        </Typography>
-      )}
-      {status.retrieval_cost_usd !== null && (
+      {status.estimated_retrieval_cost_usd !== null &&
+        status.estimated_retrieval_cost_usd !== undefined && (
+          <Typography variant="body2" sx={{ mb: 0.5 }}>
+            Retrieval Cost: {formatCost(status.estimated_retrieval_cost_usd)}
+          </Typography>
+        )}
+      {status.estimated_retrieval_time_hours !== null &&
+        status.estimated_retrieval_time_hours !== undefined && (
+          <Typography variant="body2" sx={{ mb: 0.5 }}>
+            Retrieval Time: ~{status.estimated_retrieval_time_hours}h
+            {status.retrieval_tier && ` (${status.retrieval_tier})`}
+          </Typography>
+        )}
+      {status.estimated_compute_cost_usd !== null &&
+        status.estimated_compute_cost_usd !== undefined && (
+          <Typography variant="body2" sx={{ mb: 0.5 }}>
+            Compute Cost: {formatCost(status.estimated_compute_cost_usd)}
+          </Typography>
+        )}
+      {status.retrieval_required && (
         <Typography
           variant="body2"
           sx={{ mt: 1, fontStyle: 'italic', color: 'warning.light' }}
@@ -161,7 +201,7 @@ interface StorageStatusFieldContentProps {
 function StorageStatusFieldContent({
   streamId,
 }: StorageStatusFieldContentProps) {
-  const { data, isLoading, error } = useGetOne<S3Status>(
+  const { data, isLoading, error } = useGetOne(
     'stream_s3_status',
     { id: streamId },
     { retry: false },
@@ -189,5 +229,5 @@ function StorageStatusFieldContent({
     );
   }
 
-  return <StorageChip status={data} />;
+  return <StorageChip status={data as S3Status} />;
 }
