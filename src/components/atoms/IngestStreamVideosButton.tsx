@@ -39,7 +39,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import type { Stream } from '@saebyn/glowing-telegram-types';
-import { DateTime, Duration } from 'luxon';
 import React, { useEffect } from 'react';
 import {
   Button,
@@ -48,41 +47,15 @@ import {
   useRecordContext,
   useTranslate,
 } from 'react-admin';
+import {
+  applyTemplate,
+  DEFAULT_PROMPT_TEMPLATE,
+  DEFAULT_SUMMARY_TEMPLATE,
+} from '@/constants/ingestTemplates';
 import useProfile from '@/hooks/useProfile';
 
-// Default templates - used if the user hasn't customized them in their profile
-export const DEFAULT_PROMPT_TEMPLATE = `
-Welcome to the start of the stream titled "{title}" on {date}. This text will be used as initial context for the transcription process.
-`;
-
-export const DEFAULT_SUMMARY_TEMPLATE = `
-The stream on {date} was streamed on {platform}.
-It has a duration of {duration}. The description is as follows:
-{description}
-
-It was titled "{title}".
-
-This information relates to the stream and will be used as initial context for the summarization process, which summarizes the transcription of the stream.
-`;
-
-// Function to apply template variables to a template string
-function applyTemplate(template: string, record: Stream): string {
-  if (!record.stream_date) {
-    return 'No stream date available.';
-  }
-
-  const date = DateTime.fromISO(record.stream_date).toLocaleString();
-  const duration = Duration.fromObject({ seconds: record.duration }).toFormat(
-    "hh 'hours,' mm 'minutes,' ss 'seconds'",
-  );
-
-  return template
-    .replace(/{title}/g, record.title || '')
-    .replace(/{date}/g, date)
-    .replace(/{platform}/g, record.stream_platform || '')
-    .replace(/{duration}/g, duration)
-    .replace(/{description}/g, record.description || '');
-}
+// Re-export for backward compatibility
+export { DEFAULT_PROMPT_TEMPLATE, DEFAULT_SUMMARY_TEMPLATE };
 
 // This is the initial prompt template that will be shown to the user when they
 // open the dialog. This template will be populated with data from the stream

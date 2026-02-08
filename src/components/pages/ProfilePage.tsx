@@ -22,14 +22,14 @@ import {
   getEventSubChatStatus,
   subscribeToEventSubChat,
 } from '@/api';
-import {
-  DEFAULT_PROMPT_TEMPLATE,
-  DEFAULT_SUMMARY_TEMPLATE,
-} from '@/components/atoms/IngestStreamVideosButton';
 import TagEditor from '@/components/atoms/TagEditor';
 import TimezoneSelect from '@/components/atoms/TimezoneSelect';
 import TwitchOAuthButton from '@/components/atoms/TwitchOAuthButton';
 import YouTubeOAuthButton from '@/components/atoms/YouTubeOAuthButton';
+import {
+  DEFAULT_PROMPT_TEMPLATE,
+  DEFAULT_SUMMARY_TEMPLATE,
+} from '@/constants/ingestTemplates';
 import useProfile, { type Profile } from '@/hooks/useProfile';
 
 const ProfilePage = () => {
