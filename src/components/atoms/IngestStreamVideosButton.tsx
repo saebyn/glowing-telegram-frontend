@@ -83,8 +83,9 @@ const IngestStreamVideosButton = () => {
   const [initialPrompt, setInitialPrompt] = React.useState('');
   const [initialSummary, setInitialSummary] = React.useState('');
 
+  // Initialize templates when the dialog opens, not on every render
   useEffect(() => {
-    if (record) {
+    if (open && record) {
       setInitialPrompt(
         getInitialPromptTemplate(record, profile?.promptTemplate),
       );
@@ -92,7 +93,7 @@ const IngestStreamVideosButton = () => {
         getInitialSummaryTemplate(record, profile?.summaryTemplate),
       );
     }
-  }, [record, profile?.promptTemplate, profile?.summaryTemplate]);
+  }, [open, record, profile?.promptTemplate, profile?.summaryTemplate]);
 
   const handleOpen = () => {
     setOpen(true);

@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
 import {
   LoadingIndicator,
   useNotify,
@@ -213,7 +213,7 @@ const ProfilePage = () => {
                 value={
                   profileUpdate.promptTemplate ?? profile.promptTemplate ?? ''
                 }
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   setProfileUpdate((profile) => ({
                     ...profile,
                     promptTemplate: e.target.value,
@@ -233,7 +233,7 @@ const ProfilePage = () => {
                 value={
                   profileUpdate.summaryTemplate ?? profile.summaryTemplate ?? ''
                 }
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   setProfileUpdate((profile) => ({
                     ...profile,
                     summaryTemplate: e.target.value,
