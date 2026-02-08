@@ -22,6 +22,10 @@ import {
   getEventSubChatStatus,
   subscribeToEventSubChat,
 } from '@/api';
+import {
+  DEFAULT_PROMPT_TEMPLATE,
+  DEFAULT_SUMMARY_TEMPLATE,
+} from '@/components/atoms/IngestStreamVideosButton';
 import TagEditor from '@/components/atoms/TagEditor';
 import TimezoneSelect from '@/components/atoms/TimezoneSelect';
 import TwitchOAuthButton from '@/components/atoms/TwitchOAuthButton';
@@ -218,9 +222,7 @@ const ProfilePage = () => {
                 fullWidth
                 multiline
                 rows={4}
-                placeholder={translate('gt.profile.promptTemplatePlaceholder', {
-                  _: 'Leave empty to use default template',
-                })}
+                placeholder={DEFAULT_PROMPT_TEMPLATE.trim()}
                 sx={{ mb: 2 }}
               />
 
@@ -240,12 +242,7 @@ const ProfilePage = () => {
                 fullWidth
                 multiline
                 rows={6}
-                placeholder={translate(
-                  'gt.profile.summaryTemplatePlaceholder',
-                  {
-                    _: 'Leave empty to use default template',
-                  },
-                )}
+                placeholder={DEFAULT_SUMMARY_TEMPLATE.trim()}
               />
             </Box>
 

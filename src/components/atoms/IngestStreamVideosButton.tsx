@@ -51,11 +51,11 @@ import {
 import useProfile from '@/hooks/useProfile';
 
 // Default templates - used if the user hasn't customized them in their profile
-const DEFAULT_PROMPT_TEMPLATE = `
+export const DEFAULT_PROMPT_TEMPLATE = `
 Welcome to the start of the stream titled "{title}" on {date}. This text will be used as initial context for the transcription process.
 `;
 
-const DEFAULT_SUMMARY_TEMPLATE = `
+export const DEFAULT_SUMMARY_TEMPLATE = `
 The stream on {date} was streamed on {platform}.
 It has a duration of {duration}. The description is as follows:
 {description}
