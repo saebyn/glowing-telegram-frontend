@@ -212,7 +212,6 @@ export const handlers = [
       retrieval_required: false,
       estimated_retrieval_cost_usd: null,
       estimated_retrieval_time_hours: null,
-      retrieval_tier: null,
       estimated_compute_cost_usd: 0.12,
     });
   }),
@@ -223,9 +222,14 @@ export const handlers = [
       storage_class: 'GLACIER',
       size_bytes: 1024 * 1024 * 1024 * 5.2, // 5.2 GB
       retrieval_required: true,
-      estimated_retrieval_cost_usd: 0.35,
-      estimated_retrieval_time_hours: 12,
-      retrieval_tier: 'standard',
+      estimated_retrieval_cost_usd: {
+        bulk: 0.26,
+        standard: 0.52,
+      },
+      estimated_retrieval_time_hours: {
+        bulk: 12,
+        standard: 5,
+      },
       estimated_compute_cost_usd: 0.25,
     });
   }),
@@ -236,9 +240,14 @@ export const handlers = [
       storage_class: 'DEEP_ARCHIVE',
       size_bytes: 1024 * 1024 * 1024 * 8.7, // 8.7 GB
       retrieval_required: true,
-      estimated_retrieval_cost_usd: 1.25,
-      estimated_retrieval_time_hours: 48,
-      retrieval_tier: 'bulk',
+      estimated_retrieval_cost_usd: {
+        bulk: 0.87,
+        standard: 8.7,
+      },
+      estimated_retrieval_time_hours: {
+        bulk: 48,
+        standard: 12,
+      },
       estimated_compute_cost_usd: 0.42,
     });
   }),

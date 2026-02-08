@@ -14,9 +14,8 @@ interface S3Status {
   storage_class?: string | null;
   size_bytes?: number | null;
   retrieval_required: boolean;
-  estimated_retrieval_cost_usd?: number | null;
-  estimated_retrieval_time_hours?: number | null;
-  retrieval_tier?: string | null;
+  estimated_retrieval_cost_usd?: Record<string, number> | null;
+  estimated_retrieval_time_hours?: Record<string, number> | null;
   estimated_compute_cost_usd?: number | null;
 }
 
@@ -137,22 +136,40 @@ function StorageChip({ status }: StorageChipProps) {
           Size: {formatBytes(status.size_bytes)}
         </Typography>
       )}
-      {status.estimated_retrieval_cost_usd !== null &&
-        status.estimated_retrieval_cost_usd !== undefined && (
-          <Typography variant="body2" sx={{ mb: 0.5 }}>
-            Retrieval Cost: {formatCost(status.estimated_retrieval_cost_usd)}
-          </Typography>
-        )}
-      {status.estimated_retrieval_time_hours !== null &&
-        status.estimated_retrieval_time_hours !== undefined && (
-          <Typography variant="body2" sx={{ mb: 0.5 }}>
-            Retrieval Time: ~{status.estimated_retrieval_time_hours}h
-            {status.retrieval_tier && ` (${status.retrieval_tier})`}
-          </Typography>
+      {status.estimated_retrieval_cost_usd &&
+        Object.keys(status.estimated_retrieval_cost_usd).length > 0 && (
+          <>
+            <Typography
+              variant="body2"
+              sx={{ fontWeight: 'bold', mt: 1, mb: 0.5 }}
+            >
+              Retrieval Options:
+            </Typography>
+            {Object.entries(status.estimated_retrieval_cost_usd)
+              .sort((a, b) => a[0].localeCompare(b[0]))
+              .map(([tier, cost]) => {
+                const time = status.estimated_retrieval_time_hours?.[tier];
+                return (
+                  <Box key={tier} sx={{ ml: 1, mb: 0.5 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                      {tier.charAt(0).toUpperCase() + tier.slice(1)}:
+                    </Typography>
+                    <Typography variant="body2" sx={{ ml: 1 }}>
+                      Cost: {formatCost(cost)}
+                    </Typography>
+                    {time !== undefined && (
+                      <Typography variant="body2" sx={{ ml: 1 }}>
+                        Time: ~{time}h
+                      </Typography>
+                    )}
+                  </Box>
+                );
+              })}
+          </>
         )}
       {status.estimated_compute_cost_usd !== null &&
         status.estimated_compute_cost_usd !== undefined && (
-          <Typography variant="body2" sx={{ mb: 0.5 }}>
+          <Typography variant="body2" sx={{ mt: 1, mb: 0.5 }}>
             Compute Cost: {formatCost(status.estimated_compute_cost_usd)}
           </Typography>
         )}
