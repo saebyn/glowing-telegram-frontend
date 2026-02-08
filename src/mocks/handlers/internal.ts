@@ -164,6 +164,7 @@ export const handlers = [
           has_transcription: true,
           has_silence_detection: true,
           has_episodes: false,
+          prefix: DateTime.now().toFormat('yyyy-MM-dd'),
         },
         {
           id: 2,
@@ -174,6 +175,7 @@ export const handlers = [
           has_transcription: false,
           has_silence_detection: false,
           has_episodes: false,
+          prefix: DateTime.now().minus({ days: 7 }).toFormat('yyyy-MM-dd'),
         },
         {
           id: 3,
@@ -184,6 +186,7 @@ export const handlers = [
           has_transcription: true,
           has_silence_detection: true,
           has_episodes: true,
+          prefix: DateTime.now().minus({ days: 14 }).toFormat('yyyy-MM-dd'),
         },
       ],
       cursor: null,
