@@ -203,6 +203,46 @@ export const handlers = [
     });
   }),
 
+  // Mock S3 status endpoints for streams
+  http.get('/api/records/stream_s3_status/1', () => {
+    return HttpResponse.json({
+      id: 1,
+      stream_id: 1,
+      storage_class: 'STANDARD',
+      size_bytes: 1024 * 1024 * 1024 * 2.5, // 2.5 GB
+      retrieval_cost_usd: null,
+      retrieval_time_hours: null,
+      retrieval_tier: null,
+      compute_cost_usd: 0.12,
+    });
+  }),
+
+  http.get('/api/records/stream_s3_status/2', () => {
+    return HttpResponse.json({
+      id: 2,
+      stream_id: 2,
+      storage_class: 'GLACIER',
+      size_bytes: 1024 * 1024 * 1024 * 5.2, // 5.2 GB
+      retrieval_cost_usd: 0.35,
+      retrieval_time_hours: 12,
+      retrieval_tier: 'standard',
+      compute_cost_usd: 0.25,
+    });
+  }),
+
+  http.get('/api/records/stream_s3_status/3', () => {
+    return HttpResponse.json({
+      id: 3,
+      stream_id: 3,
+      storage_class: 'DEEP_ARCHIVE',
+      size_bytes: 1024 * 1024 * 1024 * 8.7, // 8.7 GB
+      retrieval_cost_usd: 1.25,
+      retrieval_time_hours: 48,
+      retrieval_tier: 'bulk',
+      compute_cost_usd: 0.42,
+    });
+  }),
+
   http.get('/api/records/episodes', () => {
     return HttpResponse.json({
       items: [
