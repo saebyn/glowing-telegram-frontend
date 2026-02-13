@@ -131,7 +131,7 @@ export function TimerManagerProvider({
     return () => {
       timerManager.dispose();
     };
-  }, [timerManager.dispose]);
+  }, [timerManager]);
 
   return (
     <TimerManagerContext.Provider value={timerManager}>
