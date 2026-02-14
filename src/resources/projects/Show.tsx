@@ -18,7 +18,6 @@ import {
   Show,
   type ShowProps,
   TextField,
-  useGetList,
   useNotify,
   useRecordContext,
 } from 'react-admin';
@@ -49,17 +48,14 @@ function ProjectShowContent() {
     new Set(),
   );
 
-  // Fetch all video_clips to match with cuts
-  const { data: videoClips, isLoading: isLoadingVideoClips } = useGetList(
-    'video_clips',
-    {
-      pagination: { page: 1, perPage: 1000 },
-    },
-  );
+  // TODO: Fetch video_clips to get keyframes
+  // Currently disabled due to data provider validation issues
+  const videoClips: VideoClip[] = [];
+  const isLoadingVideoClips = false;
 
   // Transform cuts to ProjectClipPool format
   const { clips, thumbnails, keyframes, titles } = useMemo(() => {
-    if (!record?.cuts || !videoClips) {
+    if (!record?.cuts) {
       return {
         clips: [],
         thumbnails: {},
@@ -79,13 +75,12 @@ function ProjectShowContent() {
 
       // Find the corresponding video_clip that contains this cut
       // We need to find a video_clip where the cut's timing falls within it
-      const videoClip = videoClips.find((vc) => {
+      const videoClip = videoClips?.find((vc) => {
         if (vc.stream_id !== cut.stream_id) return false;
 
         // Check if the cut timing overlaps with this video_clip's range
         const vcStartTime = vc.start_time ?? 0;
-        const vcEndTime =
-          vcStartTime + (vc.metadata?.format?.duration || 0);
+        const vcEndTime = vcStartTime + (vc.metadata?.format?.duration || 0);
         return cut.start_time >= vcStartTime && cut.start_time < vcEndTime;
       }) as VideoClip | undefined;
 
