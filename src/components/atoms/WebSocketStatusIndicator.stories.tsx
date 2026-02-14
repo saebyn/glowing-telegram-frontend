@@ -1,9 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import type { ReactNode } from 'react';
-import { useEffect } from 'react';
-import { WebsocketProvider } from '@/hooks/useWebsocket';
-import { MockWebSocket } from '@/mocks/MockWebSocket';
+import { MockWebsocketWrapper } from '@/mocks/MockWebsocketWrapper';
 import { WebSocketStatusIndicator } from './WebSocketStatusIndicator';
 
 const queryClient = new QueryClient();
@@ -26,34 +23,6 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
-
-const MockWebsocketWrapper = ({
-  children,
-  connectionState,
-}: {
-  children: ReactNode;
-  connectionState: 'connected' | 'connecting' | 'disconnected' | 'error';
-}) => {
-  // Override global WebSocket temporarily
-  useEffect(() => {
-    const originalWebSocket = global.WebSocket;
-    // @ts-expect-error - Mocking WebSocket for testing
-    global.WebSocket = class extends MockWebSocket {
-      constructor(url: string) {
-        super(url, connectionState);
-      }
-    };
-    return () => {
-      global.WebSocket = originalWebSocket;
-    };
-  }, [connectionState]);
-
-  return (
-    <WebsocketProvider url="ws://storybook-mock" token="mock-token">
-      {children}
-    </WebsocketProvider>
-  );
-};
 
 export const Connected: Story = {
   render: () => (
