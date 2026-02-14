@@ -952,7 +952,26 @@ export const handlers = [
             'Collection of clips about TypeScript and React development from multiple streams',
           created_at: DateTime.now().minus({ days: 7 }).toISO(),
           updated_at: DateTime.now().minus({ days: 2 }).toISO(),
-          cuts: [],
+          cuts: [
+            {
+              stream_id: '6cdd088c-e5cf-4458-835c-31cd9dfa2796',
+              start_time: 4804.0,
+              end_time: 4904.0,
+              title: 'TypeScript Generics Discussion',
+            },
+            {
+              stream_id: '6cdd088c-e5cf-4458-835c-31cd9dfa2796',
+              start_time: 5000.0,
+              end_time: 5150.0,
+              title: 'React Hooks Best Practices',
+            },
+            {
+              stream_id: 'e51547f0-7590-41da-b2e3-301b408e8013',
+              start_time: 4900.0,
+              end_time: 5100.0,
+              title: 'State Management Patterns',
+            },
+          ],
         },
         {
           id: 2,
@@ -977,7 +996,26 @@ export const handlers = [
           'Collection of clips about TypeScript and React development from multiple streams',
         created_at: DateTime.now().minus({ days: 7 }).toISO(),
         updated_at: DateTime.now().minus({ days: 2 }).toISO(),
-        cuts: [],
+        cuts: [
+          {
+            stream_id: '6cdd088c-e5cf-4458-835c-31cd9dfa2796',
+            start_time: 4804.0,
+            end_time: 4904.0,
+            title: 'TypeScript Generics Discussion',
+          },
+          {
+            stream_id: '6cdd088c-e5cf-4458-835c-31cd9dfa2796',
+            start_time: 5000.0,
+            end_time: 5150.0,
+            title: 'React Hooks Best Practices',
+          },
+          {
+            stream_id: 'e51547f0-7590-41da-b2e3-301b408e8013',
+            start_time: 4900.0,
+            end_time: 5100.0,
+            title: 'State Management Patterns',
+          },
+        ],
       });
     }
     if (id === '2') {
