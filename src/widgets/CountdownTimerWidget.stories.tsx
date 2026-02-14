@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DateTime } from 'luxon';
 import { WebsocketProvider } from '@/hooks/useWebsocket';
 import CountdownTimerWidget from './CountdownTimerWidget';
+
+const queryClient = new QueryClient();
 
 const meta: Meta<typeof CountdownTimerWidget> = {
   title: 'Widgets/CountdownTimerWidget',
@@ -11,9 +14,11 @@ const meta: Meta<typeof CountdownTimerWidget> = {
   },
   decorators: [
     (Story) => (
-      <WebsocketProvider url="ws://localhost:8000/ws" token="test-token">
-        <Story />
-      </WebsocketProvider>
+      <QueryClientProvider client={queryClient}>
+        <WebsocketProvider url="ws://localhost:8000/ws" token="test-token">
+          <Story />
+        </WebsocketProvider>
+      </QueryClientProvider>
     ),
   ],
 };
