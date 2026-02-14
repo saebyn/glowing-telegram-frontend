@@ -1,5 +1,5 @@
 import type { Task } from '@saebyn/glowing-telegram-types';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import TaskView from './TaskView';
 export default {
   title: 'Atoms/TaskView',
