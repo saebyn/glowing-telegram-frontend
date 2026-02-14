@@ -1,9 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { WebsocketProvider } from '@/hooks/useWebsocket';
 import { MockWebSocket } from '@/mocks/MockWebSocket';
 import { WebSocketStatusIndicator } from './WebSocketStatusIndicator';
+
+const queryClient = new QueryClient();
 
 const meta = {
   title: 'Atoms/WebSocketStatusIndicator',
@@ -12,6 +15,13 @@ const meta = {
     layout: 'centered',
   },
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <QueryClientProvider client={queryClient}>
+        <Story />
+      </QueryClientProvider>
+    ),
+  ],
 } satisfies Meta<typeof WebSocketStatusIndicator>;
 
 export default meta;
