@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DateTime } from 'luxon';
 import { WebsocketProvider } from '@/hooks/useWebsocket';
 import CountdownTimerWidget from './CountdownTimerWidget';
