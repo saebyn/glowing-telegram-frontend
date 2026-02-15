@@ -1,4 +1,4 @@
-import { Grid2 } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { Suspense } from 'react';
 import { useGetList } from 'react-admin';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -36,9 +36,9 @@ function StreamWidgetDashboard() {
           </div>
         }
       >
-        <Grid2 container spacing={2}>
+        <Grid container spacing={2}>
           {streamWidgets?.map((widget) => (
-            <Grid2 size={3} key={widget.id}>
+            <Grid size={3} key={widget.id}>
               <ErrorBoundary fallback={<div>Error loading widget.</div>}>
                 <WidgetRenderer
                   widgetId={widget.id}
@@ -46,9 +46,9 @@ function StreamWidgetDashboard() {
                   showControls={true}
                 />
               </ErrorBoundary>
-            </Grid2>
+            </Grid>
           ))}
-        </Grid2>
+        </Grid>
         <button
           type="button"
           onClick={() => refetch()}
