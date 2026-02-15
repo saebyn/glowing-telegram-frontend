@@ -1,4 +1,4 @@
-import type { Stream } from '@saebyn/glowing-telegram-types';
+import type { Stream, StreamClip } from '@saebyn/glowing-telegram-types';
 import type { VideoClip as InputVideoClip } from '@saebyn/glowing-telegram-video-editor';
 import { useMutation } from '@tanstack/react-query';
 import { useDataProvider, useNotify } from 'react-admin';
@@ -19,12 +19,11 @@ export default function useSendCutsToProject(stream: Stream | undefined) {
       }
 
       // Transform clips to the format expected by the project
-      const cuts = clips.map((clip) => ({
+      const cuts: StreamClip[] = clips.map((clip) => ({
         stream_id: stream.id,
         start_time: clip.start / 1000, // convert ms to seconds
         end_time: clip.end / 1000, // convert ms to seconds
         title: `Cut from ${stream.title}`,
-        keyframe_src: clip.keyframeSrc,
       }));
 
       // Get current project data
