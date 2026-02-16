@@ -19,6 +19,7 @@ import AdManager from '@/components/molecules/AdManager';
 import StreamInfoEditor from '@/components/molecules/StreamInfoEditor';
 import UpcomingStream from '@/components/molecules/UpcomingStream';
 import StreamWidgetDashboard from '@/components/organisms/StreamWidgetDashboard';
+import { SITE_DOMAIN } from '@/environment';
 import useProfile from '@/hooks/useProfile';
 import findNextStream from '@/scheduling/findNextStream';
 
@@ -159,7 +160,7 @@ function StreamManagerPage() {
             <iframe
               id="twitch-chat-embed"
               title="Twitch Chat Embed"
-              src={`https://www.twitch.tv/embed/${profile.twitch.login}/chat?parent=${import.meta.env.VITE_SITE_DOMAIN}`}
+              src={`https://www.twitch.tv/embed/${profile.twitch.login}/chat?parent=${SITE_DOMAIN}`}
               height="100%"
               width="100%"
             />

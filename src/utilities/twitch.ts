@@ -1,6 +1,5 @@
 import { DateTime, Duration } from 'luxon';
-
-const { VITE_TWITCH_CLIENT_ID: clientId } = import.meta.env;
+import { TWITCH_CLIENT_ID } from '@/environment';
 
 export const COMMERCIAL_MAX_LENGTH = 180;
 export const COMMERCIAL_MIN_LENGTH = 30;
@@ -56,7 +55,7 @@ export async function getChannelInformation(
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Client-Id': clientId,
+        'Client-Id': TWITCH_CLIENT_ID,
       },
       signal: options.signal,
     },
@@ -104,7 +103,7 @@ export async function modifyChannelInformation(
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Client-Id': clientId,
+        'Client-Id': TWITCH_CLIENT_ID,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -136,7 +135,7 @@ export async function searchCategories(
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Client-Id': clientId,
+        'Client-Id': TWITCH_CLIENT_ID,
       },
       signal: options.signal,
     },
@@ -160,7 +159,7 @@ export async function getContentClassificationLabels(
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Client-Id': clientId,
+        'Client-Id': TWITCH_CLIENT_ID,
       },
       signal: options.signal,
     },
@@ -223,7 +222,7 @@ export async function startCommercial(
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Client-Id': clientId,
+        'Client-Id': TWITCH_CLIENT_ID,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -294,7 +293,7 @@ export async function getAdSchedule(
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Client-Id': clientId,
+        'Client-Id': TWITCH_CLIENT_ID,
       },
       signal: options.signal,
     },
@@ -355,7 +354,7 @@ export async function snoozeNextAd(
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Client-Id': clientId,
+        'Client-Id': TWITCH_CLIENT_ID,
       },
       signal: options.signal,
     },
@@ -435,7 +434,7 @@ export async function getVideos(
   const response = await fetch(url, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      'Client-Id': clientId,
+      'Client-Id': TWITCH_CLIENT_ID,
     },
     signal: options.signal,
   });

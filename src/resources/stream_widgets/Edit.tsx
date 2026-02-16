@@ -19,10 +19,9 @@ import {
   useRecordContext,
   useUpdate,
 } from 'react-admin';
+import { APP_URL } from '@/environment';
 import { widgetRegistry } from '@/widgets';
 import generateAccessToken from './generateAccessToken';
-
-const { VITE_APP_URL: APP_URL = window.location.origin } = import.meta.env;
 
 function CopyWidgetUrlButton() {
   const record = useRecordContext();

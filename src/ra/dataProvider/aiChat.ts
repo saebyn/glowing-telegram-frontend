@@ -1,7 +1,6 @@
+import { API_URL } from '@/environment';
 import type { ChatMessage } from '@/types';
 import { userManager } from '@/utilities/auth';
-
-const { VITE_API_URL: baseApiUrl } = import.meta.env;
 
 const aiChatDataProvider = {
   create: async (_resource: string, params: { data: ChatMessage[] }) => {
@@ -15,7 +14,7 @@ const aiChatDataProvider = {
 
     const token = user.id_token;
 
-    const url = new URL('ai/chat', baseApiUrl);
+    const url = new URL('ai/chat', API_URL);
 
     const response = await fetch(url.toString(), {
       method: 'POST',

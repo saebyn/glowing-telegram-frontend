@@ -1,9 +1,7 @@
 import type { AuthProvider } from 'react-admin';
-
+import { MOCKS_ENABLED } from '@/environment';
 import { signoutRedirect, userManager } from '@/utilities/auth';
 import gravatar from '@/utilities/gravitar';
-
-const { VITE_MOCKS_ENABLED: MOCKS_ENABLED } = import.meta.env;
 
 // Mock user for development when mocks are enabled
 const mockUser = {
