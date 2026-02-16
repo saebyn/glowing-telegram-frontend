@@ -1,13 +1,13 @@
 import { UserManager } from 'oidc-client-ts';
 
-const {
-  VITE_AWS_REGION: region,
-  VITE_COGNITO_CLIENT_ID: clientId,
-  VITE_COGNITO_USER_POOL_ID: userPoolId,
-  VITE_COGNITO_DOMAIN: domain,
-  VITE_REDIRECT_URI: redirectUri,
-  VITE_LOGOUT_URI: logoutUri,
-} = import.meta.env;
+import {
+  COGNITO_CLIENT_ID as clientId,
+  COGNITO_DOMAIN as domain,
+  LOGOUT_URI as logoutUri,
+  REDIRECT_URI as redirectUri,
+  AWS_REGION as region,
+  COGNITO_USER_POOL_ID as userPoolId,
+} from '@/environment';
 
 export const userManager = new UserManager({
   authority: `https://cognito-idp.${region}.amazonaws.com/${userPoolId}`,

@@ -3,9 +3,8 @@ import { Suspense } from 'react';
 import { useGetList } from 'react-admin';
 import { ErrorBoundary } from 'react-error-boundary';
 import WidgetRenderer from '@/components/molecules/WidgetRenderer';
+import { WEBSOCKET_URL } from '@/environment';
 import { WebsocketProvider } from '@/hooks/useWebsocket';
-
-const { VITE_WEBSOCKET_URL: WEBSOCKET_URL } = import.meta.env;
 
 function StreamWidgetDashboard() {
   const {

@@ -1,8 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
+import { WEBSOCKET_URL } from '@/environment';
 import { WebsocketProvider } from '@/hooks/useWebsocket';
-
-const { VITE_WEBSOCKET_URL: WEBSOCKET_URL } = import.meta.env;
 
 // Lazy load widget components for better code splitting
 const WidgetRenderer = lazy(

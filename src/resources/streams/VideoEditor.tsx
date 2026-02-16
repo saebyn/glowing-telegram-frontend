@@ -9,9 +9,8 @@ import { lazy, Suspense, useState } from 'react';
 import { LoadingIndicator, useGetManyReference, useGetOne } from 'react-admin';
 import { useParams } from 'react-router-dom';
 import ExportOptionsDialog from '@/components/molecules/ExportOptionsDialog';
+import { CONTENT_URL } from '@/environment';
 import useBulkEpisodeCreate from '@/hooks/useBulkEpisodeCreate';
-
-const { VITE_CONTENT_URL: CONTENT_URL } = import.meta.env;
 
 const VideoSelectionPage = lazy(async () => {
   const { VideoSelectionPage } = await import(

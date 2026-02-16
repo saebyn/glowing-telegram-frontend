@@ -4,8 +4,7 @@ import './index.css';
 import '@saebyn/glowing-telegram-video-editor/styles.css';
 
 import App from '@/App.tsx';
-
-const { VITE_MOCKS_ENABLED: MOCKS_ENABLED } = import.meta.env;
+import { MOCKS_ENABLED } from './environment';
 
 const container = document.getElementById('root');
 

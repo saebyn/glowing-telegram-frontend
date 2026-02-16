@@ -1,10 +1,9 @@
 import type { DataProvider, Identifier } from 'react-admin';
 import { HttpError } from 'react-admin';
 import { authenticatedFetch } from '@/api';
+import { API_URL } from '@/environment';
 import * as cursorPaginationCache from './cursorPaginationCache';
 import resourceMap, { validateResource } from './resourceMap';
-
-const { VITE_API_URL: baseApiUrl } = import.meta.env;
 
 export interface BulkCreateParams<T = any> {
   data: Partial<T>[];
@@ -203,7 +202,7 @@ function getResourceUrl(
 ): URL {
   validateResource(resource);
 
-  const url = new URL(resourceMap[resource], baseApiUrl);
+  const url = new URL(resourceMap[resource], API_URL);
 
   if (relatedFieldName) {
     url.pathname += `/${relatedFieldName}`;

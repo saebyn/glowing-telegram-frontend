@@ -1,6 +1,5 @@
+import { API_URL } from '@/environment';
 import { userManager } from '@/utilities/auth';
-
-const { VITE_API_URL: baseApiUrl } = import.meta.env;
 
 const renderDataProvider = {
   updateMany: async (_resource: string, params: { ids: string[] }) => {
@@ -14,7 +13,7 @@ const renderDataProvider = {
 
     const token = user.id_token;
 
-    const url = new URL('render', baseApiUrl);
+    const url = new URL('render', API_URL);
 
     await fetch(url.toString(), {
       method: 'POST',

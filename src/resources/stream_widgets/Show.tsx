@@ -7,9 +7,8 @@ import {
   TextField,
   useRecordContext,
 } from 'react-admin';
+import { WEBSOCKET_URL } from '@/environment';
 import { WebsocketProvider } from '@/hooks/useWebsocket';
-
-const { VITE_WEBSOCKET_URL: WEBSOCKET_URL } = import.meta.env;
 
 // Lazy load widget for better code splitting
 const CountdownTimerWidget = lazy(

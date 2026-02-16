@@ -3,6 +3,7 @@ import type {
   TwitchCallbackRequest,
   YouTubeCallbackRequest,
 } from '@saebyn/glowing-telegram-types';
+import { API_URL, MOCKS_ENABLED } from '@/environment';
 import { userManager } from '@/utilities/auth';
 
 export interface SubscribeChatResponse {
@@ -28,9 +29,6 @@ export interface ChatSubscriptionStatusResponse {
   has_active_subscription: boolean;
   subscriptions: EventSubSubscription[];
 }
-
-const { VITE_API_URL: baseApiUrl, VITE_MOCKS_ENABLED: MOCKS_ENABLED } =
-  import.meta.env;
 
 // Mock user for development when mocks are enabled
 const mockUser = {
@@ -87,7 +85,7 @@ export async function fetchAccessToken(
   | { id: string; valid: true; accessToken: string; login: string }
   | { id: string; valid: false }
 > {
-  const url = new URL(`auth/${provider}/token`, baseApiUrl);
+  const url = new URL(`auth/${provider}/token`, API_URL);
 
   try {
     const res = await authenticatedFetch(url.toString());
@@ -112,7 +110,7 @@ export async function generateAuthorizeUri(
   provider: 'twitch' | 'youtube',
   scopes: string[],
 ): Promise<string> {
-  const url = new URL(`auth/${provider}/url`, baseApiUrl);
+  const url = new URL(`auth/${provider}/url`, API_URL);
 
   const body: TwitchAuthRequest = {
     scopes,
@@ -144,7 +142,7 @@ export async function handleOAuthCallback(
   };
 
   const res = await authenticatedFetch(
-    new URL(`auth/${provider}/callback`, baseApiUrl).toString(),
+    new URL(`auth/${provider}/callback`, API_URL).toString(),
     {
       method: 'POST',
       body: JSON.stringify(body),
@@ -163,7 +161,7 @@ export async function handleOAuthCallback(
 export async function uploadEpisodesToYoutube(
   episodeIds: string[],
 ): Promise<void> {
-  const url = new URL('upload/youtube', baseApiUrl);
+  const url = new URL('upload/youtube', API_URL);
 
   const res = await authenticatedFetch(url.toString(), {
     method: 'POST',
@@ -181,7 +179,7 @@ export async function uploadEpisodesToYoutube(
 }
 
 export async function getEventSubChatStatus(): Promise<ChatSubscriptionStatusResponse> {
-  const url = new URL('eventsub/chat/status', baseApiUrl);
+  const url = new URL('eventsub/chat/status', API_URL);
 
   const res = await authenticatedFetch(url.toString());
 
@@ -197,7 +195,7 @@ export async function getEventSubChatStatus(): Promise<ChatSubscriptionStatusRes
 }
 
 export async function subscribeToEventSubChat(): Promise<SubscribeChatResponse> {
-  const url = new URL('eventsub/chat/subscribe', baseApiUrl);
+  const url = new URL('eventsub/chat/subscribe', API_URL);
 
   const res = await authenticatedFetch(url.toString(), {
     method: 'POST',
