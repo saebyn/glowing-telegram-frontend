@@ -31,7 +31,7 @@
     "@storybook/addon-docs": "9.1.17",
     "@storybook/addon-links": "9.1.17",
     "@storybook/addon-onboarding": "9.1.17",
-    "@storybook/react-vite": "9.1.17",
+    "@storybook/react-vite": "10.2.8",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/luxon": "^3.6.2",
     "@types/md5": "^2.3.5",
