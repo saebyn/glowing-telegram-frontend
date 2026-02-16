@@ -4,6 +4,10 @@ import { startCommercial } from './twitch';
 // Mock the fetch function
 global.fetch = vi.fn();
 
+vi.mock('@/environment', () => ({
+  TWITCH_CLIENT_ID: 'test_client_id',
+}));
+
 describe('twitch utilities', () => {
   beforeEach(() => {
     vi.clearAllMocks();
