@@ -56,14 +56,12 @@ function AdTimerWidget(_props: AdTimerWidgetProps) {
 
     const fetchAdSchedule = async () => {
       try {
-        const adSchedule = await getAdSchedule(
-          broadcasterId,
-          accessToken,
-          { signal: abortController.signal },
-        );
+        const adSchedule = await getAdSchedule(broadcasterId, accessToken, {
+          signal: abortController.signal,
+        });
 
         setState((prev) => {
-          // Check if snooze count increased (ad was snoozed)
+          // Check if snooze count decreased (ad was snoozed - using up a snooze)
           const wasSnoozed =
             previousSnoozeCount.current !== null &&
             adSchedule.snooze_count < previousSnoozeCount.current;
@@ -192,28 +190,28 @@ function AdTimerWidget(_props: AdTimerWidgetProps) {
     switch (state.status) {
       case 'ads_snoozed':
         return {
-          text: '😴 Ads Snoozed',
+          text: 'Ads Snoozed',
           color: 'bg-blue-600',
           textColor: 'text-white',
           icon: '😴',
         };
       case 'ads_incoming':
         return {
-          text: `⚠️ Ads in ${formatTime(state.secondsUntilAd || 0)}`,
+          text: `Ads in ${formatTime(state.secondsUntilAd || 0)}`,
           color: 'bg-yellow-600',
           textColor: 'text-white',
           icon: '⚠️',
         };
       case 'ads_in_progress':
         return {
-          text: '📺 Ads in Progress',
+          text: 'Ads in Progress',
           color: 'bg-red-600 animate-pulse',
           textColor: 'text-white',
           icon: '📺',
         };
       case 'back_from_ads':
         return {
-          text: '✅ Back from Ads',
+          text: 'Back from Ads',
           color: 'bg-green-600',
           textColor: 'text-white',
           icon: '✅',
