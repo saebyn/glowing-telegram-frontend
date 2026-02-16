@@ -2,9 +2,13 @@
  * Countdown Timer Widget Registration
  */
 
-import CountdownTimerWidget from '../CountdownTimerWidget';
+import { lazy } from 'react';
 import type { WidgetDefinition } from '../registry';
 import CountdownTimerSkeleton from './CountdownTimerSkeleton';
+
+const CountdownTimerWidget = lazy(
+  () => import('@/widgets/CountdownTimerWidget'),
+);
 
 export const countdownTimerDefinition: WidgetDefinition = {
   type: 'countdown',

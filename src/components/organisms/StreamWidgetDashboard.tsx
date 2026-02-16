@@ -1,8 +1,12 @@
 import Grid from '@mui/material/Grid';
-import { Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { useGetList } from 'react-admin';
 import { ErrorBoundary } from 'react-error-boundary';
-import WidgetRenderer from '@/components/molecules/WidgetRenderer';
+
+const WidgetRenderer = lazy(
+  () => import('@/components/molecules/WidgetRenderer'),
+);
+
 import { WEBSOCKET_URL } from '@/environment';
 import { WebsocketProvider } from '@/hooks/useWebsocket';
 
