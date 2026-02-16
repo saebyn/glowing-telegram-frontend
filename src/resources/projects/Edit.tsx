@@ -35,6 +35,10 @@ function useVideoClipsForStreamIds(streamIds: string[]): {
     const abortController = new AbortController();
     const fetchClips = async () => {
       for (const streamId of streamIds) {
+        if (abortController.signal.aborted) {
+          console.log(`Fetch aborted for stream ID ${streamId}`);
+          return; // Exit if the fetch was aborted
+        }
         try {
           const { data } = await dataProvider.getList('video_clips', {
             filter: { stream_id: streamId },
