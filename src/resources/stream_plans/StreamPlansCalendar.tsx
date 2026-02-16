@@ -186,13 +186,13 @@ function MonthCalendarView({
   return (
     <Box sx={calendarPaperStyle}>
       <Grid container spacing={2} columns={7} sx={calendarGridHeadingStyle}>
-        <Grid item md={7}>
+        <Grid size={7}>
           <Typography variant="h4" align="center">
             {targetDate.toFormat('LLLL yyyy')}
           </Typography>
         </Grid>
         {daysOfWeek.map((day) => (
-          <Grid item md={1} key={day}>
+          <Grid size={1} key={day}>
             <Typography variant="h6" align="center">
               {day}
             </Typography>
@@ -202,7 +202,7 @@ function MonthCalendarView({
       <Grid container spacing={2} columns={7} sx={calendarGridContainerStyle}>
         {/* Display each day of the month */}
         {days.map((day) => (
-          <Grid item md={1} key={day.date.toISODate()}>
+          <Grid size={1} key={day.date.toISODate()}>
             <Paper
               elevation={3}
               square={true}

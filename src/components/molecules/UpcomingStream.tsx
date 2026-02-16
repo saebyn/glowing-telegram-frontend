@@ -68,13 +68,13 @@ function UpcomingStream({ nextScheduledStream, profile }: UpcomingStreamProps) {
         Upcoming stream
       </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography variant="h6">
             {templateStreamSeries(nextScheduledStream)}
           </Typography>
         </Grid>
         {date && diff && (
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Typography variant="body2" color="textSecondary">
               Date: {date}
             </Typography>
@@ -96,23 +96,23 @@ function UpcomingStream({ nextScheduledStream, profile }: UpcomingStreamProps) {
           </Grid>
         )}
         {time && (
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Typography variant="body2" color="textSecondary">
               Time: {time}
             </Typography>
           </Grid>
         )}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography variant="body2" color="textSecondary">
             Category: {nextScheduledStream.twitch_category?.name}
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Typography variant="body2" color="textSecondary">
             Tags: {tags.join(', ')}
           </Typography>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           {nextScheduledStream.prep_notes ? (
             <Typography
               // biome-ignore lint/security/noDangerouslySetInnerHtml: prep notes are sanitized by the backend

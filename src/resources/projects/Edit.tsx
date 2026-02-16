@@ -1,10 +1,16 @@
 import { Card, CardContent, CardHeader, Typography } from '@mui/material';
 import type { StreamClip, VideoClip } from '@saebyn/glowing-telegram-types';
-import {
-  type VideoClip as EditorVideoClip,
-  ProjectClipPool,
-} from '@saebyn/glowing-telegram-video-editor';
-import { useEffect, useMemo, useState } from 'react';
+import type { VideoClip as EditorVideoClip } from '@saebyn/glowing-telegram-video-editor';
+
+const ProjectClipPool = lazy(async () => {
+  const { ProjectClipPool } = await import(
+    '@saebyn/glowing-telegram-video-editor'
+  );
+
+  return { default: ProjectClipPool };
+});
+
+import { lazy, useEffect, useMemo, useState } from 'react';
 import {
   Edit,
   type EditProps,

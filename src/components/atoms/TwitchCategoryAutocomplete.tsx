@@ -104,7 +104,7 @@ function TwitchCategoryAutocomplete({
           return (
             <li {...props} key={key}>
               <Grid container spacing={2} alignItems="center">
-                <Grid item>
+                <Grid>
                   {option.box_art_url && (
                     <img
                       src={option.box_art_url}
@@ -114,7 +114,7 @@ function TwitchCategoryAutocomplete({
                     />
                   )}
                 </Grid>
-                <Grid item>{option.name}</Grid>
+                <Grid>{option.name}</Grid>
               </Grid>
             </li>
           );
