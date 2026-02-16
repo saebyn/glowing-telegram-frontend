@@ -14,8 +14,7 @@ import {
   useDataProvider,
   useInput,
 } from 'react-admin';
-
-const { VITE_CONTENT_URL: CONTENT_URL } = import.meta.env;
+import { CONTENT_URL } from '@/environment';
 
 type VideoClipWithMetadata = Partial<VideoClip> & {
   start_time: number;
