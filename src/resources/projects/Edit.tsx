@@ -34,7 +34,7 @@ function useVideoClipsForStreamIds(streamIds: string[]): {
   useEffect(() => {
     const abortController = new AbortController();
     const fetchClips = async () => {
-      for (const streamId of streamIds) {
+      const promises = streamIds.map(async (streamId) => {
         if (abortController.signal.aborted) {
           console.log(`Fetch aborted for stream ID ${streamId}`);
           return; // Exit if the fetch was aborted
@@ -75,7 +75,9 @@ function useVideoClipsForStreamIds(streamIds: string[]): {
             [streamId]: [],
           }));
         }
-      }
+      });
+
+      await Promise.all(promises);
     };
 
     if (streamIds.length > 0) {
