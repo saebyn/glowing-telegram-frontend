@@ -1,18 +1,12 @@
-import { DateTime, Duration } from 'luxon';
+import { DateTime } from 'luxon';
 import { useEffect, useRef, useState } from 'react';
-import useProfile from '@/hooks/useProfile';
-import { type GetAdScheduleResponse, getAdSchedule } from '@/utilities/twitch';
+import { useWidgetSubscription } from '@/hooks/useWidgetSubscription';
+import type { WidgetInstance } from '@/types';
 import AdTimerSkeleton from './ad-timer/AdTimerSkeleton';
 
 interface AdTimerWidgetProps {
   widgetId: string;
 }
-
-// Configuration constants
-const VISIBILITY_THRESHOLD_SECONDS = 300; // 5 minutes - hide when > X seconds away
-const SNOOZE_DISPLAY_DURATION_MS = 5000; // Show snooze message for 5 seconds
-const INCOMING_THRESHOLD_SECONDS = 120; // 2 minutes - show "incoming" status
-const IN_PROGRESS_THRESHOLD_SECONDS = 0; // When next_ad_at is in the past or very soon
 
 type AdTimerStatus =
   | 'invisible'
@@ -21,173 +15,139 @@ type AdTimerStatus =
   | 'back_from_ads'
   | 'ads_snoozed';
 
-interface AdTimerState {
-  status: AdTimerStatus;
-  secondsUntilAd: number | null;
-  adSchedule: GetAdScheduleResponse | null;
-  error: Error | null;
-  snoozedAt: DateTime | null;
+interface AdTimerWidgetConfig extends Record<string, unknown> {
+  visibilityThreshold: number; // seconds
+  incomingThreshold: number; // seconds
+  snoozeDisplayDuration: number; // milliseconds
+  backFromAdsDuration: number; // milliseconds
 }
 
-function AdTimerWidget(_props: AdTimerWidgetProps) {
-  const profileResult = useProfile();
-  const [state, setState] = useState<AdTimerState>({
-    status: 'invisible',
-    secondsUntilAd: null,
-    adSchedule: null,
-    error: null,
-    snoozedAt: null,
-  });
-  const previousSnoozeCount = useRef<number | null>(null);
+interface AdTimerWidgetState extends Record<string, unknown> {
+  status: AdTimerStatus;
+  secondsUntilAd: number | null;
+  nextAdAt: string | null; // ISO timestamp
+  snoozeCount: number;
+  snoozedAt: string | null; // ISO timestamp when snooze detected
+  backFromAdsUntil: string | null; // ISO timestamp until when to show back_from_ads
+}
+
+export interface AdTimerWidgetInstance extends WidgetInstance {
+  config: AdTimerWidgetConfig;
+  state: AdTimerWidgetState;
+}
+
+function AdTimerWidget({ widgetId }: AdTimerWidgetProps) {
+  const { widget, loading, error } =
+    useWidgetSubscription<AdTimerWidgetInstance>(widgetId);
+
   const [animateChange, setAnimateChange] = useState(false);
+  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [displayStatus, setDisplayStatus] =
+    useState<AdTimerStatus>('invisible');
+  const [secondsUntilAd, setSecondsUntilAd] = useState<number | null>(null);
 
-  // Fetch ad schedule on mount and periodically
+  // Update display status based on widget state every second
   useEffect(() => {
-    if (
-      profileResult.status !== 'success' ||
-      !profileResult.profile?.twitch?.accessToken ||
-      !profileResult.profile?.twitch?.broadcasterId
-    ) {
-      return;
-    }
+    if (!widget) return;
 
-    const { broadcasterId, accessToken } = profileResult.profile.twitch;
-    const abortController = new AbortController();
+    const updateInterval = setInterval(() => {
+      const now = DateTime.now();
+      const config = widget.config;
+      const state = widget.state;
 
-    const fetchAdSchedule = async () => {
-      try {
-        const adSchedule = await getAdSchedule(broadcasterId, accessToken, {
-          signal: abortController.signal,
-        });
+      // Calculate seconds until ad
+      let calculatedSeconds: number | null = null;
+      if (state.nextAdAt) {
+        const nextAdAt = DateTime.fromISO(state.nextAdAt);
+        const diff = nextAdAt.diff(now, 'seconds').seconds;
+        calculatedSeconds = Math.max(0, Math.floor(diff));
+      }
+      setSecondsUntilAd(calculatedSeconds);
 
-        setState((prev) => {
-          // Check if snooze count decreased (ad was snoozed - using up a snooze)
-          const wasSnoozed =
-            previousSnoozeCount.current !== null &&
-            adSchedule.snooze_count < previousSnoozeCount.current;
-          previousSnoozeCount.current = adSchedule.snooze_count;
+      // Determine status
+      let newStatus: AdTimerStatus = 'invisible';
 
-          return {
-            ...prev,
-            adSchedule,
-            error: null,
-            snoozedAt: wasSnoozed ? DateTime.now() : prev.snoozedAt,
-          };
-        });
-      } catch (error) {
-        if (!abortController.signal.aborted) {
-          setState((prev) => ({
-            ...prev,
-            error: error as Error,
-          }));
+      // Check if we should show snoozed message
+      if (state.snoozedAt) {
+        const snoozedAt = DateTime.fromISO(state.snoozedAt);
+        const snoozeElapsed = now.diff(snoozedAt, 'milliseconds').milliseconds;
+        if (snoozeElapsed < config.snoozeDisplayDuration) {
+          newStatus = 'ads_snoozed';
         }
       }
-    };
 
-    fetchAdSchedule();
+      // Check if we should show back_from_ads
+      if (
+        newStatus === 'invisible' &&
+        state.backFromAdsUntil &&
+        DateTime.fromISO(state.backFromAdsUntil) > now
+      ) {
+        newStatus = 'back_from_ads';
+      }
 
-    const fetchInterval = setInterval(fetchAdSchedule, 5 * 60 * 1000); // Every 5 minutes
-
-    return () => {
-      abortController.abort();
-      clearInterval(fetchInterval);
-    };
-  }, [profileResult]);
-
-  // Update status based on ad schedule every second
-  useEffect(() => {
-    const updateInterval = setInterval(() => {
-      setState((prev) => {
-        if (!prev.adSchedule) return prev;
-
-        const now = DateTime.now();
-        const nextAdAt = prev.adSchedule.next_ad_at;
-
-        // Calculate seconds until ad
-        let secondsUntilAd: number | null = null;
-        if (nextAdAt) {
-          const diff = nextAdAt.diff(now, 'seconds').seconds;
-          secondsUntilAd = Math.max(0, Math.floor(diff));
-        }
-
-        // Determine status
-        let newStatus: AdTimerStatus = prev.status;
-
-        // Check if we should show snoozed message
-        const snoozeDisplayEnded =
-          prev.snoozedAt &&
-          now.diff(prev.snoozedAt, 'milliseconds').milliseconds >
-            SNOOZE_DISPLAY_DURATION_MS;
-
-        if (prev.snoozedAt && !snoozeDisplayEnded) {
-          newStatus = 'ads_snoozed';
-        } else if (secondsUntilAd === null) {
-          // No ad scheduled
+      // Normal status logic if not showing snooze or back_from_ads
+      if (newStatus === 'invisible') {
+        if (calculatedSeconds === null) {
           newStatus = 'invisible';
-        } else if (secondsUntilAd > VISIBILITY_THRESHOLD_SECONDS) {
-          // Too far away
+        } else if (calculatedSeconds > config.visibilityThreshold) {
           newStatus = 'invisible';
-        } else if (secondsUntilAd <= IN_PROGRESS_THRESHOLD_SECONDS) {
-          // Ad is happening now or very soon
+        } else if (calculatedSeconds <= 0) {
           newStatus = 'ads_in_progress';
-        } else if (secondsUntilAd <= INCOMING_THRESHOLD_SECONDS) {
-          // Ad is incoming
+        } else if (calculatedSeconds <= config.incomingThreshold) {
           newStatus = 'ads_incoming';
-        } else if (
-          prev.status === 'ads_in_progress' ||
-          prev.status === 'back_from_ads'
-        ) {
-          // We just came back from ads
-          newStatus = 'back_from_ads';
         } else {
-          // Default to incoming if we're within visibility threshold
-          newStatus = 'ads_incoming';
+          newStatus = 'ads_incoming'; // Within visibility threshold
+        }
+      }
+
+      // Trigger animation on status change
+      if (newStatus !== displayStatus) {
+        setDisplayStatus(newStatus);
+
+        // Clear any existing animation timeout
+        if (animationTimeoutRef.current) {
+          clearTimeout(animationTimeoutRef.current);
         }
 
-        // Clear snoozedAt if display period ended
-        const newSnoozedAt = snoozeDisplayEnded ? null : prev.snoozedAt;
-
-        // Trigger animation on status change
-        if (newStatus !== prev.status) {
-          setAnimateChange(true);
-          setTimeout(() => setAnimateChange(false), 300);
-        }
-
-        return {
-          ...prev,
-          status: newStatus,
-          secondsUntilAd,
-          snoozedAt: newSnoozedAt,
-        };
-      });
+        setAnimateChange(true);
+        animationTimeoutRef.current = setTimeout(() => {
+          setAnimateChange(false);
+          animationTimeoutRef.current = null;
+        }, 300);
+      }
     }, 1000);
 
-    return () => clearInterval(updateInterval);
-  }, []);
+    return () => {
+      clearInterval(updateInterval);
+      // Clear animation timeout on unmount
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+      }
+    };
+  }, [widget, displayStatus]);
 
-  if (profileResult.status === 'pending') {
+  if (loading) {
     return <AdTimerSkeleton />;
   }
 
-  if (state.error) {
+  if (error || !widget) {
     return null; // Silently hide on error
   }
 
-  if (state.status === 'invisible') {
+  if (displayStatus === 'invisible') {
     return null; // Hidden when too far from ad
   }
 
   // Format time remaining
   const formatTime = (seconds: number): string => {
-    const duration = Duration.fromObject({ seconds });
-    const minutes = Math.floor(duration.as('minutes'));
-    const secs = Math.floor(duration.as('seconds') % 60);
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
   };
 
   // Determine display based on status
   const getStatusDisplay = () => {
-    switch (state.status) {
+    switch (displayStatus) {
       case 'ads_snoozed':
         return {
           text: 'Ads Snoozed',
@@ -197,7 +157,7 @@ function AdTimerWidget(_props: AdTimerWidgetProps) {
         };
       case 'ads_incoming':
         return {
-          text: `Ads in ${formatTime(state.secondsUntilAd || 0)}`,
+          text: `Ads in ${formatTime(secondsUntilAd || 0)}`,
           color: 'bg-yellow-600',
           textColor: 'text-white',
           icon: '⚠️',

@@ -1,100 +1,98 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import AdTimerWidget from './AdTimerWidget';
 
+/**
+ * Ad Timer Widget displays countdown for upcoming Twitch ad breaks.
+ *
+ * **Note**: These stories require a WebSocket connection to display properly.
+ * The widget uses `useWidgetSubscription` to receive real-time state updates
+ * from the backend. In production, the backend polls Twitch API and pushes
+ * state updates via WebSocket.
+ *
+ * To test this widget:
+ * 1. Ensure backend is running with WebSocket support
+ * 2. Create an ad_timer widget instance
+ * 3. Use the widget ID in the stories below
+ *
+ * ## Widget States
+ *
+ * The widget displays different states based on backend-provided data:
+ *
+ * - **invisible**: Hidden when `secondsUntilAd > visibilityThreshold` or no ad scheduled
+ * - **ads_incoming**: Yellow warning when `secondsUntilAd <= incomingThreshold`
+ * - **ads_in_progress**: Red pulsing indicator when `secondsUntilAd <= 0`
+ * - **back_from_ads**: Green confirmation when `backFromAdsUntil > now`
+ * - **ads_snoozed**: Blue message when `snoozedAt` within configured duration
+ */
 const meta = {
   title: 'Widgets/AdTimerWidget',
   component: AdTimerWidget,
   parameters: {
     layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          'Ad Timer Widget for Twitch ad break countdown. Requires WebSocket connection and backend integration.',
+      },
+    },
   },
   tags: ['autodocs'],
+  argTypes: {
+    widgetId: {
+      control: 'text',
+      description: 'Widget instance ID for WebSocket subscription',
+    },
+  },
 } satisfies Meta<typeof AdTimerWidget>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Story showing invisible state (more than 5 minutes away)
-export const Invisible: Story = {
+/**
+ * Default story - requires a valid widget ID
+ *
+ * To see the widget in action:
+ * 1. Create an ad_timer widget in the admin interface
+ * 2. Copy the widget ID
+ * 3. Paste it in the widgetId control below
+ */
+export const Default: Story = {
   args: {
-    widgetId: 'ad-timer-invisible',
+    widgetId: 'your-widget-id-here',
+  },
+};
+
+/**
+ * Example configuration for backend:
+ *
+ * ```json
+ * {
+ *   "config": {
+ *     "visibilityThreshold": 300,
+ *     "incomingThreshold": 120,
+ *     "snoozeDisplayDuration": 5000,
+ *     "backFromAdsDuration": 10000
+ *   },
+ *   "state": {
+ *     "status": "ads_incoming",
+ *     "secondsUntilAd": 180,
+ *     "nextAdAt": "2024-02-17T12:30:00.000Z",
+ *     "snoozeCount": 2,
+ *     "snoozedAt": null,
+ *     "backFromAdsUntil": null
+ *   }
+ * }
+ * ```
+ */
+export const ConfigurationExample: Story = {
+  args: {
+    widgetId: 'example-widget-id',
   },
   parameters: {
     docs: {
       description: {
         story:
-          'Widget is hidden when next ad is more than 5 minutes away or no ad is scheduled.',
-      },
-    },
-  },
-};
-
-// Story showing ads incoming state (2-5 minutes away)
-export const AdsIncoming: Story = {
-  args: {
-    widgetId: 'ad-timer-incoming',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Widget shows warning when ads are 2-5 minutes away.',
-      },
-    },
-  },
-};
-
-// Story showing ads in progress state
-export const AdsInProgress: Story = {
-  args: {
-    widgetId: 'ad-timer-in-progress',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Widget pulses red when ads are currently running.',
-      },
-    },
-  },
-};
-
-// Story showing back from ads state
-export const BackFromAds: Story = {
-  args: {
-    widgetId: 'ad-timer-back',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Widget shows green confirmation after returning from ads.',
-      },
-    },
-  },
-};
-
-// Story showing snoozed state
-export const AdsSnoozed: Story = {
-  args: {
-    widgetId: 'ad-timer-snoozed',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Widget shows blue snooze message for 5 seconds after snoozing ads.',
-      },
-    },
-  },
-};
-
-// Story showing animation on state change
-export const WithAnimation: Story = {
-  args: {
-    widgetId: 'ad-timer-animated',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Widget scales up briefly when transitioning between states to draw attention.',
+          'This story shows the expected backend configuration. The widget will display differently based on the state values provided by the backend.',
       },
     },
   },
