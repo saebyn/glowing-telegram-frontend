@@ -8,6 +8,9 @@ interface AdTimerWidgetProps {
   widgetId: string;
 }
 
+// Animation constant
+const ANIMATION_DURATION_MS = 300;
+
 type AdTimerStatus =
   | 'invisible'
   | 'ads_incoming'
@@ -113,7 +116,7 @@ function AdTimerWidget({ widgetId }: AdTimerWidgetProps) {
         animationTimeoutRef.current = setTimeout(() => {
           setAnimateChange(false);
           animationTimeoutRef.current = null;
-        }, 300);
+        }, ANIMATION_DURATION_MS);
       }
     }, 1000);
 
