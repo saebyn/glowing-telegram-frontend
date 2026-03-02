@@ -49,7 +49,7 @@
     "oidc-client-ts": "^3.2.1",
     "postcss": "^8.5.6",
     "ra-input-rich-text": "^5.6.3",
-    "react": "19.1.0",
+    "react": "19.2.4",
     "react-admin": "^5.14.3",
     "react-dom": "19.1.0",
     "storybook": "10.2.13",
