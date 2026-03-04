@@ -51,7 +51,7 @@
     "ra-input-rich-text": "^5.6.3",
     "react": "19.2.4",
     "react-admin": "^5.14.3",
-    "react-dom": "19.1.0",
+    "react-dom": "19.2.4",
     "storybook": "10.2.13",
     "tailwindcss": "^4.2.0",
     "typescript": "^5",
