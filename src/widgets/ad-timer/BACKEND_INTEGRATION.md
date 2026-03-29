@@ -2,7 +2,20 @@
 
 ## Overview
 
-The Ad Timer Widget has been refactored to use the `useWidgetSubscription` pattern, which means the **backend is responsible** for polling the Twitch API and managing ad schedule state. The frontend only displays the state received via WebSocket.
+The Ad Timer Widget uses the `useWidgetSubscription` pattern, which means the **backend is responsible** for polling the Twitch API and managing ad schedule state. The frontend only displays the state received via WebSocket.
+
+## Architectural Decision: Why the Backend Polls Twitch
+
+The primary use case for this widget is display in an **OBS browser source** — a separate, standalone browser window with no user session, no React Admin context, and no access to the authenticated user's Twitch OAuth token.
+
+The frontend *does* have the Twitch OAuth token available in the main admin app (via `fetchAccessToken('twitch')`), and it already calls the Twitch ad schedule API directly in other places (e.g., `AdManager.tsx`). So a purely frontend approach is technically possible — but only when the admin app is open.
+
+The problem: **we cannot require the admin app to be open just so the OBS overlay works.** If the frontend were responsible for polling, the OBS browser source would depend on another browser tab running to push state into the WebSocket. That's fragile and not a real solution for a live-streaming overlay.
+
+By having the backend poll Twitch and push state via WebSocket:
+- The OBS browser source only needs the WebSocket connection (no Twitch token, no admin session)
+- The overlay works independently of whether the admin app is open
+- The widget follows the same pattern as all other stream widgets
 
 ## Backend Responsibilities
 
@@ -13,8 +26,7 @@ Register a new widget type: `ad_timer`
 **Default Configuration:**
 ```json
 {
-  "visibilityThreshold": 300,      // seconds (5 minutes)
-  "incomingThreshold": 120,        // seconds (2 minutes)
+  "visibilityThreshold": 300,      // seconds (5 minutes) — widget hidden when further away
   "snoozeDisplayDuration": 5000,   // milliseconds (5 seconds)
   "backFromAdsDuration": 10000     // milliseconds (10 seconds)
 }
@@ -23,14 +35,14 @@ Register a new widget type: `ad_timer`
 **Default State:**
 ```json
 {
-  "status": "invisible",
-  "secondsUntilAd": null,
   "nextAdAt": null,
   "snoozeCount": 0,
   "snoozedAt": null,
   "backFromAdsUntil": null
 }
 ```
+
+> `status` and `secondsUntilAd` are **not** part of the backend state — they are derived by the frontend every second from `nextAdAt`.
 
 ### 2. Twitch API Polling
 
@@ -97,7 +109,7 @@ Push state updates to subscribed clients whenever:
 }
 ```
 
-Note: The frontend calculates `secondsUntilAd` and `status` client-side, so these don't need to be sent.
+> **Important**: `WIDGET_STATE_UPDATE` **replaces** the entire widget state — it does not merge. Always send all four fields (`nextAdAt`, `snoozeCount`, `snoozedAt`, `backFromAdsUntil`) in every update, even if only one changed.
 
 ## Frontend Behavior
 
@@ -112,16 +124,14 @@ The frontend will:
 ## Status Transition Logic (Frontend)
 
 ```
-if snoozedAt exists and within duration:
+if snoozedAt exists and within snoozeDisplayDuration:
     status = "ads_snoozed" (blue)
 else if backFromAdsUntil exists and > now:
     status = "back_from_ads" (green)
-else if secondsUntilAd is null or > visibilityThreshold:
+else if nextAdAt is null or secondsUntilAd > visibilityThreshold:
     status = "invisible" (hidden)
 else if secondsUntilAd <= 0:
     status = "ads_in_progress" (red, pulsing)
-else if secondsUntilAd <= incomingThreshold:
-    status = "ads_incoming" (yellow, shows countdown)
 else:
     status = "ads_incoming" (yellow, shows countdown)
 ```

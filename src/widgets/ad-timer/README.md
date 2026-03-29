@@ -6,6 +6,8 @@ The Ad Timer Widget displays a countdown timer showing when the next Twitch ad b
 
 **Important**: This widget uses the `useWidgetSubscription` pattern, meaning the backend must provide ad schedule data via WebSocket. The widget does not directly call the Twitch API.
 
+> **Why not call Twitch directly from the frontend?** The frontend does have access to the Twitch OAuth token in the admin app, and the ad schedule API is already called directly from `AdManager.tsx`. However, the primary use case for this widget is an **OBS browser source** — a standalone page with no user session and no access to the token. Requiring the admin app to be open just to push state into the WebSocket would be fragile and impractical for a live-streaming overlay. The backend-polling approach means the OBS overlay works independently.
+
 ## Features
 
 ### Status States
@@ -33,25 +35,24 @@ The widget supports five different status states:
 
 ```typescript
 {
-  visibilityThreshold: 300,      // seconds (5 minutes) - hide when further away
-  incomingThreshold: 120,        // seconds (2 minutes) - show "incoming" status
+  visibilityThreshold: 300,      // seconds (5 minutes) - hide when next ad is further away
   snoozeDisplayDuration: 5000,   // milliseconds (5 seconds) - show snooze message
   backFromAdsDuration: 10000,    // milliseconds (10 seconds) - show back message
 }
 ```
 
-### Widget State (managed by backend)
+### Widget State (sent by backend via WebSocket)
 
 ```typescript
 {
-  status: 'invisible' | 'ads_incoming' | 'ads_in_progress' | 'back_from_ads' | 'ads_snoozed',
-  secondsUntilAd: number | null,        // Calculated on frontend
-  nextAdAt: string | null,              // ISO timestamp from Twitch API
-  snoozeCount: number,                  // Current snooze count
-  snoozedAt: string | null,             // ISO timestamp when snooze detected
-  backFromAdsUntil: string | null,      // ISO timestamp until when to show back message
+  nextAdAt: string | null,         // ISO timestamp from Twitch API
+  snoozeCount: number,             // Current snooze count from Twitch
+  snoozedAt: string | null,        // ISO timestamp set by backend when snooze detected
+  backFromAdsUntil: string | null, // ISO timestamp set by backend when ads complete
 }
 ```
+
+> `status` and `secondsUntilAd` are **not** in the backend state — the frontend derives them every second from `nextAdAt` and the config thresholds.
 
 ## Technical Implementation
 

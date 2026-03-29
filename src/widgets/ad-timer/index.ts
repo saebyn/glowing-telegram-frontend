@@ -17,13 +17,10 @@ export const adTimerDefinition: WidgetDefinition = {
   loadingComponent: AdTimerSkeleton,
   defaultConfig: {
     visibilityThreshold: 300, // seconds (5 minutes)
-    incomingThreshold: 120, // seconds (2 minutes)
     snoozeDisplayDuration: 5000, // milliseconds (5 seconds)
     backFromAdsDuration: 10000, // milliseconds (10 seconds)
   },
   defaultState: {
-    status: 'invisible',
-    secondsUntilAd: null,
     nextAdAt: null,
     snoozeCount: 0,
     snoozedAt: null,

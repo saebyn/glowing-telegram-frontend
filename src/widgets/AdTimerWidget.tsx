@@ -19,19 +19,18 @@ type AdTimerStatus =
   | 'ads_snoozed';
 
 interface AdTimerWidgetConfig extends Record<string, unknown> {
-  visibilityThreshold: number; // seconds
-  incomingThreshold: number; // seconds
+  visibilityThreshold: number; // seconds — hide widget when further than this from next ad
   snoozeDisplayDuration: number; // milliseconds
   backFromAdsDuration: number; // milliseconds
 }
 
+// Fields sent by the backend via WebSocket. status and secondsUntilAd are
+// derived client-side from nextAdAt and are intentionally absent here.
 interface AdTimerWidgetState extends Record<string, unknown> {
-  status: AdTimerStatus;
-  secondsUntilAd: number | null;
-  nextAdAt: string | null; // ISO timestamp
+  nextAdAt: string | null; // ISO timestamp from Twitch API
   snoozeCount: number;
-  snoozedAt: string | null; // ISO timestamp when snooze detected
-  backFromAdsUntil: string | null; // ISO timestamp until when to show back_from_ads
+  snoozedAt: string | null; // ISO timestamp set by backend when snooze detected
+  backFromAdsUntil: string | null; // ISO timestamp set by backend when ads complete
 }
 
 export interface AdTimerWidgetInstance extends WidgetInstance {
@@ -44,7 +43,7 @@ function AdTimerWidget({ widgetId }: AdTimerWidgetProps) {
     useWidgetSubscription<AdTimerWidgetInstance>(widgetId);
 
   const [animateChange, setAnimateChange] = useState(false);
-  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const animationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [displayStatus, setDisplayStatus] =
     useState<AdTimerStatus>('invisible');
   const [secondsUntilAd, setSecondsUntilAd] = useState<number | null>(null);
@@ -90,16 +89,12 @@ function AdTimerWidget({ widgetId }: AdTimerWidgetProps) {
 
       // Normal status logic if not showing snooze or back_from_ads
       if (newStatus === 'invisible') {
-        if (calculatedSeconds === null) {
-          newStatus = 'invisible';
-        } else if (calculatedSeconds > config.visibilityThreshold) {
+        if (calculatedSeconds === null || calculatedSeconds > config.visibilityThreshold) {
           newStatus = 'invisible';
         } else if (calculatedSeconds <= 0) {
           newStatus = 'ads_in_progress';
-        } else if (calculatedSeconds <= config.incomingThreshold) {
-          newStatus = 'ads_incoming';
         } else {
-          newStatus = 'ads_incoming'; // Within visibility threshold
+          newStatus = 'ads_incoming';
         }
       }
 
