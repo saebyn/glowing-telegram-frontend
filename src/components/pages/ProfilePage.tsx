@@ -88,7 +88,23 @@ const ProfilePage = () => {
       // Update local state to reflect successful subscription
       setEventSubChatStatus({
         has_active_subscription: true,
-        subscriptions: response.subscription ? [response.subscription] : [],
+        subscriptions: response.subscription
+          ? [
+              response.subscription,
+              // Add a placeholder for channel.ad_break.begin so both buttons
+              // reflect enabled state immediately, even before the next status
+              // refresh — the backend already created both subscriptions.
+              {
+                ...response.subscription,
+                id: `${response.subscription.id}-ad-break`,
+                type: 'channel.ad_break.begin',
+                condition: {
+                  broadcaster_user_id:
+                    response.subscription.condition.broadcaster_user_id,
+                },
+              },
+            ]
+          : [],
       });
 
       // Update profile state
@@ -116,6 +132,14 @@ const ProfilePage = () => {
   if (error) {
     return <p>Error: {error.message}</p>;
   }
+
+  const hasBothSubscriptions =
+    !!eventSubChatStatus?.subscriptions.some(
+      (s) => s.type === 'channel.chat.message' && s.status === 'enabled',
+    ) &&
+    !!eventSubChatStatus?.subscriptions.some(
+      (s) => s.type === 'channel.ad_break.begin' && s.status === 'enabled',
+    );
 
   return (
     <>
@@ -249,7 +273,7 @@ const ProfilePage = () => {
             <Box sx={{ mt: 2 }}>
               <Typography variant="subtitle2" gutterBottom>
                 {translate('gt.profile.twitchChatIntegration', {
-                  _: 'Twitch Chat Integration',
+                  _: 'Twitch Stream Integration',
                 })}
               </Typography>
 
@@ -265,37 +289,35 @@ const ProfilePage = () => {
                 </Typography>
               )}
 
-              {profile?.twitch?.accessToken &&
-                eventSubChatStatus?.has_active_subscription && (
-                  <Button
-                    variant="contained"
-                    color="success"
-                    disabled
-                    startIcon={<CheckIcon />}
-                    sx={{ mb: 1 }}
-                  >
-                    {translate('gt.profile.twitchChatEnabled', {
-                      _: 'Chat Integration Enabled',
-                    })}
-                  </Button>
-                )}
+              {profile?.twitch?.accessToken && hasBothSubscriptions && (
+                <Button
+                  variant="contained"
+                  color="success"
+                  disabled
+                  startIcon={<CheckIcon />}
+                  sx={{ mb: 1 }}
+                >
+                  {translate('gt.profile.twitchChatEnabled', {
+                    _: 'Stream Integration Enabled',
+                  })}
+                </Button>
+              )}
 
-              {profile?.twitch?.accessToken &&
-                !eventSubChatStatus?.has_active_subscription && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleEnableTwitchChat}
-                    disabled={isEventSubLoading}
-                    sx={{ mb: 1 }}
-                  >
-                    {isEventSubLoading
-                      ? translate('gt.profile.enabling', { _: 'Enabling...' })
-                      : translate('gt.profile.enableTwitchChat', {
-                          _: 'Enable Chat Integration',
-                        })}
-                  </Button>
-                )}
+              {profile?.twitch?.accessToken && !hasBothSubscriptions && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleEnableTwitchChat}
+                  disabled={isEventSubLoading}
+                  sx={{ mb: 1 }}
+                >
+                  {isEventSubLoading
+                    ? translate('gt.profile.enabling', { _: 'Enabling...' })
+                    : translate('gt.profile.enableTwitchChat', {
+                        _: 'Enable Stream Integration',
+                      })}
+                </Button>
+              )}
 
               <Typography
                 variant="caption"
@@ -303,7 +325,7 @@ const ProfilePage = () => {
                 color="text.secondary"
               >
                 {translate('gt.profile.twitchChatDescription', {
-                  _: 'Enable integration to collect chat messages during your Twitch streams',
+                  _: 'Enable integration to collect chat messages and receive real-time ad break notifications during your Twitch streams',
                 })}
               </Typography>
             </Box>
