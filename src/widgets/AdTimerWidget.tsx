@@ -43,7 +43,9 @@ function AdTimerWidget({ widgetId }: AdTimerWidgetProps) {
     useWidgetSubscription<AdTimerWidgetInstance>(widgetId);
 
   const [animateChange, setAnimateChange] = useState(false);
-  const animationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const animationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const [displayStatus, setDisplayStatus] =
     useState<AdTimerStatus>('invisible');
   const [secondsUntilAd, setSecondsUntilAd] = useState<number | null>(null);
@@ -89,7 +91,10 @@ function AdTimerWidget({ widgetId }: AdTimerWidgetProps) {
 
       // Normal status logic if not showing snooze or back_from_ads
       if (newStatus === 'invisible') {
-        if (calculatedSeconds === null || calculatedSeconds > config.visibilityThreshold) {
+        if (
+          calculatedSeconds === null ||
+          calculatedSeconds > config.visibilityThreshold
+        ) {
           newStatus = 'invisible';
         } else if (calculatedSeconds <= 0) {
           newStatus = 'ads_in_progress';
