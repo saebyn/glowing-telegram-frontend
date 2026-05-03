@@ -35,8 +35,8 @@ function sortData<T extends Record<string, unknown>>(
       return 0;
     }
 
-    const aValue = a[field] || '';
-    const bValue = b[field] || '';
+    const aValue = a[field] ?? '';
+    const bValue = b[field] ?? '';
 
     if (aValue < bValue) {
       return sortOrder === 'ASC' ? -1 : 1;
