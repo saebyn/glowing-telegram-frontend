@@ -58,49 +58,7 @@ const restDataProvider: DataProvider = {
   getList: async (resource, params) => {
     console.log('GET LIST', resource, params);
 
-    const page = params.pagination?.page || 1;
-
-    const fetchSignature = JSON.stringify({
-      resource,
-      perPage: params.pagination?.perPage,
-      filter: params.filter,
-    });
-
-    const lastCursor = cursorPaginationCache.getNext(fetchSignature, page);
-
-    if (page > 1 && !lastCursor) {
-      // No cursor available for this page, return empty data
-      return {
-        data: [],
-        pageInfo: {
-          hasNextPage: false,
-          hasPreviousPage: page > 1,
-        },
-      };
-    }
-
-    const data: { items: any[]; cursor: string | null } =
-      await fetchResourceData(resource, undefined, 'GET', {
-        signal: params.signal,
-        params: {
-          cursor: lastCursor,
-          perPage: params.pagination?.perPage,
-          filter: params.filter,
-        },
-      });
-
-    if (data.cursor) {
-      cursorPaginationCache.set(fetchSignature, page, data.cursor);
-    }
-    const { items, cursor } = data;
-
-    return {
-      data: sortData(items, params.sort?.field, params.sort?.order),
-      pageInfo: {
-        hasNextPage: cursor !== null,
-        hasPreviousPage: page > 1,
-      },
-    };
+    return fetchPaginatedData(resource, undefined, undefined, params) as any;
   },
   getOne: async (resource, params) => {
     console.log('GET ONE', resource, params);
@@ -138,23 +96,7 @@ const restDataProvider: DataProvider = {
   getManyReference: async (resource, params) => {
     console.log('GET MANY REFERENCE', resource, params);
 
-    const results = await fetchResourceData<{
-      items: Record<string, unknown>[];
-    }>(resource, params.id, 'GET', {
-      signal: params.signal,
-      relatedFieldName: params.target,
-    });
-
-    const items = results.items.map(cleanRecord(resource)) as any[];
-
-    return {
-      data: sortData(items, params.sort?.field, params.sort?.order),
-      pageInfo: {
-        // TODO: Implement pagination
-        hasNextPage: false,
-        hasPreviousPage: false,
-      },
-    };
+    return fetchPaginatedData(resource, params.id, params.target, params) as any;
   },
   create: async (resource, params) => {
     console.log('CREATE', resource, params);
@@ -209,6 +151,69 @@ const restDataProvider: DataProvider = {
 };
 
 export default restDataProvider;
+
+async function fetchPaginatedData(
+  resource: string,
+  recordId: Identifier | undefined,
+  relatedFieldName: string | undefined,
+  params: {
+    pagination?: { page?: number; perPage?: number };
+    filter?: any;
+    sort?: { field?: string; order?: string };
+    signal?: AbortSignal;
+  },
+) {
+  const page = params.pagination?.page || 1;
+
+  const fetchSignature = JSON.stringify({
+    resource,
+    recordId,
+    relatedFieldName,
+    perPage: params.pagination?.perPage,
+    filter: params.filter,
+  });
+
+  const lastCursor = cursorPaginationCache.getNext(fetchSignature, page);
+
+  if (page > 1 && !lastCursor) {
+    return {
+      data: [],
+      pageInfo: {
+        hasNextPage: false,
+        hasPreviousPage: true,
+      },
+    };
+  }
+
+  const data: { items: any[]; cursor: string | null } =
+    await fetchResourceData(resource, recordId, 'GET', {
+      signal: params.signal,
+      relatedFieldName,
+      params: {
+        cursor: lastCursor,
+        perPage: params.pagination?.perPage,
+        filter: params.filter,
+      },
+    });
+
+  if (data.cursor) {
+    cursorPaginationCache.set(fetchSignature, page, data.cursor);
+  }
+
+  const { items, cursor } = data;
+
+  return {
+    data: sortData(
+      items.map(cleanRecord(resource)),
+      params.sort?.field,
+      params.sort?.order as 'ASC' | 'DESC' | undefined,
+    ) as any[],
+    pageInfo: {
+      hasNextPage: cursor !== null,
+      hasPreviousPage: page > 1,
+    },
+  };
+}
 
 function getResourceUrl(
   resource: string,
