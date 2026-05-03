@@ -47,7 +47,7 @@
     "md5": "^2.3.0",
     "msw": "^2.12.10",
     "oidc-client-ts": "^3.2.1",
-    "postcss": "^8.5.8",
+    "postcss": "^8.5.13",
     "ra-input-rich-text": "^5.6.3",
     "react": "19.2.4",
     "react-admin": "^5.14.3",
