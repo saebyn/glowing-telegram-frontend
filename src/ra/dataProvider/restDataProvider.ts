@@ -185,26 +185,41 @@ async function fetchPaginatedData(
     };
   }
 
-  const data: { items: any[]; cursor: string | null } =
-    await fetchResourceData(resource, recordId, 'GET', {
-      signal: params.signal,
-      relatedFieldName,
-      params: {
-        cursor: lastCursor,
-        perPage: params.pagination?.perPage,
-        filter: params.filter,
-      },
-    });
+  const perPage = params.pagination?.perPage ?? 10;
+  const allItems: any[] = [];
+  let cursor: string | null = lastCursor ?? null;
+  let isFirstFetch = true;
 
-  if (data.cursor) {
-    cursorPaginationCache.set(fetchSignature, page, data.cursor);
+  while (allItems.length < perPage) {
+    // Only use lastCursor on the first fetch; subsequent fetches use the
+    // cursor returned by the previous response.
+    if (!isFirstFetch && cursor === null) {
+      break;
+    }
+
+    const data: { items: any[]; cursor: string | null } =
+      await fetchResourceData(resource, recordId, 'GET', {
+        signal: params.signal,
+        relatedFieldName,
+        params: {
+          cursor: isFirstFetch ? lastCursor : cursor,
+          perPage: params.pagination?.perPage,
+          filter: params.filter,
+        },
+      });
+
+    cursor = data.cursor;
+    allItems.push(...data.items);
+    isFirstFetch = false;
   }
 
-  const { items, cursor } = data;
+  if (cursor) {
+    cursorPaginationCache.set(fetchSignature, page, cursor);
+  }
 
   return {
     data: sortData(
-      items.map(cleanRecord(resource)),
+      allItems.map(cleanRecord(resource)),
       params.sort?.field,
       params.sort?.order as 'ASC' | 'DESC' | undefined,
     ) as any[],
