@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, Typography } from '@mui/material';
-import { lazy, useEffect, useMemo, useState } from 'react';
 import type { StreamClip, VideoClip } from '@saebyn/glowing-telegram-types';
 import type { VideoClip as EditorVideoClip } from '@saebyn/glowing-telegram-video-editor';
+import { lazy, useEffect, useMemo, useState } from 'react';
 
 const ProjectClipPool = lazy(async () => {
   const { ProjectClipPool } = await import(

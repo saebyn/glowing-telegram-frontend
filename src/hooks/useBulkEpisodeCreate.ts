@@ -6,11 +6,7 @@ import type {
 } from '@saebyn/glowing-telegram-types';
 import type { VideoClip as InputVideoClip } from '@saebyn/glowing-telegram-video-editor';
 import { useMutation } from '@tanstack/react-query';
-import {
-  useDataProvider,
-  useNotify,
-  useReference,
-} from 'react-admin';
+import { useDataProvider, useNotify, useReference } from 'react-admin';
 import convertEpisodeToCutList from '@/utilities/convertEpisodeToCutList';
 import { convertSecondsToISODuration } from '@/utilities/isoDuration';
 
@@ -98,11 +94,9 @@ export default function useBulkEpisodeCreate(
     action: bulkCreateEpisodes,
     isLoading: isLoadingSeries,
     isPending,
-    errors: [
-      errorSeries,
-      mutationError,
-      validationError,
-    ].filter((error) => !!error),
+    errors: [errorSeries, mutationError, validationError].filter(
+      (error) => !!error,
+    ),
   };
 }
 
@@ -127,7 +121,9 @@ function validateState(
     const prev = streamMedia[i - 1];
     const current = streamMedia[i];
     if ((prev.start_time ?? 0) > (current.start_time ?? 0)) {
-      return new Error('Stream media must be sorted by start_time in ascending order');
+      return new Error(
+        'Stream media must be sorted by start_time in ascending order',
+      );
     }
   }
 

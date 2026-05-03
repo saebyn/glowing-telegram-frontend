@@ -47,7 +47,7 @@ function VideoEditor() {
       sort: {
         field: 'start_time',
         order: 'ASC',
-      }
+      },
     },
     {
       enabled: !!id,

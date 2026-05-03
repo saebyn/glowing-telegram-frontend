@@ -11,15 +11,19 @@ export interface BulkCreateParams<T = any> {
 }
 
 /**
-  * `sortData`
-  *
-  * Returns a sorted copy of the given items based on the specified field and sort order.
-  *
-  * If `field` is not provided, no sorting is applied and the original items are returned.
-  * If `sortOrder` is not provided, it defaults to descending order (DESC).
-  *
-  */
-function sortData<T extends Record<string, unknown>>(items: T[], field?: string, sortOrder?: 'ASC' | 'DESC'): T[] {
+ * `sortData`
+ *
+ * Returns a sorted copy of the given items based on the specified field and sort order.
+ *
+ * If `field` is not provided, no sorting is applied and the original items are returned.
+ * If `sortOrder` is not provided, it defaults to descending order (DESC).
+ *
+ */
+function sortData<T extends Record<string, unknown>>(
+  items: T[],
+  field?: string,
+  sortOrder?: 'ASC' | 'DESC',
+): T[] {
   if (!field) {
     return items;
   }
@@ -96,7 +100,12 @@ const restDataProvider: DataProvider = {
   getManyReference: async (resource, params) => {
     console.log('GET MANY REFERENCE', resource, params);
 
-    return fetchPaginatedData(resource, params.id, params.target, params) as any;
+    return fetchPaginatedData(
+      resource,
+      params.id,
+      params.target,
+      params,
+    ) as any;
   },
   create: async (resource, params) => {
     console.log('CREATE', resource, params);
