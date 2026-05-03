@@ -21,10 +21,14 @@ const StreamShow = (props: ShowProps) => (
       <TextField source="id" />
       <DateField source="prefix" />
 
-      <ReferenceManyField reference="video_clips" target="stream_id" sort={{
-        field: 'start_time',
-        order: 'ASC',
-      }}>
+      <ReferenceManyField
+        reference="video_clips"
+        target="stream_id"
+        sort={{
+          field: 'start_time',
+          order: 'ASC',
+        }}
+      >
         <Datagrid>
           <TextField source="key" />
           <NumberField source="start_time" />
