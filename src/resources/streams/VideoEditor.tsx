@@ -40,6 +40,10 @@ function VideoEditor() {
     {
       target: 'stream_id',
       id,
+      pagination: {
+        perPage: 20,
+        page: 1,
+      },
       sort: {
         field: 'start_time',
         order: 'ASC',
