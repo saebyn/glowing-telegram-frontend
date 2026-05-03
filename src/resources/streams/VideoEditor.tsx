@@ -32,13 +32,7 @@ function VideoEditor() {
   } = useGetOne<Stream>('streams', { id });
 
   const {
-    action: handleBulkCreateEpisodes,
-    errors: bulkCreateEpisodesErrors,
-    isLoading: isBulkCreateEpisodesLoading,
-  } = useBulkEpisodeCreate(stream);
-
-  const {
-    data: rawRelatedVideoClips,
+    data: videoClips,
     isPending: isRelatedVideoClipsPending,
     error: relatedVideoClipsError,
   } = useGetManyReference<Required<VideoClip>>(
@@ -46,11 +40,21 @@ function VideoEditor() {
     {
       target: 'stream_id',
       id,
+      sort: {
+        field: 'start_time',
+        order: 'ASC',
+      }
     },
     {
       enabled: !!id,
     },
   );
+
+  const {
+    action: handleBulkCreateEpisodes,
+    errors: bulkCreateEpisodesErrors,
+    isLoading: isBulkCreateEpisodesLoading,
+  } = useBulkEpisodeCreate(stream, videoClips);
 
   const handleExport = (clips: InputVideoClip[]) => {
     setSelectedClips(clips);
@@ -86,19 +90,6 @@ function VideoEditor() {
   ) {
     return <LoadingIndicator />;
   }
-
-  // Make a copy of the video clips so we can sort them
-  const videoClips = [...(rawRelatedVideoClips ?? [])];
-
-  videoClips.sort((a, b) => {
-    if (a.key < b.key) {
-      return -1;
-    }
-    if (a.key > b.key) {
-      return 1;
-    }
-    return 0;
-  });
 
   // Calculate the total length of the video clips in milliseconds
   const length = videoClips.reduce(
@@ -150,12 +141,14 @@ function getVideoClipAnnotations(videoClips: VideoClip[]): {
   const silences: Section[] = [];
   const transcript: TranscriptSegment[] = [];
 
-  let offsetMs = 0;
+  console.log('all clips', videoClips);
 
   for (const videoClip of videoClips) {
-    if (!videoClip.metadata?.format?.duration) {
-      throw new Error('Video clip has no duration');
+    if (videoClip.start_time === undefined) {
+      throw new Error('Video clip has no start time');
     }
+
+    const offsetMs = videoClip.start_time * 1000.0;
 
     for (const attention of videoClip.summary?.attentions ?? []) {
       attentions.push({
@@ -197,15 +190,7 @@ function getVideoClipAnnotations(videoClips: VideoClip[]): {
         text: segment.text,
       });
     }
-
-    offsetMs += videoClip.metadata.format.duration * 1000;
   }
-
-  attentions.sort((a, b) => a.timestamp - b.timestamp);
-  highlights.sort((a, b) => a.timestamp - b.timestamp);
-  transcriptionErrors.sort((a, b) => a.timestamp - b.timestamp);
-  silences.sort((a, b) => a.timestamp - b.timestamp);
-  transcript.sort((a, b) => a.timestamp - b.timestamp);
 
   return {
     attentions,

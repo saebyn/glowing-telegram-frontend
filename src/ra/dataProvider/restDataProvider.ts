@@ -10,6 +10,42 @@ export interface BulkCreateParams<T = any> {
   meta?: any;
 }
 
+/**
+  * `sortData`
+  *
+  * Returns a sorted copy of the given items based on the specified field and sort order.
+  *
+  * If `field` is not provided, no sorting is applied and the original items are returned.
+  * If `sortOrder` is not provided, it defaults to descending order (DESC).
+  *
+  */
+function sortData<T extends Record<string, unknown>>(items: T[], field?: string, sortOrder?: 'ASC' | 'DESC'): T[] {
+  if (!field) {
+    return items;
+  }
+
+  // Sort items by params.sort.field and params.sort.order
+  // Copy the array to avoid mutating the cache
+  return items.slice().sort((a, b) => {
+    if (!field) {
+      return 0;
+    }
+
+    const aValue = a[field] || '';
+    const bValue = b[field] || '';
+
+    if (aValue < bValue) {
+      return sortOrder === 'ASC' ? -1 : 1;
+    }
+
+    if (aValue > bValue) {
+      return sortOrder === 'ASC' ? 1 : -1;
+    }
+
+    return 0;
+  });
+}
+
 const restDataProvider: DataProvider = {
   bulkCreate: async (resource: string, params: BulkCreateParams) => {
     console.log('BULK CREATE', resource, params);
@@ -58,31 +94,8 @@ const restDataProvider: DataProvider = {
     }
     const { items, cursor } = data;
 
-    // Sort items by params.sort.field and params.sort.order
-    // Copy the array to avoid mutating the cache
-    const sortedItems = items.slice().sort((a, b) => {
-      const field = params.sort?.field;
-
-      if (!field) {
-        return 0;
-      }
-
-      const aValue = a[field]?.toString() || '';
-      const bValue = b[field]?.toString() || '';
-
-      if (aValue < bValue) {
-        return params.sort?.order === 'ASC' ? -1 : 1;
-      }
-
-      if (aValue > bValue) {
-        return params.sort?.order === 'ASC' ? 1 : -1;
-      }
-
-      return 0;
-    });
-
     return {
-      data: sortedItems as any[],
+      data: sortData(items, params.sort?.field, params.sort?.order),
       pageInfo: {
         hasNextPage: cursor !== null,
         hasPreviousPage: page > 1,
@@ -132,8 +145,10 @@ const restDataProvider: DataProvider = {
       relatedFieldName: params.target,
     });
 
+    const items = results.items.map(cleanRecord(resource)) as any[];
+
     return {
-      data: results.items.map(cleanRecord(resource)) as any[],
+      data: sortData(items, params.sort?.field, params.sort?.order),
       pageInfo: {
         // TODO: Implement pagination
         hasNextPage: false,

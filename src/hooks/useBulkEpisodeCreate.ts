@@ -8,14 +8,16 @@ import type { VideoClip as InputVideoClip } from '@saebyn/glowing-telegram-video
 import { useMutation } from '@tanstack/react-query';
 import {
   useDataProvider,
-  useGetManyReference,
   useNotify,
   useReference,
 } from 'react-admin';
 import convertEpisodeToCutList from '@/utilities/convertEpisodeToCutList';
 import { convertSecondsToISODuration } from '@/utilities/isoDuration';
 
-export default function useBulkEpisodeCreate(stream: Stream | undefined) {
+export default function useBulkEpisodeCreate(
+  stream: Stream | undefined,
+  streamMedia: OutputVideoClip[] | undefined,
+) {
   const notify = useNotify();
   const dataProvider = useDataProvider();
 
@@ -29,21 +31,6 @@ export default function useBulkEpisodeCreate(stream: Stream | undefined) {
     id: stream?.series_id || '', // empty string if no series_id, enabled will be false anyway
     options: { enabled: !!stream?.series_id },
   });
-
-  const {
-    data: streamMedia,
-    isLoading: isStreamMediaLoading,
-    error: streamMediaError,
-  } = useGetManyReference<Required<OutputVideoClip>>(
-    'video_clips',
-    {
-      target: 'stream_id',
-      id: stream?.id || '',
-    },
-    {
-      enabled: !!stream,
-    },
-  );
 
   const {
     mutate,
@@ -109,11 +96,10 @@ export default function useBulkEpisodeCreate(stream: Stream | undefined) {
 
   return {
     action: bulkCreateEpisodes,
-    isLoading: isLoadingSeries || isStreamMediaLoading,
+    isLoading: isLoadingSeries,
     isPending,
     errors: [
       errorSeries,
-      streamMediaError,
       mutationError,
       validationError,
     ].filter((error) => !!error),
@@ -134,6 +120,17 @@ function validateState(
   if (!streamMedia || streamMedia.length === 0) {
     return new Error('Stream media is required');
   }
+
+  // validate that the items in `streamMedia` are sorted
+  // by `start_time` in ascending order
+  for (let i = 1; i < streamMedia.length; i++) {
+    const prev = streamMedia[i - 1];
+    const current = streamMedia[i];
+    if ((prev.start_time ?? 0) > (current.start_time ?? 0)) {
+      return new Error('Stream media must be sorted by start_time in ascending order');
+    }
+  }
+
   if (!validateSeries(series)) {
     return new Error(
       'Series missing required fields: max_episode_order_index, notify_subscribers, category, tags',
