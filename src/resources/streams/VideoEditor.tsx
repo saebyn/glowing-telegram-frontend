@@ -145,8 +145,6 @@ function getVideoClipAnnotations(videoClips: VideoClip[]): {
   const silences: Section[] = [];
   const transcript: TranscriptSegment[] = [];
 
-  console.log('all clips', videoClips);
-
   for (const videoClip of videoClips) {
     if (videoClip.start_time === undefined) {
       throw new Error('Video clip has no start time');
