@@ -6,6 +6,7 @@
  * all widgets are registered before they are needed.
  */
 
+import { adTimerDefinition } from './ad-timer';
 import { countdownTimerDefinition } from './countdown-timer';
 import { widgetRegistry } from './registry';
 
@@ -15,6 +16,7 @@ import { widgetRegistry } from './registry';
  */
 export function registerWidgets(): void {
   widgetRegistry.register(countdownTimerDefinition);
+  widgetRegistry.register(adTimerDefinition);
 }
 
 // Export the registry for use throughout the application

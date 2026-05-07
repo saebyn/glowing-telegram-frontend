@@ -1036,8 +1036,38 @@ export const handlers = [
   // EventSub Chat endpoints
   http.get('/api/eventsub/chat/status', () => {
     return HttpResponse.json({
-      has_active_subscription: false,
-      subscriptions: [],
+      has_active_subscription: true,
+      subscriptions: [
+        {
+          id: 'f1c2a387-161a-49f9-a165-0f21d7a4e1c4',
+          status: 'enabled',
+          type: 'channel.chat.message',
+          version: '1',
+          condition: {
+            broadcaster_user_id: '1234',
+            user_id: '1234',
+          },
+          transport: {
+            method: 'webhook',
+            callback: 'https://example.com/webhooks/callback',
+          },
+          created_at: '2023-04-11T10:11:12.123Z',
+        },
+        {
+          id: 'a2b3c4d5-e6f7-8901-abcd-ef0123456789',
+          status: 'enabled',
+          type: 'channel.ad_break.begin',
+          version: '1',
+          condition: {
+            broadcaster_user_id: '1234',
+          },
+          transport: {
+            method: 'webhook',
+            callback: 'https://example.com/webhooks/callback',
+          },
+          created_at: '2023-04-11T10:11:12.123Z',
+        },
+      ],
     });
   }),
 
